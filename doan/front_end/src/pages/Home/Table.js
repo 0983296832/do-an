@@ -11,9 +11,7 @@ import OrderServices from "../../services/orderServices";
 import moment from "moment";
 import { Tag } from "antd";
 
-const TableList = () => {
-  const [rows, setRows] = useState([]);
-
+const TableList = ({ dataTable: rows }) => {
   const colorTag = (row) => {
     {
       let colorTag;
@@ -37,35 +35,6 @@ const TableList = () => {
       return <Tag color={colorTag}>{row.status}</Tag>;
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const params = {
-        page: 1,
-        limit: 5,
-      };
-      const result = await OrderServices.getOrder(params);
-
-      setRows(
-        result.data.map((item) => {
-          return {
-            id: item._id,
-            customer: item.user_name,
-            amount: item.details
-              .reduce((acc, i) => {
-                return acc + i.price * i.quantity;
-              }, 0)
-              .toLocaleString("en-US", { style: "currency", currency: "VND" }),
-            date: `${moment(item.created).utc().format("DD/MM/YYYY")}`,
-            method: item.payment_type,
-            receive_date: item.receive_date,
-            status: item.state,
-          };
-        })
-      );
-    };
-    fetchData();
-  }, []);
 
   return (
     <TableContainer component={Paper} className="table">

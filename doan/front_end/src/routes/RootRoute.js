@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Wrapper from "../components/Wrapper";
-import AddUser from "../pages/User/AddUser";
+import AddUser from "../pages/User/AddUser/AddUser";
 import DetailUser from "../pages/User/DetailUser";
 import Home from "../pages/Home";
 import ProductManagement from "../pages/Product";

@@ -19,6 +19,7 @@ const Supplier = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isCancel = false;
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -71,6 +72,9 @@ const Supplier = () => {
       setLoading(false);
     };
     fetchData();
+    return () => {
+      isCancel = true;
+    };
   }, []);
 
   return (

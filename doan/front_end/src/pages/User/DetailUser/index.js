@@ -7,7 +7,7 @@ import ListTable from "../../../components/ListOrder";
 import { useParams } from "react-router-dom";
 import Users from "../../../services/userServices";
 import Toast from "../../../components/Toast";
-import Modal from "../Modal/EditUser";
+import Modal from "../Modal/Modal";
 import moment from "moment";
 
 const DetailUser = () => {
@@ -18,11 +18,12 @@ const DetailUser = () => {
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
   useEffect(() => {
+    let isCancel = false;
     const getUserDetails = async () => {
       setLoading(true);
       try {
         const { result } = await Users.getUserById(id);
-
+        console.log(result);
         setUser(result);
       } catch (error) {
         Toast("error", error.message);
@@ -30,6 +31,9 @@ const DetailUser = () => {
       setLoading(false);
     };
     getUserDetails();
+    return () => {
+      isCancel = true;
+    };
   }, []);
   const data = [
     {
@@ -235,7 +239,9 @@ const DetailUser = () => {
             <div className="info__item">
               <img
                 src={
-                  user.image.imageUrl || "https://joeschmoe.io/api/v1/random"
+                  user.image
+                    ? user?.image?.imageUrl
+                    : "https://joeschmoe.io/api/v1/random"
                 }
                 alt=""
                 className="info__img"
@@ -245,7 +251,7 @@ const DetailUser = () => {
                 <div className="info__details-item">
                   <span className="details__item-key">Full name:</span>
                   <span className="details__item-value">
-                    {user.name_surname || ""}
+                    {user.name_surname ? user?.name_surname : ""}
                   </span>
                 </div>
                 <div className="info__details-item">
@@ -255,24 +261,28 @@ const DetailUser = () => {
                 <div className="info__details-item">
                   <span className="details__item-key">Birth:</span>
                   <span className="details__item-value">
-                    {moment(user.birth).utc().format("DD/MM/YYYY") || ""}
+                    {user.birth
+                      ? moment(user?.birth).utc().format("DD/MM/YYYY")
+                      : ""}
                   </span>
                 </div>
                 <div className="info__details-item">
                   <span className="details__item-key">Phone:</span>
                   <span className="details__item-value">
-                    {user.phone || ""}
+                    {user.phone ? user?.phone : ""}
                   </span>
                 </div>
                 <div className="info__details-item">
                   <span className="details__item-key">Address:</span>
                   <span className="details__item-value">
-                    {user.address || ""}
+                    {user.address ? user?.address : ""}
                   </span>
                 </div>
                 <div className="info__details-item">
                   <span className="details__item-key">Gender:</span>
-                  <span className="details__item-value">{user.sex || ""}</span>
+                  <span className="details__item-value">
+                    {user.sex ? user?.sex : ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -285,7 +295,12 @@ const DetailUser = () => {
           <h1 className="trans">Transactions</h1>
           <ListTable data={data} noSup XAxis={1500} />
         </div>
-        <Modal disabled={disabled} handleClose={handleClose} data={user} />
+        <Modal
+          disabled={disabled}
+          handleClose={handleClose}
+          data={user}
+          loading={loading}
+        />
       </div>
     );
 };

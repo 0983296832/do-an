@@ -11,28 +11,43 @@ const axiosClient = axios.create({
   paramsSerializer: (params) => queryString.stringify(params),
 });
 
-axiosClient.interceptors.request.use(async (config) => {
-  let authToken = localStorage.getItem(LOCAL_STORAGE_USER_KEY)
-    ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_KEY))
-    : null;
+axiosClient.interceptors.request.use(
+  async (config) => {
+    let authToken = localStorage.getItem(LOCAL_STORAGE_USER_KEY)
+      ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_KEY))
+      : null;
 
-  config.headers["auth-token"] = authToken?.token;
+    config.headers["auth-token"] = authToken?.token;
 
-  const user = jwt_decode(authToken?.token);
-  const isExpired = dayjs.unix(user?.exp).diff(dayjs()) < 1;
-  if (!isExpired) {
+    const user = jwt_decode(authToken?.token);
+    const isExpired = dayjs.unix(user?.exp).diff(dayjs()) < 1;
+    if (!isExpired) {
+      return config;
+    }
+    await axios
+      .post("/auth/refresh", { withCredentials: true })
+      .then((response) => {
+        localStorage.setItem(
+          LOCAL_STORAGE_USER_KEY,
+          JSON.stringify({ ...authToken, token: response.data.token })
+        );
+        config.headers["auth-token"] = response.data.token;
+      });
+    // localStorage.setItem(
+    //   LOCAL_STORAGE_USER_KEY,
+    //   JSON.stringify({ ...authToken, token: res.token })
+    // );
+    // config.headers["auth-token"] = res.token;
     return config;
+  },
+  (err) => {
+    let authToken = localStorage.getItem(LOCAL_STORAGE_USER_KEY)
+      ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_KEY))
+      : null;
+    err.headers["auth-token"] = authToken?.token;
+    return err;
   }
-  const res = await axios.post("/auth/refresh").then((response) => {
-    return response.data;
-  });
-  localStorage.setItem(
-    LOCAL_STORAGE_USER_KEY,
-    JSON.stringify({ ...authToken, token: res.token })
-  );
-  config.headers["auth-token"] = res.token;
-  return config;
-});
+);
 
 axiosClient.interceptors.response.use(
   (response) => {

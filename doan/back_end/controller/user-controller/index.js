@@ -61,8 +61,8 @@ exports.findAll = async (req, res) => {
     });
   }
 };
-exports.findByName = async (req, res) => {
-  if (!req.body.name) {
+exports.findByEmail = async (req, res) => {
+  if (!req.body.email) {
     return res.status(400).json({
       status: "400",
       message: "get user failed!",
@@ -70,7 +70,7 @@ exports.findByName = async (req, res) => {
     });
   }
   try {
-    const data = await usersDB.find({ name: req.body.name });
+    const data = await usersDB.find({ email: req.body.email });
     return res.status(200).json({
       status: "200",
       message: "get all user successfully!",
@@ -183,7 +183,6 @@ exports.upload = async (req, res) => {
   }
   try {
     const id = req.params.id;
-    console.log(req.files);
     // Upload image to cloudinary
     const result = await cloudinary.uploader.upload(req.files[0].path, {
       folder: "user",
@@ -208,9 +207,11 @@ exports.upload = async (req, res) => {
       } else {
         result.image = image;
         result.save();
+        return res
+          .status(200)
+          .json({ status: "200", result: { ...image._doc } });
       }
     });
-    return res.status(200).json({ status: "200", result: { ...image._doc } });
   } catch (err) {
     return res.status(400).json({ status: "400", message: err.message });
   }

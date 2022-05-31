@@ -11,8 +11,10 @@ import ChartComponent from "../../components/ChartComponent";
 import TableList from "./Table";
 import Users from "../../services/userServices";
 import Products from "../../services/productServices";
+import OrderServices from "../../services/orderServices";
 
 import Toast from "../../components/Toast";
+import moment from "moment";
 
 const Home = () => {
   const dataOriginal = [
@@ -89,34 +91,69 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
   const [numbers, setNumbers] = useState([]);
+  const [dataTable, setDataTable] = useState([]);
 
   useEffect(() => {
+    let isCancel = false;
     const fetchData = async () => {
       setLoading(true);
+      try {
+        const params = {
+          page: 1,
+          limit: 5,
+        };
+        let result = await Promise.allSettled([
+          Users.getUsers(),
+          Products.getProducts(),
+          OrderServices.getOrder(params),
+        ]);
+        const user =
+          result[0].status === "fulfilled" ? result[0].value.count : {};
+        const product =
+          result[1].status === "fulfilled" ? result[1].value.count : {};
+        const order =
+          result[2].status === "fulfilled" ? result[2].value.data : [];
+        setNumbers([user, product, 500, 500]);
+        const numberArr = [user, product, 500, 500];
+        setData(
+          dataOriginal.map((item, index) => {
+            return {
+              ...item,
+              number: numberArr[index],
+            };
+          })
+        );
 
-      let result = await Promise.allSettled([
-        Users.getUsers(),
-        Products.getProducts(),
-      ]);
-
-      const user =
-        result[0].status === "fulfilled" ? result[0].value.count : {};
-      const product =
-        result[1].status === "fulfilled" ? result[1].value.count : {};
-      setNumbers([user, product, 500, 500]);
-      const numberArr = [user, product, 500, 500];
-      setData(
-        dataOriginal.map((item, index) => {
-          return {
-            ...item,
-            number: numberArr[index],
-          };
-        })
-      );
+        setDataTable(
+          order.map((item) => {
+            return {
+              id: item._id,
+              customer: item.user_name,
+              amount: item.details
+                .reduce((acc, i) => {
+                  return acc + i.price * i.quantity;
+                }, 0)
+                .toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "VND",
+                }),
+              date: `${moment(item.created).utc().format("DD/MM/YYYY")}`,
+              method: item.payment_type,
+              receive_date: item.receive_date,
+              status: item.state,
+            };
+          })
+        );
+      } catch (error) {
+        Toast("error", error.message);
+      }
 
       setLoading(false);
     };
     fetchData();
+    return () => {
+      isCancel = true;
+    };
   }, []);
 
   if (loading) {
@@ -142,7 +179,7 @@ const Home = () => {
         </div>
         <h1 className="trans">Last Five Transactions</h1>
         <div className="table">
-          <TableList />
+          <TableList dataTable={dataTable} />
         </div>
       </div>
     );

@@ -94,14 +94,14 @@ exports.login = async (req, res) => {
 
     //create token
     const token = jwt.sign(
-      { _id, name, email, role },
+      { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_SECRET,
       {
         expiresIn: "20s",
       }
     );
     const refreshToken = jwt.sign(
-      { _id, name, email, role, image: image.imageUrl },
+      { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_REFRESH,
       {
         expiresIn: "365d",
@@ -122,7 +122,7 @@ exports.login = async (req, res) => {
       result: {
         token,
         refreshToken,
-        data: { _id, name, email, role, image: image.imageUrl },
+        data: { _id, name, email, role, image: image?.imageUrl },
       },
     });
   }
@@ -135,6 +135,7 @@ exports.refreshToken = async (req, res) => {
   if (!refreshToken) {
     res.status(400).json({ status: 400, message: "You are not authenticated" });
   }
+  console.log(arrRefreshToken.includes(refreshToken));
   if (!arrRefreshToken.includes(refreshToken))
     return res.status(400).json({ status: 400, message: "Token is not valid" });
   jwt.verify(refreshToken, process.env.TOKEN_REFRESH, (err, user) => {

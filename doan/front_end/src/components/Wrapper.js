@@ -12,14 +12,12 @@ import { Avatar } from "antd";
 import { MdDashboard, MdLocalShipping } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { ImStatsDots, ImProfile } from "react-icons/im";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import { LOCAL_STORAGE_USER_KEY } from "../constant/constant";
+import Auth from "../services/authServices";
+import Toast from "./Toast";
 
-const logout = () => {
-  localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-};
 const Wrapper = ({ children }) => {
   const { auth } = useContext(AuthContext);
   let location = useLocation();
@@ -122,18 +120,23 @@ const Wrapper = ({ children }) => {
 export default Wrapper;
 
 const Sidebar = ({ data }) => {
+  let navigate = useNavigate();
+  const logout = async () => {
+    try {
+      await Auth.logout();
+      navigate("/login");
+      Toast("success", "Logout success");
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
   return (
     <div className="menu__part">
       <h2 className="title__nav">{data.title}</h2>
       {data.children.map((item, index) => {
         if (item.path === "/login") {
           return (
-            <Link
-              to={item.path}
-              className="part__nav"
-              key={index}
-              onClick={logout}
-            >
+            <Link to={""} className="part__nav" key={index} onClick={logout}>
               {item.icon}
               <span>{item.link}</span>
             </Link>

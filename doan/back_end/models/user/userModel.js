@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     min: 6,
     max: 255,
+    default: "",
   },
   email: {
     type: String,
@@ -26,19 +27,24 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
+    default: "",
   },
   image: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
   sex: {
     type: String,
+    default: "",
   },
   address: {
     type: String,
+    default: "",
   },
   status: {
     type: String,
+    default: "online",
   },
   birth: {
     type: Date,
+    default: Date.now(),
   },
   role: {
     type: Number,

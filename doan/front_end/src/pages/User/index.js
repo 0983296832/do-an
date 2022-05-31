@@ -56,6 +56,7 @@ const Datatable = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isCancel = false;
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -72,7 +73,7 @@ const Datatable = () => {
               user: name,
               img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
               status: status,
-              phone: phone || "dont have yet",
+              phone: phone ,
             };
           })
         );
@@ -82,6 +83,9 @@ const Datatable = () => {
       setLoading(false);
     };
     fetchData();
+    return () => {
+      isCancel = true;
+    };
   }, []);
 
   const handleDelete = (id) => {

@@ -36,6 +36,7 @@ const ProductDetail = () => {
   };
 
   useEffect(() => {
+    let isCancel = false;
     const getProductDetails = async () => {
       setLoading(true);
       try {
@@ -69,6 +70,9 @@ const ProductDetail = () => {
       setLoading(false);
     };
     getProductDetails();
+    return () => {
+      isCancel = true;
+    };
   }, []);
 
   const upload = async () => {

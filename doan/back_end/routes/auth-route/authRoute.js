@@ -5,7 +5,7 @@ const controller = require("../../controller/auth-controller");
 route.post("/register", controller.register);
 route.post("/login", controller.login);
 route.post("/refresh", controller.refreshToken);
-route.get("/logout", checkAuth, controller.logout);
+route.post("/logout", checkAuth, controller.logout);
 route.post("/forgotpassword", controller.forgotPassword);
 route.put("/resetpassword", controller.resetPassword);
 

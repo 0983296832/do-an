@@ -18,6 +18,7 @@ const Order = () => {
   const [data, setData] = useState();
 
   useEffect(() => {
+    let isCancel = false;
     const fetchData = async () => {
       try {
         const params = {
@@ -56,6 +57,9 @@ const Order = () => {
     };
 
     fetchData();
+    return () => {
+      isCancel = true;
+    }
   }, []);
 
   return (

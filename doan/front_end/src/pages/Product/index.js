@@ -97,6 +97,7 @@ const ProductManagement = () => {
 
   useEffect(() => {
     setLoading(true);
+    let isCancel = false;
     const fetchData = async () => {
       try {
         const params = {
@@ -127,6 +128,9 @@ const ProductManagement = () => {
       setLoading(false);
     };
     fetchData();
+    return () => {
+      isCancel = true;
+    };
   }, []);
 
   const handleDelete = (id) => {
