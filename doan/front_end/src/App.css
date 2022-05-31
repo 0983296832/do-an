@@ -1,0 +1,10 @@
+.center-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ant-picker-date-panel{
+    z-index: 1000000 !important;
+}
+.datepicker{ z-index:99999 !important; }

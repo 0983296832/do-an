@@ -1,0 +1,40 @@
+.center{
+    display: flex;
+}
+.detail-left{
+    width: 700px;
+    padding: 10px;
+    max-width: 50%;
+}
+.detail-right{
+    width: 50%;
+    padding: 10px;
+}
+.formInput-product{
+    max-width: 400px;
+    display:flex;
+    flex-direction: column;
+    gap:12px;
+    margin-bottom: 30px;
+}
+
+.short-input{
+    width: 100px;
+}
+.image-product{
+    width: 70%;
+    margin-bottom: 30px;
+}
+.gap-icon{
+    margin-left: 10px;
+    margin-top: 6px;
+}
+.flex{
+    display:flex;
+    justify-content: space-between;
+}
+.icon-btn{
+   margin-right:70px;
+   padding:0 30px;
+   width: 8rem;
+}

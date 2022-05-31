@@ -1,0 +1,53 @@
+.wigget__container{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 10px;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    border-radius: 10px;
+    height: max-content;
+    width: 250px;
+}
+
+.wigget__header{
+    display: flex;
+    justify-content: space-between;
+}
+.wigget__rate{
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+.wigget__rate.negative{
+    color: red;
+}
+
+.wigget__rate.positive{
+    color: green;
+}
+
+.wigget__title{
+    font-weight: bold;
+    font-size: 14px;
+    color: rgb(160, 160, 160);
+}
+.wigget__bottom{
+    display: flex;
+    justify-content: space-between;
+}
+
+.wigget__link{
+    font-size: 12px;
+    text-decoration: underline;
+    color: #000;
+}
+.wigget__link:hover{
+    color: gray;
+}
+
+.wigget__icon{
+    font-size: 25px;
+    padding: 5px;
+    border-radius: 5px;
+}
