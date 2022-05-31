@@ -15,14 +15,22 @@ axiosClient.interceptors.request.use(async (config) => {
   let authToken = localStorage.getItem(LOCAL_STORAGE_USER_KEY)
     ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_KEY))
     : null;
-  console.log(authToken.token);
+
   config.headers["auth-token"] = authToken?.token;
 
-  // const user = jwt_decode(authToken?.token);
-  // const isExpired = dayjs.unix(user?.exp).diff(dayjs()) < 1;
-  // if (!isExpired) {
-  //   return config;
-  // }
+  const user = jwt_decode(authToken?.token);
+  const isExpired = dayjs.unix(user?.exp).diff(dayjs()) < 1;
+  if (!isExpired) {
+    return config;
+  }
+  const res = await axios.post("/auth/refresh").then((response) => {
+    return response.data;
+  });
+  localStorage.setItem(
+    LOCAL_STORAGE_USER_KEY,
+    JSON.stringify({ ...authToken, token: res.token })
+  );
+  config.headers["auth-token"] = res.token;
   return config;
 });
 

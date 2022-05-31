@@ -9,12 +9,10 @@ const Auth = {
       .post(url, body)
       .then((res) => {
         if (res.data.status === 200) {
-          localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
           localStorage.setItem(
             LOCAL_STORAGE_USER_KEY,
             JSON.stringify(res.data.result)
           );
-          console.log("login", res.data.result.token);
           return res.data.result;
         }
       })

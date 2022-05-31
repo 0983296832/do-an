@@ -97,7 +97,7 @@ exports.login = async (req, res) => {
       { _id, name, email, role },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "100d",
+        expiresIn: "20s",
       }
     );
     const refreshToken = jwt.sign(
@@ -165,7 +165,7 @@ exports.refreshToken = async (req, res) => {
       sameSite: "strict",
     });
     res.status(200).json({
-      status: 400,
+      status: 200,
       message: "refresh success",
       token: newAccessToken,
       refreshToken: newRefreshToken,

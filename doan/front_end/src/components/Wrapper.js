@@ -125,8 +125,8 @@ const Sidebar = ({ data }) => {
   return (
     <div className="menu__part">
       <h2 className="title__nav">{data.title}</h2>
-      {data.children.map((item, index, arr) => {
-        if (index === arr.length - 1) {
+      {data.children.map((item, index) => {
+        if (item.path === "/login") {
           return (
             <Link
               to={item.path}
