@@ -49,7 +49,7 @@ const RootRoute = () => {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset/:email" element={<ResetPassword />} />
+          <Route path="/reset" element={<ResetPassword />} />
         </Routes>
       </Wrapper>
     </BrowserRouter>

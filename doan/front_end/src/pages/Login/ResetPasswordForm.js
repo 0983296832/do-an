@@ -4,8 +4,7 @@ import Toast from "../../components/Toast";
 import Auth from "../../services/authServices";
 import { Link, useParams } from "react-router-dom";
 
-const ResetPasswordForm = () => {
-  const { email } = useParams();
+const ResetPasswordForm = ({email}) => {
   const {
     register,
     handleSubmit,

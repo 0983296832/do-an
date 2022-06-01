@@ -14,7 +14,7 @@ const ForgotPassword = () => {
           {showOtp ? (
             <OtpForm email={email} />
           ) : (
-            <ForgotForm setShowOtp={setShowOtp} setEmail={setEmail} />
+            <ForgotForm setShowOtp={setShowOtp} setEmail={setEmail} email={email}/>
           )}
         </div>
       </div>

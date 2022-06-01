@@ -36,7 +36,7 @@ const OtpForm = ({ email }) => {
     try {
       const res = await Auth.checkOtp({ code: OTP });
       if (res.data.status === 200) {
-        navigate("/reset/" + email);
+        navigate("/reset");
         Toast("success", "verify success");
       } else {
         Toast("error", "verify fail");
