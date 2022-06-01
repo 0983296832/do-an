@@ -38,6 +38,8 @@ exports.findAll = async (req, res) => {
           orders,
           status,
           image,
+          phone,
+          sex,
         } = i;
         return {
           id,
@@ -49,6 +51,8 @@ exports.findAll = async (req, res) => {
           orders,
           status,
           image,
+          phone,
+          sex,
         };
       }),
       count,

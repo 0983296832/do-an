@@ -94,44 +94,85 @@ const productColumns = [
 const ProductManagement = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchBy, setSearchBy] = useState("all");
 
+  const fetchData = async () => {
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+      };
+      const result = await Products.getProducts(params);
+
+      setData(
+        result.data.map((item) => {
+          return {
+            id: item._id,
+            product_code: item.product_code,
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            image: item.image[0]?.imageUrl || "",
+            gender: item.gender,
+            sales: item.sales,
+            views: item.views,
+            votes: item.votes,
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+    return;
+  };
   useEffect(() => {
     setLoading(true);
     let isCancel = false;
-    const fetchData = async () => {
-      try {
-        const params = {
-          page: 1,
-          limit: 10,
-        };
-        const result = await Products.getProducts(params);
-
-        setData(
-          result.data.map((item) => {
-            return {
-              id: item._id,
-              product_code: item.product_code,
-              name: item.name,
-              category: item.category,
-              price: item.price,
-              image: item.image[0]?.imageUrl || "",
-              gender: item.gender,
-              sales: item.sales,
-              views: item.views,
-              votes: item.votes,
-            };
-          })
-        );
-      } catch (error) {
-        Toast("error", error.message);
-      }
-      setLoading(false);
-    };
     fetchData();
     return () => {
       isCancel = true;
     };
   }, []);
+
+  const getDataBySearch = async () => {
+    if (searchBy === "all") {
+      setSearchKey("");
+      fetchData();
+    }
+
+    setLoading(true);
+    const key = searchBy + "[regex]";
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+        [key]: searchKey,
+      };
+      const result = await Products.getProducts(params);
+
+      setData(
+        result.data.map((item) => {
+          return {
+            id: item._id,
+            product_code: item.product_code,
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            image: item.image[0]?.imageUrl || "",
+            gender: item.gender,
+            sales: item.sales,
+            views: item.views,
+            votes: item.votes,
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+  };
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -162,6 +203,10 @@ const ProductManagement = () => {
       },
     },
   ];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="main-wrapper">
       <div className="datatable" style={{ height: "700px" }}>
@@ -169,26 +214,38 @@ const ProductManagement = () => {
         <div className="datatable-feature">
           <div className="feature-input">
             <h3>What are you looking for?</h3>
-            <Input placeholder="default size" prefix={<SearchOutlined />} />
+            <Input
+              placeholder="Search something..."
+              prefix={<SearchOutlined />}
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
+              allowClear
+            />
           </div>
           <div className="feature-select">
-            <h3>Type?</h3>
+            <h3>Search By:</h3>
             <Select
-              defaultValue="lucy"
+              defaultValue={searchBy}
               style={{
                 width: 200,
               }}
+              onChange={(value) => setSearchBy(value)}
             >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-              <Option value="disabled" disabled>
-                Disabled
-              </Option>
-              <Option value="Yiminghe">yiminghe</Option>
+              <Option value="all">All</Option>
+              <Option value="product_code">Product Code</Option>
+              <Option value="name">Name</Option>
+              <Option value="category">Category</Option>
+              <Option value="price">Price</Option>
+              <Option value="gender">Gender</Option>
             </Select>
           </div>
           <div className="feature-btn">
-            <Button type="primary" icon={<SearchOutlined />} size="middle">
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="middle"
+              onClick={getDataBySearch}
+            >
               Search
             </Button>
           </div>

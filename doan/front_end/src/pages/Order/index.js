@@ -16,52 +16,106 @@ const { Option } = Select;
 
 const Order = () => {
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchBy, setSearchBy] = useState("all");
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+      };
+      const result = await Orders.getOrder(params);
+      setData(
+        result.data.map((item, index) => {
+          return {
+            ...item,
+            id: item._id,
+            key: index,
+            created: moment(item.created).utc().format("DD/MM/YYYY"),
+            details: item.details.map((i, idx) => {
+              return {
+                ...i,
+                id: uuidv4(),
+                key: idx + 100000,
+              };
+            }),
+            amount: item.details
+              .reduce((acc, i) => {
+                return acc + i.price * i.quantity;
+              }, 0)
+              .toLocaleString("en-US", {
+                style: "currency",
+                currency: "VND",
+              }),
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+    return;
+  };
   useEffect(() => {
     let isCancel = false;
-    const fetchData = async () => {
-      try {
-        const params = {
-          page: 1,
-          limit: 10,
-        };
-        const result = await Orders.getOrder(params);
-        setData(
-          result.data.map((item, index) => {
-            return {
-              ...item,
-              id: item._id,
-              key: index,
-              created: moment(item.created).utc().format("DD/MM/YYYY"),
-              details: item.details.map((i, idx) => {
-                return {
-                  ...i,
-                  id: uuidv4(),
-                  key: idx + 100000,
-                };
-              }),
-              amount: item.details
-                .reduce((acc, i) => {
-                  return acc + i.price * i.quantity;
-                }, 0)
-                .toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "VND",
-                }),
-            };
-          })
-        );
-      } catch (error) {
-        Toast("error", error.message);
-      }
-    };
 
     fetchData();
     return () => {
       isCancel = true;
-    }
+    };
   }, []);
 
+  const getDataBySearch = async () => {
+    if (searchBy === "all") {
+      setSearchKey("");
+      fetchData();
+    }
+
+    setLoading(true);
+    const key = searchBy + "[regex]";
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+        [key]: searchKey,
+      };
+      const result = await Orders.getOrder(params);
+      setData(
+        result.data.map((item, index) => {
+          return {
+            ...item,
+            id: item._id,
+            key: index,
+            created: moment(item.created).utc().format("DD/MM/YYYY"),
+            details: item.details.map((i, idx) => {
+              return {
+                ...i,
+                id: uuidv4(),
+                key: idx + 100000,
+              };
+            }),
+            amount: item.details
+              .reduce((acc, i) => {
+                return acc + i.price * i.quantity;
+              }, 0)
+              .toLocaleString("en-US", {
+                style: "currency",
+                currency: "VND",
+              }),
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="main-wrapper">
       <div className="datatable">
@@ -69,26 +123,41 @@ const Order = () => {
         <div className="datatable-feature">
           <div className="feature-input">
             <h3>What are you looking for?</h3>
-            <Input placeholder="default size" prefix={<SearchOutlined />} />
+            <Input
+              placeholder="Search something..."
+              prefix={<SearchOutlined />}
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
+              allowClear
+            />
           </div>
           <div className="feature-select">
-            <h3>Type?</h3>
+            <h3>Search By:</h3>
             <Select
-              defaultValue="lucy"
+              defaultValue={searchBy}
               style={{
                 width: 200,
               }}
+              onChange={(value) => setSearchBy(value)}
             >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-              <Option value="disabled" disabled>
-                Disabled
-              </Option>
-              <Option value="Yiminghe">yiminghe</Option>
+              <Option value="all">All</Option>
+              <Option value="name">Name</Option>
+              <Option value="phone">Phone Number</Option>
+              <Option value="email">Email</Option>
+              <Option value="address">Address</Option>
+              <Option value="created">Created</Option>
+              <Option value="receive_date">Recive Date</Option>
+              <Option value="payment_type">Payment Type</Option>
+              <Option value="state">Status</Option>
             </Select>
           </div>
           <div className="feature-btn">
-            <Button type="primary" icon={<SearchOutlined />} size="middle">
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="middle"
+              onClick={getDataBySearch}
+            >
               Search
             </Button>
           </div>

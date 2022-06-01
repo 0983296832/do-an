@@ -129,13 +129,12 @@ exports.login = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
-  const refreshToken = req.headers.cookie.substring(
+  const refreshToken = req.headers?.cookie.substring(
     req.headers.cookie.indexOf("=") + 1
   );
   if (!refreshToken) {
     res.status(400).json({ status: 400, message: "You are not authenticated" });
   }
-  console.log(arrRefreshToken.includes(refreshToken));
   if (!arrRefreshToken.includes(refreshToken))
     return res.status(400).json({ status: 400, message: "Token is not valid" });
   jwt.verify(refreshToken, process.env.TOKEN_REFRESH, (err, user) => {

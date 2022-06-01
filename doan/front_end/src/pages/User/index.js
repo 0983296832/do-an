@@ -54,39 +54,75 @@ const userColumns = [
 const Datatable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchBy, setSearchBy] = useState("all");
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+      };
+      const result = await UserService.getUsers(params);
+      setData(
+        result.result.map(({ id, email, name, image, status, phone }) => {
+          return {
+            id: id,
+            email: email,
+            user: name,
+            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+            status: status,
+            phone: phone,
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+    return;
+  };
   useEffect(() => {
     let isCancel = false;
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const params = {
-          page: 1,
-          limit: 10,
-        };
-        const result = await UserService.getUsers(params);
-        setData(
-          result.result.map(({ id, email, name, image, status, phone }) => {
-            return {
-              id: id,
-              email: email,
-              user: name,
-              img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-              status: status,
-              phone: phone ,
-            };
-          })
-        );
-      } catch (error) {
-        Toast("error", error.message);
-      }
-      setLoading(false);
-    };
     fetchData();
     return () => {
       isCancel = true;
     };
   }, []);
+
+  const getDataBySearch = async () => {
+    if (searchBy === "all") {
+      setSearchKey("");
+      fetchData();
+    }
+
+    setLoading(true);
+    const key = searchBy + "[regex]";
+    try {
+      const params = {
+        page: 1,
+        limit: 10,
+        [key]: searchKey,
+      };
+      const result = await UserService.getUsers(params);
+      setData(
+        result.result.map(({ id, email, name, image, status, phone }) => {
+          return {
+            id: id,
+            email: email,
+            user: name,
+            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+            status: status,
+            phone: phone,
+          };
+        })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+  };
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -117,6 +153,9 @@ const Datatable = () => {
       },
     },
   ];
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="main-wrapper">
       <div className="datatable">
@@ -129,26 +168,38 @@ const Datatable = () => {
         <div className="datatable-feature">
           <div className="feature-input">
             <h3>What are you looking for?</h3>
-            <Input placeholder="default size" prefix={<SearchOutlined />} />
+            <Input
+              placeholder="Search something..."
+              prefix={<SearchOutlined />}
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
+              allowClear
+            />
           </div>
           <div className="feature-select">
-            <h3>Type?</h3>
+            <h3>Search By:</h3>
             <Select
-              defaultValue="lucy"
+              defaultValue={searchBy}
               style={{
                 width: 200,
               }}
+              onChange={(value) => setSearchBy(value)}
             >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-              <Option value="disabled" disabled>
-                Disabled
-              </Option>
-              <Option value="Yiminghe">yiminghe</Option>
+              <Option value="all">All</Option>
+              <Option value="name">Name</Option>
+              <Option value="phone">Phone Number</Option>
+              <Option value="email">Email</Option>
+              <Option value="address">Address</Option>
+              <Option value="status">Status</Option>
             </Select>
           </div>
           <div className="feature-btn">
-            <Button type="primary" icon={<SearchOutlined />} size="middle">
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="middle"
+              onClick={getDataBySearch}
+            >
               Search
             </Button>
           </div>

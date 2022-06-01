@@ -15,6 +15,7 @@ const DetailUser = () => {
   const { id } = useParams();
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
   useEffect(() => {
@@ -23,7 +24,6 @@ const DetailUser = () => {
       setLoading(true);
       try {
         const { result } = await Users.getUserById(id);
-        console.log(result);
         setUser(result);
       } catch (error) {
         Toast("error", error.message);
@@ -35,187 +35,7 @@ const DetailUser = () => {
       isCancel = true;
     };
   }, []);
-  const data = [
-    {
-      key: 1,
-      user_name: "le van binh",
-      created: "2022-05-24",
-      state: "đang đợi gói hàng",
-      address: "Hà Nội",
-      phone: "0987654321",
-      payment_type: "online",
-      id: "6285685bb65ca2b076d5fe",
-      details: [
-        {
-          key: 11,
-          id: "6285685bb65ca2b076d5fe",
-          product_code: "Nike1778598ava",
-          name: "nike authentic",
-          price: "2000",
-          color: "blue",
-          category: "nike",
-          quantity: 1,
-          size: "XL",
-          image: "jkashkasfasf",
-        },
-        {
-          key: 12,
-          id: "6285685bb65ca2b076d5fe",
-          product_code: "Nike1778598avac",
-          name: "nike authentic",
-          price: "2000",
-          color: "red",
-          category: "nike",
-          quantity: 2,
-          size: "L",
-          image: "jkashkasfasf",
-        },
-      ],
-    },
-    {
-      key: 2,
-      user_name: "le van binh",
-      created: "2022-05-24",
-      state: "đang đợi gói hàng",
-      address: "Hà Nội",
-      phone: "0",
-      payment_type: "online",
-      id: "628d15685bca2b076d5fe",
-      details: [
-        {
-          key: 21,
-          id: "628d15685bca2b076d5fe",
-          product_code: "Nike1778598ava",
-          name: "nike authentic",
-          price: "2000",
-          color: "blue",
-          category: "nike",
-          quantity: 1,
-          size: "XL",
-          image: "jkashkasfasf",
-        },
-        {
-          id: "628d15685bca2b076d5fe",
-          product_code: "Nike1778598avac",
-          name: "nike authentic",
-          price: "2000",
-          color: "red",
-          category: "nike",
-          quantity: 2,
-          size: "L",
-          image: "jkashkasfasf",
-        },
-      ],
-    },
-    {
-      key: 3,
-      user_name: "le van binh",
-      created: "2022-05-24",
-      state: "đang đợi gói hàng",
-      address: "Hà Nội",
-      phone: "0",
-      payment_type: "online",
-      id: "628d15685bb65cb076d5fe",
-      details: [
-        {
-          key: 31,
-          id: "628d15685bb65cb076d5fe",
-          product_code: "Nike1778598ava",
-          name: "nike authentic",
-          price: "2000",
-          color: "blue",
-          category: "nike",
-          quantity: 1,
-          size: "XL",
-          image: "jkashkasfasf",
-        },
-        {
-          key: 32,
-          id: "628d15685bb65cb076d5fe",
-          product_code: "Nike1778598avac",
-          name: "nike authentic",
-          price: "2000",
-          color: "red",
-          category: "nike",
-          quantity: 2,
-          size: "L",
-          image: "jkashkasfasf",
-        },
-      ],
-    },
-    {
-      key: 4,
-      user_name: "le van binh",
-      created: "2022-05-24",
-      state: "đang đợi gói hàng",
-      address: "Hà Nội",
-      phone: "0",
-      payment_type: "online",
-      id: "628d15685bb65ca2b06d5fe",
-      details: [
-        {
-          key: 41,
-          id: "628d15685bb65ca2b06d5fe",
-          product_code: "Nike1778598ava",
-          name: "nike authentic",
-          price: "2000",
-          color: "blue",
-          category: "nike",
-          quantity: 1,
-          size: "XL",
-          image: "jkashkasfasf",
-        },
-        {
-          key: 42,
-          id: "628d15685bb65ca2b06d5fe",
-          product_code: "Nike1778598avac",
-          name: "nike authentic",
-          price: "2000",
-          color: "red",
-          category: "nike",
-          quantity: 2,
-          size: "L",
-          image: "jkashkasfasf",
-        },
-      ],
-    },
-    {
-      key: 5,
-      user_name: "le van binh",
-      created: "2022-05-24",
-      state: "đang đợi gói hàng",
-      address: "Hà Nội",
-      phone: "0",
-      payment_type: "online",
-      id: "628d15685bb65ca2b065fe",
-      details: [
-        {
-          key: 51,
-          id: "628d15685bb65ca2b06d5fe",
-          product_code: "Nike1778598ava",
-          name: "nike authentic",
-          price: "2000",
-          color: "blue",
-          category: "nike",
-          quantity: 1,
-          size: "XL",
-          image: "jkashkasfasf",
-        },
-        {
-          key: 52,
-          id: "628d15685bb65ca2b06d5fe",
-          product_code: "Nike1778598avac",
-          name: "nike authentic",
-          price: "2000",
-          color: "red",
-          category: "nike",
-          quantity: 2,
-          size: "L",
-          image: "jkashkasfasf",
-        },
-      ],
-    },
-  ];
+
   if (loading) {
     return <div>Loading...</div>;
   } else
@@ -293,7 +113,7 @@ const DetailUser = () => {
         </div>
         <div style={{ width: 1115 }}>
           <h1 className="trans">Transactions</h1>
-          <ListTable data={data} noSup XAxis={1500} />
+          <ListTable data={user.orders} noSup XAxis={1500} />
         </div>
         <Modal
           disabled={disabled}

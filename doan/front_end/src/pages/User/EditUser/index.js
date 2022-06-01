@@ -57,8 +57,8 @@ const EditUser = ({ data, loading }) => {
     }
   };
 
-  const onChangeDate = (dateString) => {
-    setBirth(dateString);
+  const onChangeDate = (date) => {
+    setBirth(date);
   };
   const onChangeGender = (e) => {
     setSex(e.target.value);
