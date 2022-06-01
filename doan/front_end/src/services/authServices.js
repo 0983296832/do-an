@@ -31,6 +31,18 @@ const Auth = {
     const url = "/auth/register";
     return axios.post(url, body);
   },
+  sendEmail: (body) => {
+    const url = "/auth/forgotpassword";
+    return axios.post(url, body);
+  },
+  checkOtp: (body) => {
+    const url = "/auth/checkotp";
+    return axios.post(url, body);
+  },
+  resetPassword: (body) => {
+    const url = "/auth/resetpassword";
+    return axios.put(url, body);
+  },
 };
 
 export default Auth;

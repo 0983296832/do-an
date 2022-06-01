@@ -13,7 +13,7 @@ let arrRefreshToken = [];
 let code = 600494;
 setInterval(() => {
   code = Math.floor(100000 + Math.random() * 900000);
-}, 1000000);
+}, 120000);
 
 exports.register = async (req, res) => {
   if (_.isEmpty(req.body)) {
@@ -190,9 +190,6 @@ exports.forgotPassword = async (req, res) => {
         .json({ status: "404", message: "No email could not be sent" });
     }
 
-    // Create reset url to email to provided email
-    const resetUrl = `http://localhost:3000/resetpassword`;
-
     // HTML Message
     const message = `
       <h1>You have requested a password reset</h1>
@@ -206,7 +203,9 @@ exports.forgotPassword = async (req, res) => {
         text: message,
       });
 
-      return res.status(200).json({ status: 200, message: "Email Sent" });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Email Sent", email: user.email });
     } catch (err) {
       return res.status(500).json({ status: "500", message: err.message });
     }
@@ -214,13 +213,30 @@ exports.forgotPassword = async (req, res) => {
     return res.status(500).json({ status: "500", message: err.message });
   }
 };
-exports.resetPassword = async (req, res) => {
+
+exports.checkOtp = async (req, res) => {
   try {
+    if (_.isEmpty(req.body)) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Content can not be empty" });
+    }
+    console.log(req.body.code);
+    console.log(code);
+    console.log(req.body.code != code);
     if (req.body.code != code) {
       return res
         .status(500)
         .json({ status: "500", message: "code is not correct" });
     }
+    return res.status(200).json({ status: 200, message: "code is correct" });
+  } catch (error) {
+    res.status(400).json({ status: 400, message: "code is not correct" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
     const user = await usersDB.findOne({ email: req.body.email });
     if (!user) {
       return res

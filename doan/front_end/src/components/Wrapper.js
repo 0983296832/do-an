@@ -55,7 +55,11 @@ const Wrapper = ({ children }) => {
     },
   ];
 
-  if (location.pathname === "/login") {
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/forgot" ||
+    location.pathname.includes("/reset")
+  ) {
     return <div>{children}</div>;
   } else
     return (

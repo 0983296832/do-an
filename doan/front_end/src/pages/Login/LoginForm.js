@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -56,7 +56,7 @@ const LoginForm = () => {
         <p style={{ color: "red" }}>This field is required</p>
       )}
       <input type="submit" value="Login" className="btn solid" />
-      <Link to="/login">Forgot password</Link>
+      <Link to="/forgot">Forgot password</Link>
       <p className="social-text">Or Sign in with social platforms</p>
       <div className="social-media">
         <a href="#" className="social-icon">

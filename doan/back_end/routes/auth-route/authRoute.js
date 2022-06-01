@@ -7,6 +7,7 @@ route.post("/login", controller.login);
 route.post("/refresh", controller.refreshToken);
 route.post("/logout", checkAuth, controller.logout);
 route.post("/forgotpassword", controller.forgotPassword);
+route.post("/checkotp", controller.checkOtp);
 route.put("/resetpassword", controller.resetPassword);
 
 module.exports = route;
