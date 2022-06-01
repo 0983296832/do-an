@@ -12,8 +12,8 @@ import Supplier from "../pages/Supplier";
 import AddProduct from "../pages/Supplier/AddProduct";
 import Login from "../pages/Login/Login";
 import PrivateRoute from "../guard/PrivateRoute";
-import ForgotPassword from "../pages/Login/ForgotPassword";
-import ResetPassword from "../pages/Login/ResetPassword";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 
 const RootRoute = () => {
   return (
