@@ -137,7 +137,7 @@ const Home = () => {
                   style: "currency",
                   currency: "VND",
                 }),
-              date: `${moment(item.created).utc().format("DD/MM/YYYY")}`,
+              date: `${moment(item.created).zone("+07:00").format("DD/MM/YYYY")}`,
               method: item.payment_type,
               receive_date: item.receive_date,
               status: item.state,

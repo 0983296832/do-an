@@ -174,8 +174,14 @@ const ProductManagement = () => {
     setLoading(false);
   };
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await Products.deleteProduct(id);
+      setData(data.filter((item) => item.id !== id));
+      Toast("success", "Delete product successfully");
+    } catch (error) {
+      Toast("error", error.message);
+    }
   };
 
   const actionColumn = [

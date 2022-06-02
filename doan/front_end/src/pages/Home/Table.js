@@ -61,7 +61,7 @@ const TableList = ({ dataTable: rows }) => {
               <TableCell className="tableCell">{row.method}</TableCell>
               <TableCell className="tableCell">
                 {row.receive_date
-                  ? moment(row.receive_date).utc().format("DD/MM/YYYY")
+                  ? moment(row.receive_date).zone("+07:00").format("DD/MM/YYYY")
                   : ""}
               </TableCell>
               <TableCell className="tableCell">{colorTag(row)}</TableCell>

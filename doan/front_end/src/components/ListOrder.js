@@ -227,7 +227,9 @@ const ListTable = ({
       editable: false,
       render: (_, record) => {
         return (
-          <div>{moment(record.receive_date).utc().format("DD/MM/YYYY")}</div>
+          <div>
+            {moment(record.receive_date).zone("+07:00").format("DD/MM/YYYY")}
+          </div>
         );
       },
     },
@@ -276,7 +278,9 @@ const ListTable = ({
       render: (_, record) => {
         if (record.receive_date) {
           return (
-            <div>{moment(record.receive_date).utc().format("DD/MM/YYYY")}</div>
+            <div>
+              {moment(record.receive_date).zone("+07:00").format("DD/MM/YYYY")}
+            </div>
           );
         } else {
           return <div></div>;
@@ -333,12 +337,14 @@ const ListTable = ({
             </Popconfirm>
           </span>
         ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
+          <div style={{ display: "flex", gap: 10 }}>
+            <Typography.Link
+              disabled={editingKey !== ""}
+              onClick={() => edit(record)}
+            >
+              Edit
+            </Typography.Link>
+          </div>
         );
       },
       fixed: "right",

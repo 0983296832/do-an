@@ -1,18 +1,16 @@
-import EditUser from "../EditUser";
-
 import { Modal } from "antd";
 
-const BasicModal = ({ disabled, handleClose, data }) => {
+const BasicModal = ({ disabled, handleClose, children, width, title }) => {
   return (
     <>
       <Modal
-        title="Basic Modal"
+        title={title}
         visible={disabled}
         onCancel={handleClose}
-        style={{ minWidth: "1000px" }}
+        style={{ minWidth: `${width ? width : "1000px"}` }}
         footer={null}
       >
-        <EditUser data={data} />
+        {children}
       </Modal>
     </>
   );

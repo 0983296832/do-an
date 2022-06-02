@@ -8,6 +8,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Select } from "antd";
 import { Button } from "antd";
 import Toast from "../../components/Toast";
+import Users from "../../services/userServices";
 
 const { Option } = Select;
 
@@ -124,8 +125,14 @@ const Datatable = () => {
     setLoading(false);
   };
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await Users.deleteUser(id);
+      setData(data.filter((item) => item.id !== id));
+      Toast("success", "Delete user successfully");
+    } catch (error) {
+      Toast("error", error.message);
+    }
   };
 
   const actionColumn = [

@@ -1,38 +1,52 @@
 import React, { useEffect, useState } from "react";
-import "../../../assets/css/form.css";
+import "../../assets/css/form.css";
 import { AiFillCamera } from "react-icons/ai";
 import { DatePicker, Radio } from "antd";
-import Toast from "../../../components/Toast";
-import Users from "../../../services/userServices";
+import Toast from "../../components/Toast";
+import Users from "../../services/userServices";
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import Modal from "../User/Modal/Modal";
+import ChangePasswordForm from "./ChangePasswordForm";
 
-const EditUser = ({ data, loading }) => {
+const Profile = () => {
   const { id } = useParams();
   const [file, setFile] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [image, setImage] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("");
   const [birth, setBirth] = useState("");
   const [sex, setSex] = useState("");
   const [address, setAddress] = useState("");
   const [name_surname, setName_surname] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const dateFormat = "DD/MM/YYYY";
 
+  const handleOpen = (e) => {
+    e.preventDefault();
+    setDisabled(true);
+  };
+  const handleClose = () => setDisabled(false);
+
   useEffect(() => {
-    if (data) {
-      setName(data?.name);
-      setEmail(data.email);
-      setPhone(data?.phone);
-      setRole(data.role);
-      setBirth(
-        moment(data?.birth).zone("+07:00").format(dateFormat).toString()
-      );
-      setSex(data?.sex);
-      setAddress(data?.address);
-      setName_surname(data?.name_surname);
-    }
+    const fetchData = async () => {
+      setLoading(true);
+      const { result } = await Users.getUserById(id);
+      setName(result?.name);
+      setEmail(result.email);
+      setPhone(result?.phone);
+      setRole(result?.role);
+      setBirth(moment(result?.birth).zone("+07:00").format(dateFormat));
+      setSex(result?.sex);
+      setImage(result?.image);
+      setAddress(result?.address);
+      setName_surname(result?.name_surname);
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   const saveData = async (e) => {
@@ -41,9 +55,9 @@ const EditUser = ({ data, loading }) => {
       if (file !== "") {
         const formData = new FormData();
         formData.append("image", file);
-        await Users.uploadImage(data._id, formData);
+        await Users.uploadImage(id, formData);
       }
-      await Users.updateUser(data._id, {
+      await Users.updateUser(id, {
         name,
         name_surname,
         address,
@@ -87,13 +101,11 @@ const EditUser = ({ data, loading }) => {
     return <div>Loading...</div>;
   }
   return (
-    <div className="new">
+    <div className="new" style={{ height: "500px" }}>
       <div className="newContainer">
-        {!data && (
-          <div className="top">
-            <h1>Add new user</h1>
-          </div>
-        )}
+        <div className="top">
+          <h1>Profile</h1>
+        </div>
 
         <div className="bottom">
           <div className="left">
@@ -101,8 +113,8 @@ const EditUser = ({ data, loading }) => {
               src={
                 file
                   ? URL.createObjectURL(file)
-                  : data.image
-                  ? data?.image?.imageUrl
+                  : image
+                  ? image?.imageUrl
                   : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
               }
               alt=""
@@ -205,12 +217,24 @@ const EditUser = ({ data, loading }) => {
               <button className="send__btn" onClick={(e) => saveData(e)}>
                 Send
               </button>
+              <button className="send__btn" onClick={handleOpen}>
+                Change Password
+              </button>
             </form>
           </div>
+          <Modal
+            disabled={disabled}
+            handleClose={handleClose}
+            loading={loading}
+            width="400px"
+            title="Change Password"
+          >
+            <ChangePasswordForm id={id} />
+          </Modal>
         </div>
       </div>
     </div>
   );
 };
 
-export default EditUser;
+export default Profile;

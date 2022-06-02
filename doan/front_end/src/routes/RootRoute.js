@@ -14,6 +14,7 @@ import Login from "../pages/Login/Login";
 import PrivateRoute from "../guard/PrivateRoute";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
+import Profile from "../pages/Profile";
 
 const RootRoute = () => {
   return (
@@ -46,6 +47,9 @@ const RootRoute = () => {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/add-product" element={<AddProduct />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/profile/:id" element={<Profile />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot" element={<ForgotPassword />} />

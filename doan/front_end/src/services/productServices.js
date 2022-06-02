@@ -20,6 +20,10 @@ const Products = {
     const url = `/product/get-details/${id}`;
     return axiosClient.get(url);
   },
+  deleteProduct: (id) => {
+    const url = `/product/delete/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 
 export default Products;

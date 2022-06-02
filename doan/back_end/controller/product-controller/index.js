@@ -73,6 +73,24 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
+exports.deleteProduct = async (req, res) => {
+  try {
+    const product = await productsDB.findById(req.params.id);
+    if (!product) {
+      return res
+        .status(400)
+        .json({ status: "400", message: "product not found" });
+    }
+    await product.remove();
+    return res.status(200).json({
+      status: "200",
+      message: "product deleted successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {

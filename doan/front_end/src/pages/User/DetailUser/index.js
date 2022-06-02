@@ -9,6 +9,7 @@ import Users from "../../../services/userServices";
 import Toast from "../../../components/Toast";
 import Modal from "../Modal/Modal";
 import moment from "moment";
+import EditUser from "../EditUser";
 
 const DetailUser = () => {
   const [user, setUser] = useState();
@@ -82,7 +83,7 @@ const DetailUser = () => {
                   <span className="details__item-key">Birth:</span>
                   <span className="details__item-value">
                     {user.birth
-                      ? moment(user?.birth).utc().format("DD/MM/YYYY")
+                      ? moment(user?.birth).zone("+07:00").format("DD/MM/YYYY")
                       : ""}
                   </span>
                 </div>
@@ -118,9 +119,11 @@ const DetailUser = () => {
         <Modal
           disabled={disabled}
           handleClose={handleClose}
-          data={user}
           loading={loading}
-        />
+          title="User Profile"
+        >
+          <EditUser data={user} />
+        </Modal>
       </div>
     );
 };

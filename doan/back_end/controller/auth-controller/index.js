@@ -129,11 +129,18 @@ exports.login = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
+  if (!req.headers?.cookie) {
+    return res
+      .status(400)
+      .json({ status: 400, message: "You are not authenticated" });
+  }
   const refreshToken = req.headers?.cookie.substring(
     req.headers.cookie.indexOf("=") + 1
   );
   if (!refreshToken) {
-    res.status(400).json({ status: 400, message: "You are not authenticated" });
+    return res
+      .status(400)
+      .json({ status: 400, message: "You are not authenticated" });
   }
   if (!arrRefreshToken.includes(refreshToken))
     return res.status(400).json({ status: 400, message: "Token is not valid" });

@@ -16,6 +16,14 @@ const Users = {
     const url = `/user/upload/${id}`;
     return axiosClient.post(url, body);
   },
+  deleteUser: (id) => {
+    const url = `/user/delete/${id}`;
+    return axiosClient.delete(url);
+  },
+  changePassword: (id, body) => {
+    const url = `user/change-password/${id}`;
+    return axiosClient.put(url, body);
+  },
 };
 
 export default Users;

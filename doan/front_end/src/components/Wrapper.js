@@ -20,6 +20,7 @@ import Toast from "./Toast";
 
 const Wrapper = ({ children }) => {
   const { auth } = useContext(AuthContext);
+
   let location = useLocation();
   const data = [
     {
@@ -49,7 +50,11 @@ const Wrapper = ({ children }) => {
     {
       title: "User",
       children: [
-        { icon: <ImProfile />, link: "Profile", path: "/" },
+        {
+          icon: <ImProfile />,
+          link: "Profile",
+          path: `/profile/${auth?.data?._id}`,
+        },
         { icon: <BiLogOut />, link: "Logout", path: "/login" },
       ],
     },
@@ -98,12 +103,15 @@ const Wrapper = ({ children }) => {
                   <BiMessageDots />
                 </div>
                 <div className="avatar__icon">
-                  <Avatar
-                    shape="circle"
-                    src={
-                      auth?.data?.image || "https://joeschmoe.io/api/v1/random"
-                    }
-                  />
+                  <Link to={`/profile/${auth?.data?._id}`}>
+                    <Avatar
+                      shape="circle"
+                      src={
+                        auth?.data?.image ||
+                        "https://joeschmoe.io/api/v1/random"
+                      }
+                    />
+                  </Link>
                 </div>
                 <div className="option__icon">
                   <strong>{auth?.data?.name || "No Name"}</strong>

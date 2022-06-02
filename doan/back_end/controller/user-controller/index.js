@@ -158,6 +158,37 @@ exports.updateById = async (req, res) => {
     });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    if (!user)
+      return res.status(400).json({ status: "400", message: "user not found" });
+    //check password
+    const validPass = await bcrypt.compare(
+      req.body.old_password,
+      user.password
+    );
+    if (!validPass)
+      return res
+        .status(400)
+        .json({ status: "400", message: "Password incorrect" });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await usersDB.findByIdAndUpdate(req.params.id, {
+      password: hashedPassword,
+    });
+    return res.status(200).json({
+      status: "200",
+      message: "change password successfully!",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "400",
+      message: error.message,
+    });
+  }
+};
 exports.deleteById = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).json({
@@ -172,7 +203,7 @@ exports.deleteById = async (req, res) => {
       message: "delete user successfully!",
     });
   } catch (error) {
-    return res.status(200).json({
+    return res.status(400).json({
       status: "400",
       message: error.message,
     });

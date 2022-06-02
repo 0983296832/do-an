@@ -2,9 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import Toast from "../../components/Toast";
 import Auth from "../../services/authServices";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const ResetPasswordForm = ({email}) => {
+const ResetPasswordForm = ({ email }) => {
   const {
     register,
     handleSubmit,
