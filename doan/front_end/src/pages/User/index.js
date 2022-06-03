@@ -9,6 +9,7 @@ import { Select } from "antd";
 import { Button } from "antd";
 import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
+import BasicPagination from "../../components/Pagination";
 
 const { Option } = Select;
 
@@ -57,15 +58,18 @@ const Datatable = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     setLoading(true);
     try {
       const params = {
-        page: 1,
+        page: page,
         limit: 10,
       };
       const result = await UserService.getUsers(params);
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.result.map(({ id, email, name, image, status, phone }) => {
           return {
@@ -86,11 +90,11 @@ const Datatable = () => {
   };
   useEffect(() => {
     let isCancel = false;
-    fetchData();
+    fetchData(page);
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [page]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -219,7 +223,9 @@ const Datatable = () => {
           pageSize={10}
           rowsPerPageOptions={[10]}
           checkboxSelection
+          hideFooter
         />
+        <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>
   );

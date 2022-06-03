@@ -9,6 +9,7 @@ import { Button } from "antd";
 import ListTable from "../../components/ListOrder";
 import Suppliers from "../../services/supplierServices";
 import Toast from "../../components/Toast";
+import BasicPagination from "../../components/Pagination";
 
 const { Option } = Select;
 
@@ -19,16 +20,18 @@ const Supplier = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     setLoading(true);
     try {
       const params = {
-        page: 1,
+        page: page,
         limit: 10,
       };
       const result = await Suppliers.getSupplier(params);
-
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item, index) => {
           const {
@@ -76,11 +79,11 @@ const Supplier = () => {
   };
   useEffect(() => {
     let isCancel = false;
-    fetchData();
+    fetchData(page);
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [page]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -209,6 +212,7 @@ const Supplier = () => {
           noOrder
           setData={setData}
         />
+        <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>
   );

@@ -121,7 +121,8 @@ const DetailUser = () => {
               return { ...item, id: item._id, key: uuidv4() };
             })}
             noSup
-            XAxis={1500}
+            XAxis={1700}
+            YAxis={400}
           />
         </div>
         <Modal

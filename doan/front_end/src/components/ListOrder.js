@@ -24,6 +24,7 @@ const ListTable = ({
   noRec,
   noSup,
   XAxis,
+  YAxis,
   noImg,
   noOrder,
   setData,
@@ -268,11 +269,13 @@ const ListTable = ({
       key: "payment_type",
       editable: false,
       hidden: noPay,
+      width: 150,
     },
     {
       title: "Recive Date",
       dataIndex: "receive_date",
       key: "receive_date",
+      width: 150,
       editable: false,
       hidden: noRec,
       render: (_, record) => {
@@ -485,8 +488,9 @@ const ListTable = ({
             />
           ),
         }}
-        scroll={{ x: XAxis }}
+        scroll={{ x: XAxis, y: YAxis }}
         dataSource={data}
+        pagination={false}
       />
     </Form>
   );

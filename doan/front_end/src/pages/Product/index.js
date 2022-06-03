@@ -9,6 +9,7 @@ import { Select } from "antd";
 import { Button } from "antd";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
+import BasicPagination from "../../components/Pagination";
 
 const { Option } = Select;
 
@@ -109,15 +110,17 @@ const ProductManagement = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     try {
       const params = {
-        page: 1,
+        page: page,
         limit: 10,
       };
       const result = await Products.getProducts(params);
-
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item) => {
           return {
@@ -144,11 +147,11 @@ const ProductManagement = () => {
   useEffect(() => {
     setLoading(true);
     let isCancel = false;
-    fetchData();
+    fetchData(page);
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [page]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -279,7 +282,9 @@ const ProductManagement = () => {
           pageSize={10}
           rowsPerPageOptions={[10]}
           checkboxSelection
+          hideFooter
         />
+        <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>
   );

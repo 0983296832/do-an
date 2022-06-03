@@ -9,6 +9,7 @@ import ListTable from "../../components/ListOrder";
 import Orders from "../../services/orderServices";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import BasicPagination from "../../components/Pagination";
 
 const { Option } = Select;
 
@@ -19,15 +20,18 @@ const Order = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     setLoading(true);
     try {
       const params = {
-        page: 1,
+        page: page,
         limit: 10,
       };
       const result = await Orders.getOrder(params);
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item, index) => {
           return {
@@ -62,11 +66,11 @@ const Order = () => {
   useEffect(() => {
     let isCancel = false;
 
-    fetchData();
+    fetchData(page);
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [page]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -163,6 +167,7 @@ const Order = () => {
           </div>
         </div>
         <ListTable data={data} XAxis={1700} noSup setData={setData} />
+        <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>
   );
