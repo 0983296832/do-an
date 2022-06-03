@@ -17,9 +17,17 @@
     gap:12px;
     margin-bottom: 30px;
 }
+.table__details-product{
+    height:300px;
+    max-width: 400px;
+    display:flex;
+    flex-direction: column;
+    gap:12px;
+    margin-bottom: 30px;
+}
 
-.short-input{
-    width: 100px;
+.short-input input{
+    min-width: 300px !important;
 }
 .image-product{
     width: 70%;

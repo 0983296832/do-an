@@ -238,6 +238,7 @@ exports.importProduct = async (req, res) => {
         phone: req.body.phone,
         gender: req.body.gender,
         email: req.body.email,
+        brand: req.body.brand,
         product_code: req.body.product_code,
         price: req.body.price,
         color: req.body.color,
@@ -301,6 +302,7 @@ exports.importProduct = async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       gender: req.body.gender,
+      brand: req.body.brand,
       product_code: req.body.product_code,
       price: req.body.price,
       color: req.body.color,
@@ -314,6 +316,7 @@ exports.importProduct = async (req, res) => {
       name: req.body.name,
       price: req.body.price,
       category: req.body.category,
+      brand: req.body.brand,
       gender: req.body.gender,
       createdAt: Date.now(),
     });

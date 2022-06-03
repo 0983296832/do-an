@@ -150,6 +150,17 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
+          name={["product", "brand"]}
+          label="Brand"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
           name={["product", "size"]}
           label="Size"
           rules={[
@@ -158,7 +169,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <InputNumber min={0}/>
+          <InputNumber min={0} />
         </Form.Item>
         <Form.Item
           name={["product", "quantity"]}
@@ -169,7 +180,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <InputNumber min={0}/>
+          <InputNumber min={0} />
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">

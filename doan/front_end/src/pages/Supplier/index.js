@@ -31,8 +31,16 @@ const Supplier = () => {
 
       setData(
         result.data.map((item, index) => {
-          const { product_code, name, price, color, quantity, size, category } =
-            item;
+          const {
+            product_code,
+            name,
+            price,
+            color,
+            quantity,
+            size,
+            category,
+            brand,
+          } = item;
           return {
             key: index,
             id: item._id,
@@ -48,6 +56,7 @@ const Supplier = () => {
                 price,
                 color,
                 quantity,
+                brand,
                 size,
                 category,
               },
@@ -91,8 +100,16 @@ const Supplier = () => {
 
       setData(
         result.data.map((item, index) => {
-          const { product_code, name, price, color, quantity, size, category } =
-            item;
+          const {
+            product_code,
+            name,
+            price,
+            color,
+            quantity,
+            size,
+            category,
+            brand,
+          } = item;
           return {
             key: index,
             id: item._id,
@@ -108,6 +125,7 @@ const Supplier = () => {
                 price,
                 color,
                 quantity,
+                brand,
                 size,
                 category,
               },
@@ -160,6 +178,8 @@ const Supplier = () => {
               <Option value="supplier_name">Supplier Name</Option>
               <Option value="name">Product Name</Option>
               <Option value="product_code">Product Code</Option>
+              <Option value="category">Category</Option>
+              <Option value="brand">Brand</Option>
               <Option value="phone">Phone Number</Option>
               <Option value="email">Email</Option>
               <Option value="address">Address</Option>

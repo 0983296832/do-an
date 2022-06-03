@@ -10,6 +10,7 @@ import Toast from "../../../components/Toast";
 import Modal from "../Modal/Modal";
 import moment from "moment";
 import EditUser from "../EditUser";
+import { v4 as uuidv4 } from "uuid";
 
 const DetailUser = () => {
   const [user, setUser] = useState();
@@ -19,6 +20,7 @@ const DetailUser = () => {
 
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
+
   useEffect(() => {
     let isCancel = false;
     const getUserDetails = async () => {
@@ -114,7 +116,13 @@ const DetailUser = () => {
         </div>
         <div style={{ width: 1115 }}>
           <h1 className="trans">Transactions</h1>
-          <ListTable data={user.orders} noSup XAxis={1500} />
+          <ListTable
+            data={user.orders.map((item) => {
+              return { ...item, id: item._id, key: uuidv4() };
+            })}
+            noSup
+            XAxis={1500}
+          />
         </div>
         <Modal
           disabled={disabled}

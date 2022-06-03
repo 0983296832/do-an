@@ -384,6 +384,14 @@ const ListTable = ({
       dataIndex: "price",
       key: "price",
       editable: true,
+      render: (_, record) => {
+        return (
+          <div>{`${Number(record.price).toLocaleString("en-US", {
+            style: "currency",
+            currency: "VND",
+          })}`}</div>
+        );
+      },
     },
     {
       title: "Color",
@@ -395,6 +403,12 @@ const ListTable = ({
       title: "Category",
       dataIndex: "category",
       key: "category",
+      editable: true,
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
       editable: true,
     },
     {

@@ -42,6 +42,7 @@ exports.order = async (req, res) => {
     const order = new ordersDB({
       details: req.body.details,
       user_name: req.body.user_name,
+      name: req.body.name,
       state: req.body.state,
       image: req.body.image,
       address: req.body.address,

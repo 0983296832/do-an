@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
     arrRefreshToken.push(refreshToken);
     res.header("auth-token", token);
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       path: "/",
       sameSite: "strict",
@@ -166,7 +166,7 @@ exports.refreshToken = async (req, res) => {
     );
     arrRefreshToken.push(newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       path: "/",
       sameSite: "strict",

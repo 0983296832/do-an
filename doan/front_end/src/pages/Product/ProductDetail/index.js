@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, InputNumber } from "antd";
+import { Button, Input, InputNumber, Table } from "antd";
 import "../../../assets/css/product-detail.css";
 import ImgUpload from "../../../components/ImageUpload";
 import { useParams } from "react-router-dom";
@@ -21,6 +21,25 @@ const ProductDetail = () => {
   const [sales, setSales] = useState();
   const [desc, setDesc] = useState();
   const [votes, setVotes] = useState();
+  const [price, setPrice] = useState();
+  const [columns, setColumns] = useState([
+    {
+      title: "Color",
+      dataIndex: "color",
+      key: "color",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Size",
+      dataIndex: "size",
+      key: "size",
+    },
+  ]);
+  const [dataTable, setDataTable] = useState([]);
 
   const handleSave = () => {
     upload();
@@ -33,6 +52,7 @@ const ProductDetail = () => {
     setDesc(product.desc);
     setVotes(product.votes);
     setDisabled(!disabled);
+    setPrice(product.price);
   };
 
   useEffect(() => {
@@ -41,7 +61,14 @@ const ProductDetail = () => {
       setLoading(true);
       try {
         const { data } = await Products.getProductDetails(id);
-
+        setDataTable(
+          data.product.details.map((item, index) => {
+            return {
+              ...item,
+              key: index,
+            };
+          })
+        );
         setProduct({
           ...data.product,
           image: data.product.image.map((item) => {
@@ -64,6 +91,7 @@ const ProductDetail = () => {
         setDiscount(data.product.discount);
         setDesc(data.product.desc);
         setVotes(data.product.votes);
+        setPrice(data.product.price);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -147,7 +175,7 @@ const ProductDetail = () => {
                 onChange={(e) => setDesc(e.target.value)}
               />
             </div>
-            <div className="formInput-product short-input">
+            <div className="formInput-product">
               <label>Views</label>
               <InputNumber
                 placeholder="Basic usage"
@@ -157,7 +185,7 @@ const ProductDetail = () => {
                 onChange={(value) => setViews(value)}
               />
             </div>
-            <div className="formInput-product short-input">
+            <div className="formInput-product ">
               <label>Votes</label>
               <InputNumber
                 placeholder="Basic usage"
@@ -168,7 +196,7 @@ const ProductDetail = () => {
                 onChange={(value) => setVotes(value)}
               />
             </div>
-            <div className="formInput-product short-input">
+            <div className="formInput-product ">
               <label>Sales</label>
               <InputNumber
                 placeholder="Basic usage"
@@ -176,6 +204,17 @@ const ProductDetail = () => {
                 min={0}
                 value={sales}
                 onChange={(value) => setSales(value)}
+              />
+            </div>
+            <div className="formInput-product ">
+              <label>Price</label>
+              <InputNumber
+                placeholder="Basic usage"
+                min={0}
+                value={price}
+                prefix="đ"
+                disabled={disabled}
+                onChange={(value) => setPrice(value)}
               />
             </div>
           </div>
@@ -188,12 +227,20 @@ const ProductDetail = () => {
                 setFileList={setFileList}
               />
             </div>
-            <div className="formInput-product short-input">
+            <div className="formInput-product ">
               <label>Gender</label>
               <Input
                 placeholder="Basic usage"
                 disabled
                 defaultValue={product.gender}
+              />
+            </div>
+            <div className="formInput-product ">
+              <label>Brand</label>
+              <Input
+                placeholder="Basic usage"
+                disabled
+                defaultValue={product.brand || ""}
               />
             </div>
             <div className="formInput-product">
@@ -204,7 +251,7 @@ const ProductDetail = () => {
                 defaultValue={product.createdAt}
               />
             </div>
-            <div className="formInput-product">
+            <div className="formInput-product ">
               <label>Discount</label>
               <InputNumber
                 placeholder="Basic usage"
@@ -219,6 +266,25 @@ const ProductDetail = () => {
                 placeholder="Basic usage"
                 disabled
                 defaultValue={product.supplier[0].supplier_name}
+              />
+            </div>
+            <div className="table__details-product">
+              <label>Details</label>
+              <Table
+                className="box-shadow"
+                columns={columns}
+                dataSource={[
+                  ...dataTable,
+                  ...dataTable,
+                  ...dataTable,
+                  ...dataTable,
+                  ...dataTable,
+                  ...dataTable,
+                ]}
+                pagination={false}
+                scroll={{
+                  y: 100,
+                }}
               />
             </div>
           </div>

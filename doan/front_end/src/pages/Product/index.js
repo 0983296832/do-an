@@ -41,9 +41,22 @@ const productColumns = [
     width: 100,
   },
   {
+    field: "brand",
+    headerName: "Brand",
+    width: 100,
+  },
+  {
     field: "price",
     headerName: "Price",
     width: 100,
+    renderCell: (params) => {
+      return (
+        <div>{`${params.row.price.toLocaleString("en-US", {
+          style: "currency",
+          currency: "VND",
+        })}`}</div>
+      );
+    },
   },
   {
     field: "image",
@@ -112,6 +125,7 @@ const ProductManagement = () => {
             product_code: item.product_code,
             name: item.name,
             category: item.category,
+            brand: item.brand,
             price: item.price,
             image: item.image[0]?.imageUrl || "",
             gender: item.gender,
@@ -159,6 +173,7 @@ const ProductManagement = () => {
             product_code: item.product_code,
             name: item.name,
             category: item.category,
+            brand: item.brand,
             price: item.price,
             image: item.image[0]?.imageUrl || "",
             gender: item.gender,
@@ -241,6 +256,7 @@ const ProductManagement = () => {
               <Option value="product_code">Product Code</Option>
               <Option value="name">Name</Option>
               <Option value="category">Category</Option>
+              <Option value="brand">Brand</Option>
               <Option value="price">Price</Option>
               <Option value="gender">Gender</Option>
             </Select>
