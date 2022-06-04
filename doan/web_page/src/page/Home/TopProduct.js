@@ -1,10 +1,11 @@
 import React from "react";
 import "../../assets/css/top-product.css";
+import "antd/dist/antd.css";
 import { Tabs } from "antd";
 import Product from "../../components/Product";
 const { TabPane } = Tabs;
 
-const TopProduct = () => {
+const TopProduct = ({ data }) => {
   const onChange = (key) => {
     console.log(key);
   };
@@ -18,26 +19,38 @@ const TopProduct = () => {
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="Hot Và Mới" key="1">
             <div className="top-product">
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
-              <Product />
+              {data.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <Product data={item} />
+                  </div>
+                );
+              })}
             </div>
           </TabPane>
           <TabPane tab="Sales" key="2">
-            Content of Tab Pane 2
+            <div className="top-product">
+              {data.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <Product data={item} />
+                  </div>
+                );
+              })}
+            </div>
           </TabPane>
         </Tabs>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <a href="#" className="view-btn">
+            Xem thêm sản phẩm
+          </a>
+        </div>
       </div>
     </div>
   );

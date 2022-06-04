@@ -1,0 +1,50 @@
+.address{
+    margin:45px 0;
+}
+.address-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap:15px
+}
+.address-content h3{
+   color:#fff;
+   font-size:30px;
+   font-weight:bold;
+}
+.address-btn{
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 16px;
+    background-color: #f3f3f3;
+    color: #3e3e3e;
+    font-weight: normal;
+    box-shadow: none;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.address-btn:hover{
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 16px;
+    background-color: #f3f3f3;
+    color: #3e3e3e;
+    box-shadow: none;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.address-content{
+    height: 800px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url(https://1sneaker.vn/wp-content/uploads/2021/07/1sneaker-phong-cac-the-thao-tre1-800x600.jpg);
+    object-fit: cover;
+    background-size: cover;
+}

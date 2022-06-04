@@ -1,6 +1,24 @@
 .top-title{
     text-align: center;
 }
+.productView-title{
+    margin:60px 0px;
+    text-align: center;
+}
+.productView-title h1{
+    font-size: 32px;
+    position: relative;
+}
+.productView-title h1::after{
+   content: "";
+   width: 100px;
+   height: 3px;
+    background-color: #000;
+    position: absolute;
+    left: 50%;
+    top: -5px;
+    transform: translate(-50%,0);
+}
 .top-title h4{
     font-size: 13px;
     color: #a5a5a5;
@@ -11,18 +29,21 @@
 .ant-tabs-nav::before{
     border-bottom: none !important;
 }
+
 .top-product{
     display: flex;
     align-items: center;
     justify-content: center;
-    height:100vh;
+    height:max-content;
     gap:30px;
     flex-wrap: wrap;
+    margin-bottom:45px
    
 }
 .product-container{
     max-width:214px;
     cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .product-img{
@@ -42,17 +63,27 @@
     transform: translate(-50%,-50%);
     background-color: rgba(0, 0, 0, 0.11);
 }
-.product-img::before{
-    content:"SALE";
+.product-sale{
     height:24px;
     width:53px;
     position: absolute;
     top:20px;
     text-align: center;
-    left:0;
+    left:-2px;
     font-weight: bold;
     color: #fff;
     background-color: #000;
+}
+.product-soldOut{
+    height:24px;
+    width:90px;
+    position: absolute;
+    top:40px;
+    text-align: center;
+    right:-2px;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    background-color: rgb(248, 246, 246);
 }
 .product-cart-icon{
     display: none;
@@ -76,6 +107,7 @@
     justify-content: center;
     flex-direction:column;
     text-align: center;
+    padding:10px 5px;
 }
 .product-infor h4{
     margin-bottom: 5px;
@@ -105,4 +137,23 @@
     height:214px;
     width:214px;
     object-fit: cover;
+}
+
+.view-btn{
+    background-color: #141414;
+    border-radius: .5rem;
+    color: #fff;
+    display: inline-block;
+    font-weight: 500;
+    padding: 1.125rem 2rem;
+    transition: .3s;
+}
+.view-btn:hover{
+    background-color: #141414;
+    border-radius: .5rem;
+    color: #fff;
+    display: inline-block;
+    font-weight: 500;
+    padding: 1.125rem 2rem;
+    transform: scale(1.05);
 }
