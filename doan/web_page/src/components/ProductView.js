@@ -1,8 +1,9 @@
-import { Button } from "antd";
 import React from "react";
 import Product from "./Product";
+import { Link } from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
 
-const ProductView = ({ data, title }) => {
+const ProductView = ({ data, title, btn, pagination }) => {
   return (
     <div>
       <div className="productView-title">
@@ -17,17 +18,30 @@ const ProductView = ({ data, title }) => {
           );
         })}
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <a href="#" className="view-btn">
-          Xem thêm sản phẩm
-        </a>
-      </div>
+      {btn && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Link to="#" className="view-btn">
+            Xem thêm sản phẩm
+          </Link>
+        </div>
+      )}
+      {pagination && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Pagination count={10} />
+        </div>
+      )}
     </div>
   );
 };

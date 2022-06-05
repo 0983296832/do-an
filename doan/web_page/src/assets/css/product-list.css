@@ -1,0 +1,43 @@
+.list-container{
+    display:flex;
+    height:max-content;
+    margin:0px 50px 45px;
+    width: 100%;
+    max-width: 100%;
+}
+.list-left{
+    background-color:#fff;
+    margin:170px 5px 45px;
+    width: 250px;
+}
+.list-right{
+    background-color:#fff;
+    width: calc(100% - 350px );
+}
+
+.color-btn{
+    display: inline-block;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #f4f4f4;
+    cursor: pointer;
+    height: 25px;
+    margin: 5px;
+    position: relative;
+    width: 25px;
+    transition: all 0.3s ease-in-out;
+    padding: 5px
+}
+.color-btn:hover{
+    transform: scale(1.1);
+}
+
+.filter-btn{
+    outline: none;
+    padding: 5px 20px;
+    background-color: rgba(0, 0, 0, 0.08);
+    border: none;
+    color: #000;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+}

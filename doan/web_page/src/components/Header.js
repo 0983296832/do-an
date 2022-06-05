@@ -14,12 +14,13 @@ import vansLogo from "../assets/image/vans-logo.webp";
 import sportLogo from "../assets/image/giay-the-thao-logo.webp";
 import sneakerLogo from "../assets/image/sneaker-logo.webp";
 import gucciLogo from "../assets/image/GUCCI-logo.webp";
+import { Link } from "react-router-dom";
 
 const { Option, OptGroup } = Select;
 
 const Header = () => {
   const menu = [
-    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "" },
+    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/nike" },
     { logoImg: adidasLogo, title: "ADIDAS", link: "" },
     { logoImg: mlbLogo, title: "GIÀY MLB", link: "" },
     { logoImg: balenciagaLogo, title: "BALENCIAGA", link: "" },
@@ -35,7 +36,9 @@ const Header = () => {
   return (
     <>
       <div className="header-container">
-        <img src={logo} alt="logo" className="logo" />
+        <Link to="/">
+          <img src={logo} alt="logo" className="logo" />
+        </Link>
         <div className="header-search">
           <Input placeholder="Tìm Kiếm..." className="search-input" />
           <Select
@@ -73,10 +76,10 @@ const Header = () => {
           {menu.map((item, index) => {
             return (
               <li className="menu-item" key={index}>
-                <a href={item.link}>
+                <Link to={`/product-list${item.link}`}>
                   <img src={item.logoImg} alt="nike" className="item-img" />
                   {item.title}
-                </a>
+                </Link>
               </li>
             );
           })}
