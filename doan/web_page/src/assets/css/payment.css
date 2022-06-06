@@ -1,0 +1,50 @@
+.payment-container{
+    margin: 45px 80px;
+    display: flex;
+    align-items: start;
+    justify-content: flex-start;
+    gap: 60px
+}
+.payment-form-centered{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+.payment-form{
+    width: 50%;
+}
+.payment-bill{
+    width: 40%;
+}
+.form-container{
+    max-width: 550px;
+}
+.form-input{
+    display: flex;
+    align-items: start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap:7px;
+    margin-bottom: 20px;
+    
+}
+.form-group-input{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:10px
+}
+.form-input input{
+ padding: 10px 20px;
+ width: 250px;
+}
+.long input{
+ padding: 10px 20px;
+ width: 550px;
+}
+.form-input label{
+ font-size: 20px;
+}
+.form-input span{
+ color: #f00;
+}

@@ -1,0 +1,148 @@
+.cart-container{
+    margin: 45px 80px;
+    display: flex;
+    align-items: start;
+    justify-content: flex-start;
+    gap:30px
+}
+.cart-left{
+    width: 65%;
+}
+.cart-right{
+    width: 35%;
+}
+.check-all{
+    margin:20px 0;
+    padding: 15px 25px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    font-size:15px;
+    border-radius: 5px;
+    background-color: #fff;
+    border:1rem solid #fff;
+}
+.height-limit{
+    max-height: 900px;
+    overflow-y: auto;
+     padding: 15px 25px;
+    
+}
+.height-limit::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  .height-limit::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+    cursor: pointer;
+  }
+.cart-item{
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    padding-bottom: 10px;
+    margin: 10px 0;
+    border-bottom:1px solid #b9b7b7;
+}
+
+.cart-item-left{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:7px;
+}
+.cart-item-left img{
+   width: 100px;
+   height: 100px;
+   object-fit: cover;
+}
+.cart-item-left h2{
+    font-weight:700;
+    font-size:25px;
+    color: rgb(230, 49, 43)
+}
+.cart-item-left h5{
+    font-weight:600;
+    font-size:14px;
+    color: rgb(92, 91, 91);
+}
+.cart-item-color{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap:5px
+}
+.cart-item-color h5{
+   margin-bottom: 0 !important;
+}
+.cart-number{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px
+}
+.cart-number h3{
+    margin-bottom: 0 !important;
+    font-size:20px;
+    color: rgb(230, 49, 43);
+}
+.cart-number-list{
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:5px
+}
+.cart-icon-del{
+    cursor: pointer;
+    font-size:30px
+}
+.cart-icon-del:hover{
+    color:#f00;
+}
+
+.cart-right h2{
+    font-weight: 700;
+}
+
+.cart-sum{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:10px;
+}
+.cart-sum h3{
+    color: rgb(151, 151, 151);
+    margin-bottom: 0 !important;
+    font-weight: 500
+}
+
+.cart-payment{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-btn{
+    padding: 10px 20px;
+    text-align: center;
+    width: 250px;
+    height: 50px;
+    background:#000;
+    color: #fff ;
+    cursor: pointer;
+} 
+.payment-btn:hover{
+    color: #fff ;
+    background: rgb(192, 6, 6);
+} 

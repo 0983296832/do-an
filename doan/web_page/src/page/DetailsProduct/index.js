@@ -11,6 +11,10 @@ import ProductImagesSlider from "./ImageSlide";
 import "../../assets/css/details.css";
 import Details from "./Details";
 import SlideProduct from "../../components/SlideProduct";
+import { Tabs } from "antd";
+import CommentInput from "./Comment";
+const { TabPane } = Tabs;
+
 const DetailsProduct = () => {
   const [data, setData] = React.useState([
     {
@@ -115,6 +119,10 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
+
+  const onChange = (key) => {
+    console.log(key);
+  };
   return (
     <div>
       <div className="details-container">
@@ -126,27 +134,34 @@ const DetailsProduct = () => {
         </div>
       </div>
       <div className="details-desc">
-        <h1>Mô tả sản phẩm</h1>
-        <Divider />
-
-        <p>- Giày thể thao nam nữ thời trang, cá tính, năng động </p>
-        <p>
-          - Form: Chuẩn size, lên chân nhẹ nhàng êm ái, kiểu dáng thời trang mới
-          nhất Giày dễ phối đồ thích hợp cho các hoạt động, các phong cách.{" "}
-        </p>
-        <p>
-          - Chất liệu đế:Cao su lưu hóa nguyên khối có tính đàn hồi, mặt đế xẻ
-          rãnh chống trơn trượt{" "}
-        </p>
-        <p>- Chất liệu mặt giày: tổng hợp nhiều chất liệu cao cấp. </p>
-        <p> - Chất liệu mặt trong : Vải khử mùi, kháng khuẩn. </p>
-        <p>
-          {" "}
-          - Lót giày eva êm ái, chốngbí hơi, thoát khí, không tạo mùi dù bạn đi
-          liên tục 24/24{" "}
-        </p>
-        <p> - Màu sắc: Trắng, Đen</p>
-        <p>- Size: 35-43.</p>
+        <Tabs defaultActiveKey="1" onChange={onChange}>
+          <TabPane tab="Mô tả sản phẩm" key="1">
+            <p>- Giày thể thao nam nữ thời trang, cá tính, năng động </p>
+            <p>
+              - Form: Chuẩn size, lên chân nhẹ nhàng êm ái, kiểu dáng thời trang
+              mới nhất Giày dễ phối đồ thích hợp cho các hoạt động, các phong
+              cách.{" "}
+            </p>
+            <p>
+              - Chất liệu đế:Cao su lưu hóa nguyên khối có tính đàn hồi, mặt đế
+              xẻ rãnh chống trơn trượt{" "}
+            </p>
+            <p>- Chất liệu mặt giày: tổng hợp nhiều chất liệu cao cấp. </p>
+            <p> - Chất liệu mặt trong : Vải khử mùi, kháng khuẩn. </p>
+            <p>
+              {" "}
+              - Lót giày eva êm ái, chốngbí hơi, thoát khí, không tạo mùi dù bạn
+              đi liên tục 24/24{" "}
+            </p>
+            <p> - Màu sắc: Trắng, Đen</p>
+            <p>- Size: 35-43.</p>
+          </TabPane>
+          <TabPane tab="Đánh giá của khách hàng" key="2">
+            <CommentInput />
+          </TabPane>
+        </Tabs>
+        {/* <h1>Mô tả sản phẩm</h1>
+        <Divider /> */}
       </div>
 
       <div className="more-product">

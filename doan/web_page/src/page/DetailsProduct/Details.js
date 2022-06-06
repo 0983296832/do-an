@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../../assets/css/details.css";
 import { Divider, Rate } from "antd";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Details = () => {
   const [activeSize, setActiveSize] = useState();
@@ -31,6 +32,9 @@ const Details = () => {
       <div className="details-price">
         <h2 className="sale">10000đ</h2>
         <h2>300000đ</h2>
+        <span style={{ fontSize: 15, marginRight: 10 }}>
+          (2 sản phẩm đã bán)
+        </span>
       </div>
       <Divider />
       <div className="details-info">
@@ -96,7 +100,9 @@ const Details = () => {
       </div>
       <Divider />
       <div className="btn-group">
-        <button className="buy-now">MUA NGAY</button>
+        <Link to="/cart" className="buy-now">
+          MUA NGAY
+        </Link>
         <button className="add-cart">THÊM VÀO GIỎ HÀNG</button>
       </div>
     </div>

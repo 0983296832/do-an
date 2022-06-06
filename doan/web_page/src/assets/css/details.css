@@ -135,6 +135,7 @@
     flex-wrap: wrap;
 }
 .buy-now{
+    text-align: center;
     border:none;
     outline:none;
     padding: 10px 20px;
@@ -151,18 +152,22 @@
     width: 200px;
     height: 50px;
     background:#000;
-    color: #fff;
+    color: #fff ;
     cursor: pointer;
 }
 .add-cart:hover{
     background: rgb(192, 6, 6);
 }
 .buy-now:hover{
+    color: #fff ;
     background: -webkit-linear-gradient(top,#ec5c08,#fd9b12);
 }
 
 .details-desc{
     margin: 45px 80px;
+}
+.ant-tabs-tab{
+    font-size: 25px !important;
 }
 .details-desc p{
     font-size:15px;
