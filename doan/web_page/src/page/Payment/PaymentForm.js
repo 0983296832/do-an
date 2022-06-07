@@ -29,7 +29,10 @@ const PaymentForm = () => {
         <label>
           Email<span>*</span>
         </label>
-        <Input placeholder="Email" disabled={disabled} />
+        <Input
+          placeholder="Nhập email để nhận được mã đơn hàng"
+          disabled={disabled}
+        />
       </div>
       <div className="form-input long">
         <label>
@@ -41,9 +44,7 @@ const PaymentForm = () => {
         Sử dụng thông tin cá nhân
       </Checkbox>
       <div className="form-input long">
-        <label>
-          Ghi chú<span></span>
-        </label>
+        <label>Ghi chú</label>
         <TextArea rows={5} placeholder="Ghi chú cho bên giao hàng ...." />
       </div>
     </form>

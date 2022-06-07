@@ -5,7 +5,9 @@ import Header from "../components/Header";
 import Cart from "../page/Cart";
 import DetailsProduct from "../page/DetailsProduct";
 import Home from "../page/Home";
+import Login from "../page/Login";
 import Payment from "../page/Payment";
+import PaymentSuccess from "../page/PaymentSuccess";
 import ProductList from "../page/ProductList";
 
 const RootRoute = () => {
@@ -18,6 +20,8 @@ const RootRoute = () => {
         <Route path="/product-details/:id" element={<DetailsProduct />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -9,8 +9,10 @@ import { ImLocation } from "react-icons/im";
 import { BsPhone } from "react-icons/bs";
 import { Divider } from "antd";
 import giaohang from "../assets/image/dv-giaohang.png";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  let location = useLocation();
   const data = [
     {
       img: delivery,
@@ -72,6 +74,9 @@ const Footer = () => {
       img: giaohang,
     },
   ];
+  if (location.pathname === "/login") {
+    return null;
+  }
   return (
     <div className="footer-container">
       <div className="footer-top">

@@ -14,11 +14,12 @@ import vansLogo from "../assets/image/vans-logo.webp";
 import sportLogo from "../assets/image/giay-the-thao-logo.webp";
 import sneakerLogo from "../assets/image/sneaker-logo.webp";
 import gucciLogo from "../assets/image/GUCCI-logo.webp";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const { Option, OptGroup } = Select;
 
 const Header = () => {
+  let location = useLocation();
   const menu = [
     { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/nike" },
     { logoImg: adidasLogo, title: "ADIDAS", link: "" },
@@ -33,6 +34,9 @@ const Header = () => {
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
+  if (location.pathname === "/login") {
+    return null;
+  }
   return (
     <>
       <div className="header-container">

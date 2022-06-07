@@ -28,7 +28,9 @@ const FeedBack = () => {
   ]);
   return (
     <div className="feedback">
-      <h1>Khách hàng nói gì về chúng tôi</h1>
+      <div className="productView-title">
+        <h1>Khách hàng nói gì về chúng tôi</h1>
+      </div>
       <div className="feedback-container">
         {data.map((item, index) => {
           return (
