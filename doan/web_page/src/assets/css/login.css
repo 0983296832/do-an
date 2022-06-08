@@ -16,6 +16,22 @@
     bottom:-10px;
     left:30px
 }
+.login-signup a{
+  text-decoration: underline;
+  font-weight: 400;
+}
+.login-signup a:hover{
+  text-decoration: underline;
+}
+.login-forgot{
+  position: absolute;
+  bottom:-10px;
+  right:calc( 50% + 30px );
+  text-decoration: underline;
+}
+.login-forgot:hover{
+  text-decoration: underline;
+}
   .login-img{
     width: 100%;
     height: 100vh;

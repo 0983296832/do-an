@@ -1,0 +1,263 @@
+.profile-container{
+    margin: 45px 80px;
+}
+
+.profile{
+    width: 100%;
+    min-height: 100vh;
+    height: max-content;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    display: grid;
+    grid-template-columns: 1.5fr 4fr;
+}
+.profile-left{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    background-color: #f1f1f1;
+    padding: 20px 7px;
+}
+
+.profile-left img{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.profile-features{
+    width: 90%;
+    text-align: start;
+    display:flex;
+    flex-direction: column;
+    margin-top:40px;
+    gap:20px;
+}
+
+
+.profile-features a{
+    color: #000;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.features-item{
+    padding:10px ;
+    font-size:17px;
+    color: #000;
+    display:flex;
+    align-items: center;
+    justify-content:flex-start;
+    gap:7px;
+    cursor: pointer;
+    border-left: 4px solid #f1f1f1;
+    transition: all 0.2s ease-in-out;
+}
+.features-item:hover{
+    border-left: 4px solid #54b0d4;
+    color: #54b0d4;
+    background-color:#e9e9e9;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.features-item:hover a{
+    color: #54b0d4;
+}
+.active{
+    border-left: 4px solid #54b0d4;
+    color: #54b0d4;
+    background-color:#e9e9e9;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.active a{
+    color: #54b0d4;
+}
+
+.profile-right{
+    padding:45px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new {
+    width: 100%;
+    display: flex;
+}
+.newContainer {
+    flex: 6;
+}
+.top,
+.bottom {
+    padding: 10px;
+    margin: 20px;
+    display: flex;
+}
+.top h1 {
+    color: rgb(126, 126, 126);
+    font-size: 20px;
+  }
+.left {
+    flex: 1;
+    text-align: center; 
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: relative;
+}
+.left img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.right {
+    flex: 2;
+}
+.right form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-around;
+}
+.formInput {
+    width: 40%;
+}
+
+.formInput label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.upload-btn{
+    position: absolute;
+    bottom: 110px;
+    right: 0;
+    border-radius: 50%;
+}
+.upload__icon {
+    padding-left: 10px;
+    cursor: pointer;
+    font-size: 35px
+}
+.formInput input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid gray;
+    outline: none;
+}
+.send__btn {
+    width: 150px;
+    padding: 10px;
+    border: none;
+    background-color: #4481eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius:8px;
+    outline: none;
+}
+.date-picker input{
+    border-bottom: none;
+}
+
+.profile-item{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    padding: 20px 7px;
+    gap:40px
+}
+.profile-item .ant-form{
+    width: 450px !important;
+}
+.order-item-wrap{
+    padding: 10px 20px;
+    border: 1px solid #e9e9e9;
+}
+.order-item{
+    display:flex;
+    align-items: center;
+    justify-content:space-between;
+    padding: 20px 7px;
+    width: 700px;
+}
+.order-item img{
+   width: 100px;
+   height: 100px;
+   object-fit: cover;
+}
+
+.order-left{
+    display:flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-right{
+    display:flex;
+    align-items: flex-end;
+    justify-content:center;
+    flex-direction: column;
+    gap: 10px;
+}
+.order-right h4, .order-right h5{
+   margin-right: 10px;
+}
+.order-right h4{
+  color: #f00
+}
+.order-list{
+    height: 600px;
+    overflow-y: auto;
+}
+.order-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.btn-cancel{
+    background-color: #f00;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    width: 100px;
+    height: 40px;
+    margin-left: 20px;
+    margin-right: 14px;
+}
+.btn-cancel:hover{
+    color: rgb(255, 255, 255);
+}
+.order-item-btn-group{
+    width: 100%;
+    display: flex;
+    align-items: end;
+    justify-content: flex-end;
+}
+.order-detail{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom:10px;
+}
+.order-detail h4{
+    text-decoration: underline;
+    color: rgb(182, 182, 182);
+    cursor: pointer;
+    margin-left: 7px;
+}
+.order-detail h3{
+  margin-bottom: 0 !important;
+  margin-right: 14px;
+}

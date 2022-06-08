@@ -1,25 +1,22 @@
 import React from "react";
 import login from "../../assets/image/login.jpg";
 import logo from "../../assets/image/logo.png";
-import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
 import "../../assets/css/login.css";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const Register = () => {
   return (
     <div className="login-container">
       <div className="login-form-container">
         <img src={logo} alt="logo" className="login-logo" />
-        <LoginForm />
+        <RegisterForm />
         <h4 className="login-signup">
-          Bạn chưa có tài khoản?
-          <Link to="/register" style={{ marginLeft: 7 }}>
-            Đăng ký
+          Bạn đã có tài khoản?
+          <Link to="/login" style={{ marginLeft: 7 }}>
+            Đăng nhập
           </Link>
         </h4>
-        <Link to="/login" style={{ marginLeft: 7 }} className="login-forgot">
-          Quên mật khẩu?
-        </Link>
       </div>
       <div className="login-banner">
         <img src={login} alt="login" className="login-img" />
@@ -28,4 +25,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

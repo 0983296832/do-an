@@ -34,7 +34,7 @@ const Header = () => {
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
-  if (location.pathname === "/login") {
+  if (location.pathname === "/login" || location.pathname === "/register") {
     return null;
   }
   return (
@@ -71,7 +71,10 @@ const Header = () => {
         <div className="header-infor">
           <FiShoppingCart className="infor-icon" />
           <h5 className="infor-money">1.230.000đ</h5>
-          <AiOutlineUser className="infor-icon" />
+          <Link to="/profile" style={{ color: "black" }}>
+            <AiOutlineUser className="infor-icon" />
+          </Link>
+
           <h6 className="cart-count">1</h6>
         </div>
       </div>

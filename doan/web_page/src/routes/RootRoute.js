@@ -9,6 +9,8 @@ import Login from "../page/Login";
 import Payment from "../page/Payment";
 import PaymentSuccess from "../page/PaymentSuccess";
 import ProductList from "../page/ProductList";
+import Profile from "../page/Profile";
+import Register from "../page/Register";
 
 const RootRoute = () => {
   return (
@@ -22,6 +24,8 @@ const RootRoute = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </BrowserRouter>
