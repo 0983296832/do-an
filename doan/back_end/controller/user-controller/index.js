@@ -1,4 +1,5 @@
 const usersDB = require("../../models/user/userModel");
+const cartsDB = require("../../models/user/cartModel");
 const bcrypt = require("bcryptjs");
 const { passwordValidation } = require("../../validate/validate");
 const cloudinary = require("../../helper/cloudinaryConfig");
@@ -8,7 +9,11 @@ const Features = require("../../lib/feature");
 exports.findAll = async (req, res) => {
   try {
     const features = new Features(
-      usersDB.find().populate({ path: "image" }).populate({ path: "orders" }),
+      usersDB
+        .find()
+        .populate({ path: "image" })
+        .populate({ path: "orders" })
+        .populate({ path: "carts" }),
       req.query
     )
       .sorting()
@@ -101,7 +106,8 @@ exports.findById = async (req, res) => {
     const data = await usersDB
       .findById(req.params.id)
       .populate({ path: "image" })
-      .populate({ path: "orders" });
+      .populate({ path: "orders" })
+      .populate({ path: "carts" });
     return res.status(200).json({
       status: "200",
       message: "get user successfully!",
@@ -273,6 +279,66 @@ exports.deleteImage = async (req, res) => {
       );
       return res.status(200).json(result);
     }
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.addToCart = async (req, res) => {
+  try {
+    const cart = new cartsDB({
+      product_code: req.body.product_code,
+      product_name: req.body.product_name,
+      product_price: req.body.product_price,
+      product_image: req.body.product_image,
+      product_quantity: req.body.product_quantity,
+      product_color: req.body.product_color,
+    });
+    const cartSaved = await cart.save();
+    usersDB.findById(req.params.id).then((result, err) => {
+      if (result) {
+        result.carts.push(cartSaved);
+        result.save();
+        return res.status(200).json({
+          status: "200",
+          message: "add to cart success",
+        });
+      } else {
+        return res.status(500).json({
+          status: "500",
+          message: "can not find user",
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.updateCart = async (req, res) => {
+  try {
+    await cartsDB.findByIdAndUpdate(req.params.id, {
+      product_quantity: req.body.product_quantity,
+    });
+    return res.status(200).json({
+      status: "200",
+      message: "update cart success",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+exports.deleteCart = async (req, res) => {
+  try {
+    await cartsDB.findByIdAndDelete(req.body.cart_id);
+    await usersDB.findByIdAndUpdate(req.params.id, {
+      $pull: { carts: req.body.cart_id },
+    });
+
+    return res.status(200).json({
+      status: "200",
+      message: "delete cart success",
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

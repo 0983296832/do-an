@@ -100,10 +100,10 @@ const Details = () => {
       </div>
       <Divider />
       <div className="btn-group">
+        <button className="add-cart">THÊM VÀO GIỎ HÀNG</button>
         <Link to="/cart" className="buy-now">
           MUA NGAY
         </Link>
-        <button className="add-cart">THÊM VÀO GIỎ HÀNG</button>
       </div>
     </div>
   );

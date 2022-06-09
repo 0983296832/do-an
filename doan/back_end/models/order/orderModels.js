@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
   details: { type: Array },
   user_name: { type: String, required: true },
+  product_code: { type: String, required: true },
+  image: { type: String, required: true },
   created: {
     type: Date,
     default: Date.now(),
@@ -11,7 +13,6 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  shipping_date: { type: Date },
   note: {
     type: String,
   },
@@ -19,7 +20,6 @@ const orderSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   payment_type: { type: String, required: true },
   receive_date: { type: Date },
-  payment_date: { type: Date },
   shipping_unit: { type: String, required: true },
   shipping_fee: { type: Number, required: true },
 });

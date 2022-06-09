@@ -1,17 +1,17 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
-// import Users from "../../services/userServices";
+import User from "../../services/userServices";
 import Toast from "../../components/Toast";
 
 const ChangePasswordForm = ({ id }) => {
   const onFinish = async (values) => {
     delete values.confirm_password;
-    // try {
-    //   await Users.changePassword(id, values);
-    //   Toast("success", "change password successfully!");
-    // } catch (error) {
-    //   Toast("error", "Old password incorrect");
-    // }
+    try {
+      await User.changePassword(id, values);
+      Toast("success", "change password successfully!");
+    } catch (error) {
+      Toast("error", "Old password incorrect");
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
