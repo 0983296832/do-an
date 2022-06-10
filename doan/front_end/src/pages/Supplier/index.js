@@ -23,13 +23,24 @@ const Supplier = () => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async (page) => {
+  const fetchData = async (pageNum) => {
     setLoading(true);
     try {
-      const params = {
-        page: page,
-        limit: 10,
-      };
+      let params;
+      if (searchBy === "all") {
+        setSearchKey("");
+        params = {
+          page: pageNum,
+          limit: 10,
+        };
+      } else {
+        const key = searchBy + "[regex]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
+        };
+      }
       const result = await Suppliers.getSupplier(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(

@@ -180,7 +180,10 @@ exports.uploadProductImage = async (req, res) => {
               .json({ status: "200", message: "images saved", data: result });
           }
         })
-      );
+      )
+      .catch((err) => {
+        return res.status(400).json({ status: "400", message: err.message });
+      });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

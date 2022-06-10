@@ -113,7 +113,14 @@ const ProductDetail = () => {
         });
         await Products.uploadImages(id, formData);
       }
-      await Products.updateProduct(id, { views, sales, discount, desc, votes });
+      await Products.updateProduct(id, {
+        views,
+        sales,
+        discount,
+        desc,
+        votes,
+        price,
+      });
       Toast("success", "Product updated successfully");
     } catch (error) {
       Toast("error", error.message);
@@ -273,14 +280,7 @@ const ProductDetail = () => {
               <Table
                 className="box-shadow"
                 columns={columns}
-                dataSource={[
-                  ...dataTable,
-                  ...dataTable,
-                  ...dataTable,
-                  ...dataTable,
-                  ...dataTable,
-                  ...dataTable,
-                ]}
+                dataSource={[...dataTable]}
                 pagination={false}
                 scroll={{
                   y: 100,

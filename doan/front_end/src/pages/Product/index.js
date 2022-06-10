@@ -113,12 +113,23 @@ const ProductManagement = () => {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = async (page) => {
+  const fetchData = async (pageNum) => {
     try {
-      const params = {
-        page: page,
-        limit: 10,
-      };
+      let params;
+      if (searchBy === "all") {
+        setSearchKey("");
+        params = {
+          page: pageNum,
+          limit: 10,
+        };
+      } else {
+        const key = searchBy + "[regex]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
+        };
+      }
       const result = await Products.getProducts(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
@@ -147,7 +158,9 @@ const ProductManagement = () => {
   useEffect(() => {
     setLoading(true);
     let isCancel = false;
+
     fetchData(page);
+
     return () => {
       isCancel = true;
     };
@@ -157,6 +170,7 @@ const ProductManagement = () => {
     if (searchBy === "all") {
       setSearchKey("");
       fetchData();
+      return;
     }
 
     setLoading(true);
