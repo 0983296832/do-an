@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductView from "../../components/ProductView";
 import Baner from "./Baner";
 import TopProduct from "./TopProduct";
@@ -8,7 +8,7 @@ import Post from "./Post";
 import Address from "./Address";
 
 const Home = () => {
-  const [data, setData] = React.useState([
+  const [data, setData] = useState([
     {
       image: giay,
       title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",

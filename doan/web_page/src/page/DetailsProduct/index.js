@@ -13,6 +13,8 @@ import Details from "./Details";
 import SlideProduct from "../../components/SlideProduct";
 import { Tabs } from "antd";
 import CommentInput from "./Comment";
+
+
 const { TabPane } = Tabs;
 
 const DetailsProduct = () => {
@@ -119,10 +121,6 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
-
-  const onChange = (key) => {
-    console.log(key);
-  };
   return (
     <div>
       <div className="details-container">
@@ -134,7 +132,7 @@ const DetailsProduct = () => {
         </div>
       </div>
       <div className="details-desc">
-        <Tabs defaultActiveKey="1" onChange={onChange}>
+        <Tabs defaultActiveKey="1">
           <TabPane tab="Mô tả sản phẩm" key="1">
             <p>- Giày thể thao nam nữ thời trang, cá tính, năng động </p>
             <p>

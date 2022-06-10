@@ -20,6 +20,11 @@
     background-color: #fff;
     border:1rem solid #fff;
 }
+.space-between{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .height-limit{
     max-height: 900px;
     overflow-y: auto;
@@ -67,8 +72,8 @@
 }
 .cart-item-left h2{
     font-weight:700;
-    font-size:25px;
-    color: rgb(230, 49, 43)
+    font-size:20px;
+    color: rgb(0, 0, 0)
 }
 .cart-item-left h5{
     font-weight:600;

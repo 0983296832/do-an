@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../assets/css/details.css";
 import { Divider, Rate } from "antd";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { CartContext } from "../../context/CartContext";
 
 const Details = () => {
+  const { addToCart } = useContext(CartContext);
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
   const size = [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
@@ -55,7 +57,7 @@ const Details = () => {
           {size.map((size, index) => {
             return (
               <div
-                className={`sizeNumber ${index === activeSize && "active"}`}
+                className={`sizeNumber ${index === activeSize && "activeSize"}`}
                 key={index}
                 onClick={() => setActiveSize(index)}
               >
@@ -100,7 +102,23 @@ const Details = () => {
       </div>
       <Divider />
       <div className="btn-group">
-        <button className="add-cart">THÊM VÀO GIỎ HÀNG</button>
+        <button
+          className="add-cart"
+          onClick={() =>
+            addToCart({
+              product_code: "MLB01",
+              product_name: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
+              product_price: 1200000,
+              product_image:
+                "https://a.ipricegroup.com/trends-article/16-doi-chunky-sneaker-thuoc-top-sneaker-dep-2018-medium.jpg",
+              product_quantity: number,
+              product_size: size[activeSize],
+              product_color: color[activeColor],
+            })
+          }
+        >
+          THÊM VÀO GIỎ HÀNG
+        </button>
         <Link to="/cart" className="buy-now">
           MUA NGAY
         </Link>

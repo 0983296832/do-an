@@ -286,30 +286,56 @@ exports.deleteImage = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   try {
-    const cart = new cartsDB({
+    const cartItemExist = await cartsDB.find({
       product_code: req.body.product_code,
-      product_name: req.body.product_name,
-      product_price: req.body.product_price,
-      product_image: req.body.product_image,
-      product_quantity: req.body.product_quantity,
       product_color: req.body.product_color,
+      product_size: req.body.product_size,
     });
-    const cartSaved = await cart.save();
-    usersDB.findById(req.params.id).then((result, err) => {
-      if (result) {
-        result.carts.push(cartSaved);
-        result.save();
-        return res.status(200).json({
-          status: "200",
-          message: "add to cart success",
+    if (cartItemExist.length > 0) {
+      cartsDB
+        .find({
+          product_code: req.body.product_code,
+          product_color: req.body.product_color,
+          product_size: req.body.product_size,
+        })
+        .then((result, err) => {
+          if (result) {
+            result[0].product_quantity += Number(req.body.product_quantity);
+            result[0].save();
+            return res.status(200).json({
+              status: "200",
+              message: "add to cart success",
+            });
+          }
         });
-      } else {
-        return res.status(500).json({
-          status: "500",
-          message: "can not find user",
-        });
-      }
-    });
+    } else {
+      const cart = new cartsDB({
+        product_code: req.body.product_code,
+        product_name: req.body.product_name,
+        product_price: req.body.product_price,
+        product_image: req.body.product_image,
+        product_quantity: req.body.product_quantity,
+        product_color: req.body.product_color,
+        product_size: req.body.product_size,
+      });
+      const cartSaved = await cart.save();
+      usersDB.findById(req.params.id).then((result, err) => {
+        if (result) {
+          result.carts.push(cartSaved);
+          result.save();
+          return res.status(200).json({
+            status: "200",
+            message: "add to cart success",
+            data: cartSaved,
+          });
+        } else {
+          return res.status(500).json({
+            status: "500",
+            message: "can not find user",
+          });
+        }
+      });
+    }
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
