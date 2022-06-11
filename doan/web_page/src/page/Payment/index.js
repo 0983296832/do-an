@@ -1,5 +1,5 @@
 import { Divider, Radio, Space } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Toast from "../../components/Toast";
@@ -7,10 +7,11 @@ import "../../assets/css/payment.css";
 import PaymentBill from "./PaymentBill";
 import PaymentForm from "./PaymentForm";
 import VnPay from "./VnPay";
+import { CartContext } from "../../context/CartContext";
 
 const Payment = () => {
+  const { cartState } = useContext(CartContext);
   const [value, setValue] = useState(1);
-  const [monney, setMonney] = useState(2500000);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Payment = () => {
       <div className="payment-bill">
         <h2>ĐƠN HÀNG CỦA BẠN</h2>
         <Divider />
-        <PaymentBill />
+        <PaymentBill cartState={cartState} />
         <Divider />
         <Radio.Group onChange={onChange} value={value}>
           <Space direction="vertical" size={20}>
@@ -51,7 +52,7 @@ const Payment = () => {
         <Divider />
         <div className="cart-payment">
           {value === 2 ? (
-            <VnPay monney={monney} />
+            <VnPay monney={cartState.totalCart + 25000} />
           ) : (
             <Link className="payment-btn" to="/payment-success">
               ĐẶT HÀNG

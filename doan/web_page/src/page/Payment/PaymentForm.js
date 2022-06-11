@@ -1,8 +1,11 @@
 import React from "react";
 import { Input, Checkbox } from "antd";
+import { AuthContext } from "../../context/AuthContext";
+
 const { TextArea } = Input;
 
 const PaymentForm = () => {
+  const { auth } = React.useContext(AuthContext);
   const [disabled, setDisabled] = React.useState(false);
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
@@ -40,9 +43,12 @@ const PaymentForm = () => {
         </label>
         <Input placeholder="Địa chỉ" disabled={disabled} />
       </div>
-      <Checkbox onChange={onChange} style={{ marginBottom: 20 }}>
-        Sử dụng thông tin cá nhân
-      </Checkbox>
+      {auth.token && (
+        <Checkbox onChange={onChange} style={{ marginBottom: 20 }}>
+          Sử dụng thông tin cá nhân
+        </Checkbox>
+      )}
+
       <div className="form-input long">
         <label>Ghi chú</label>
         <TextArea rows={5} placeholder="Ghi chú cho bên giao hàng ...." />

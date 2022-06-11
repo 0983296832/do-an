@@ -1,7 +1,7 @@
 import { Divider } from "antd";
 import React from "react";
 
-const PaymentBill = () => {
+const PaymentBill = ({ cartState }) => {
   return (
     <div className="payment-bill-bg">
       <div className="space-between">
@@ -9,14 +9,30 @@ const PaymentBill = () => {
         <h3>Tạm Tính</h3>
       </div>
       <Divider />
-      <div className="space-between">
-        <h5>Giày Nike Air Force 1 iD GUCCI Rep 1 1 AF1 Gucci - 38 × 5</h5>
-        <h5>100000đ</h5>
-      </div>
+      {cartState?.cartIdChecked &&
+        cartState?.cart
+          .filter((item) => cartState.cartIdChecked.includes(item._id))
+          .map((item, index) => {
+            return (
+              <div className="space-between" key={index}>
+                <h5>
+                  {item.product_name}-{item.product_size}-{item.product_color}×
+                  {item.product_quantity}
+                </h5>
+                <h5>{item.product_price}đ</h5>
+              </div>
+            );
+          })}
+
       <Divider />
       <div className="space-between">
         <h4>Tạm Tính</h4>
-        <h5>100000đ</h5>
+        <h5>
+          {cartState?.totalCart === 0 || isNaN(cartState?.totalCart)
+            ? 0
+            : cartState?.totalCart}
+          đ
+        </h5>
       </div>
       <Divider />
       <div className="space-between">
@@ -31,7 +47,12 @@ const PaymentBill = () => {
       <Divider />
       <div className="space-between">
         <h4>Tổng</h4>
-        <h3>1000000đ</h3>
+        <h3>
+          {cartState?.totalCart === 0 || isNaN(cartState?.totalCart)
+            ? 0
+            : cartState?.totalCart + 25000}
+          đ
+        </h3>
       </div>
     </div>
   );
