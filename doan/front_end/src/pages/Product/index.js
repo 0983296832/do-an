@@ -182,7 +182,7 @@ const ProductManagement = () => {
         [key]: searchKey,
       };
       const result = await Products.getProducts(params);
-
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item) => {
           return {

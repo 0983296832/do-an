@@ -98,6 +98,7 @@ const Order = () => {
         [key]: searchKey,
       };
       const result = await Orders.getOrder(params);
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item, index) => {
           return {

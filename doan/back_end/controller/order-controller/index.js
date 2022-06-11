@@ -89,9 +89,21 @@ exports.getAll = async (req, res) => {
       .searching()
       .filtering();
 
+    const counting = new Features(
+      ordersDB
+        .find()
+        .populate({ path: "image" })
+        .populate({ path: "orders" })
+        .populate({ path: "carts" }),
+      req.query
+    )
+      .sorting()
+      .searching()
+      .filtering()
+      .counting();
     const result = await Promise.allSettled([
       features.query,
-      ordersDB.countDocuments(), //count number of products.
+      counting.query, //count number of user.
     ]);
 
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
