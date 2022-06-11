@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import login from "../../assets/image/login.jpg";
 import logo from "../../assets/image/logo.png";
 import LoginForm from "./LoginForm";
 import "../../assets/css/login.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import {
+  LOCAL_STORAGE_USER_KEY,
+  LOCAL_STORAGE_CART_KEY,
+} from "../../constant/constant";
 
 const Login = () => {
+  let location = useLocation();
+  useEffect(() => {
+    if (location.pathname === "/login") {
+      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+      localStorage.removeItem(LOCAL_STORAGE_CART_KEY);
+    }
+  }, []);
   return (
     <div className="login-container">
       <div className="login-form-container">

@@ -38,6 +38,7 @@ axiosClient.interceptors.request.use(
       .catch((error) => {
         Toast("error", "login expired");
         window.location.href = "http://localhost:3000/login";
+        return;
       });
 
     return config;

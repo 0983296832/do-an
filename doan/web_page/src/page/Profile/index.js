@@ -24,9 +24,10 @@ const Profile = () => {
   const getData = async () => {
     setLoading(true);
     try {
-      const data = await User.getUserById(auth.data._id);
-      setData(data.result);
-      console.log(data.result);
+      if (auth.token) {
+        const data = await User.getUserById(auth.data._id);
+        setData(data.result);
+      }
     } catch (error) {
       Toast("error", error.message);
     }
