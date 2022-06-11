@@ -20,9 +20,21 @@ exports.getAll = async (req, res) => {
       .searching()
       .filtering();
 
+    const counting = new Features(
+      productsDB
+        .find()
+        .populate({ path: "image" })
+        .populate({ path: "orders" })
+        .populate({ path: "carts" }),
+      req.query
+    )
+      .sorting()
+      .searching()
+      .filtering()
+      .counting();
     const result = await Promise.allSettled([
       features.query,
-      productsDB.countDocuments(), //count number of products.
+      counting.query, //count number of user.
     ]);
 
     const product = result[0].status === "fulfilled" ? result[0].value : [];
@@ -355,9 +367,21 @@ exports.getSupplier = async (req, res) => {
       .searching()
       .filtering();
 
+    const counting = new Features(
+      suppliersDB
+        .find()
+        .populate({ path: "image" })
+        .populate({ path: "orders" })
+        .populate({ path: "carts" }),
+      req.query
+    )
+      .sorting()
+      .searching()
+      .filtering()
+      .counting();
     const result = await Promise.allSettled([
       features.query,
-      suppliersDB.countDocuments(), //count number of products.
+      counting.query, //count number of user.
     ]);
 
     const supplier = result[0].status === "fulfilled" ? result[0].value : [];

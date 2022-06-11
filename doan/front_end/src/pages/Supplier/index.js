@@ -111,7 +111,7 @@ const Supplier = () => {
         [key]: searchKey,
       };
       const result = await Suppliers.getSupplier(params);
-
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item, index) => {
           const {

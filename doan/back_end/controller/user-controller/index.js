@@ -20,10 +20,21 @@ exports.findAll = async (req, res) => {
       .paginating()
       .searching()
       .filtering();
-
+    const counting = new Features(
+      usersDB
+        .find()
+        .populate({ path: "image" })
+        .populate({ path: "orders" })
+        .populate({ path: "carts" }),
+      req.query
+    )
+      .sorting()
+      .searching()
+      .filtering()
+      .counting();
     const result = await Promise.allSettled([
       features.query,
-      usersDB.countDocuments(), //count number of user.
+      counting.query, //count number of user.
     ]);
 
     const users = result[0].status === "fulfilled" ? result[0].value : [];

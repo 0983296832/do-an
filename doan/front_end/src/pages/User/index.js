@@ -122,6 +122,7 @@ const Datatable = () => {
         [key]: searchKey,
       };
       const result = await UserService.getUsers(params);
+      setPageCount(Math.ceil(result.count / 10));
       setData(
         result.result.map(({ id, email, name, image, status, phone }) => {
           return {

@@ -190,6 +190,7 @@ const ProductDetail = () => {
                 min={0}
                 value={views}
                 onChange={(value) => setViews(value)}
+                style={{ width: "40%" }}
               />
             </div>
             <div className="formInput-product ">
@@ -201,6 +202,7 @@ const ProductDetail = () => {
                 max={5}
                 value={votes}
                 onChange={(value) => setVotes(value)}
+                style={{ width: "40%" }}
               />
             </div>
             <div className="formInput-product ">
@@ -211,6 +213,7 @@ const ProductDetail = () => {
                 min={0}
                 value={sales}
                 onChange={(value) => setSales(value)}
+                style={{ width: "40%" }}
               />
             </div>
             <div className="formInput-product ">
@@ -222,6 +225,7 @@ const ProductDetail = () => {
                 prefix="đ"
                 disabled={disabled}
                 onChange={(value) => setPrice(value)}
+                style={{ width: "40%" }}
               />
             </div>
           </div>
@@ -265,6 +269,7 @@ const ProductDetail = () => {
                 disabled={disabled}
                 value={discount}
                 onChange={(value) => setDiscount(value)}
+                style={{ width: "40%" }}
               />
             </div>
             <div className="formInput-product">
