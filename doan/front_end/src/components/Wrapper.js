@@ -123,7 +123,7 @@ const Wrapper = ({ children }) => {
         </div>
         <div className="footer">
           © 2021 Copyright:{" "}
-          <strong style={{ paddingLeft: 5 }}> Lê Văn Bình</strong>
+          <strong style={{ paddingLeft: 5 }}> Đoàn Duy Thành</strong>
         </div>
       </div>
     );

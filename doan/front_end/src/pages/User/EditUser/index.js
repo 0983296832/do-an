@@ -43,7 +43,7 @@ const EditUser = ({ data, loading }) => {
         formData.append("image", file);
         await Users.uploadImage(data._id, formData);
       }
-      await Users.updateUser(data._id, {
+      const body = {
         name,
         name_surname,
         address,
@@ -52,7 +52,9 @@ const EditUser = ({ data, loading }) => {
         phone,
         birth,
         email,
-      });
+      };
+
+      await Users.updateUser(data._id, body);
       Toast("success", "Update success");
     } catch (error) {
       Toast("error", error.message);
@@ -63,6 +65,7 @@ const EditUser = ({ data, loading }) => {
     setBirth(date);
   };
   const onChangeGender = (e) => {
+    console.log(e.target.value);
     setSex(e.target.value);
   };
   const onChangeRole = (e) => {
@@ -183,7 +186,7 @@ const EditUser = ({ data, loading }) => {
                 <label>Gender</label>
                 <Radio.Group
                   onChange={onChangeGender}
-                  value={sex || "Male"}
+                  value={sex}
                   style={{ display: "flex" }}
                 >
                   <Radio value="Male">Male</Radio>
