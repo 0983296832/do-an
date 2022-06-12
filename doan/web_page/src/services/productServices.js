@@ -17,6 +17,14 @@ const Products = {
       headers: { "auth-token": process.env.REACT_APP_TOKEN },
     });
   },
+  createOrder: (id, body) => {
+    const url = process.env.REACT_APP_BASE_URL + "/order/create/" + id;
+    return axios.post(url, body);
+  },
+  increaseViews: (id) => {
+    const url = process.env.REACT_APP_BASE_URL + "/product/views/" + id;
+    return axios.put(url);
+  },
 };
 
 export default Products;

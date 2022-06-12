@@ -23,12 +23,12 @@ const Header = () => {
   const { cartState } = useContext(CartContext);
   let location = useLocation();
   const menu = [
-    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/nike" },
-    { logoImg: adidasLogo, title: "ADIDAS", link: "" },
+    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/Nike" },
+    { logoImg: adidasLogo, title: "ADIDAS", link: "/Adidas" },
     { logoImg: mlbLogo, title: "GIÀY MLB", link: "" },
     { logoImg: balenciagaLogo, title: "BALENCIAGA", link: "" },
     { logoImg: converseLogo, title: "CONVERSE", link: "" },
-    { logoImg: vansLogo, title: "VANS", link: "" },
+    { logoImg: vansLogo, title: "VANS", link: "/Vans" },
     { logoImg: sportLogo, title: "GIÀY THỂ THAO", link: "" },
     { logoImg: sneakerLogo, title: "GIÀY SNEAKER", link: "" },
     { logoImg: gucciLogo, title: "GUCCI", link: "" },
@@ -71,7 +71,10 @@ const Header = () => {
           />
         </div>
         <div className="header-infor">
-          <FiShoppingCart className="infor-icon" />
+          <Link to="/cart">
+            <FiShoppingCart className="infor-icon" style={{ color: "black" }} />
+          </Link>
+
           <h5 className="infor-money">{cartState.total || 0}đ</h5>
           <Link to="/profile" style={{ color: "black" }}>
             <AiOutlineUser className="infor-icon" />

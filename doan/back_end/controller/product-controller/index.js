@@ -427,3 +427,17 @@ exports.updateSupplier = async (req, res) => {
     return res.status(400).json({ status: "400", message: err.message });
   }
 };
+
+exports.increaseViews = async (req, res) => {
+  try {
+    await productsDB.findByIdAndUpdate(req.params.id, {
+      $inc: { views: 1 },
+    });
+    return res.status(200).json({
+      status: "200",
+      message: "increase views successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};

@@ -3,13 +3,13 @@ import Product from "./Product";
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 
-const ProductView = ({ data, title, btn, pagination }) => {
+const ProductView = ({ data, title, btn, pagination, pageCount, setPage }) => {
   return (
     <div>
       <div className="productView-title">
         <h1>{title}</h1>
       </div>
-      <div className="top-product">
+      <div className="top-product" style={{ minHeight: pagination && "100vh" }}>
         {data.map((item, index) => {
           return (
             <div key={index}>
@@ -39,7 +39,10 @@ const ProductView = ({ data, title, btn, pagination }) => {
             justifyContent: "center",
           }}
         >
-          <Pagination count={10} />
+          <Pagination
+            count={pageCount}
+            onChange={(e, value) => setPage(value)}
+          />
         </div>
       )}
     </div>

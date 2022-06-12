@@ -24,6 +24,7 @@ route.put(
 );
 route.put("/update/:id", checkAuth, checkRole, controller.updateProduct);
 route.post("/comment/:id", checkAuth, controller.comment);
+route.put("/views/:id", controller.increaseViews);
 route.post("/import", checkAuth, checkRole, controller.importProduct);
 route.delete("/delete/:id", checkAuth, checkRole, controller.deleteProduct);
 

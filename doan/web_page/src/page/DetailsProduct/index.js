@@ -133,7 +133,7 @@ const DetailsProduct = () => {
       setLoading(true);
       try {
         const data = await Products.getProductDetails(id);
-        console.log(data.data.data.product);
+        await Products.increaseViews(id);
         setDetail({
           id: data.data.data.product._id,
           product_code: data.data.data.product.product_code,

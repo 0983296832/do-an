@@ -81,16 +81,18 @@ const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = async (id) => {
+  const removeFromCart = async (id, toast) => {
+    console.log(id);
     try {
       if (auth.token) {
         await Users.removeFromCart(auth.data._id, { cart_id: id });
         dispatch({ type: "REMOVE_FROM_CART", payload: { id } });
-        Toast("success", "Xóa khỏi giỏ hàng thành công");
+        if (toast !== "noToast")
+          Toast("success", "Xóa khỏi giỏ hàng thành công");
       } else {
         dispatch({ type: "REMOVE_FROM_CART", payload: { id } });
-
-        Toast("success", "Xóa khỏi giỏ hàng thành công");
+        if (toast !== "noToast")
+          Toast("success", "Xóa khỏi giỏ hàng thành công");
       }
     } catch (error) {
       Toast("error", error.message);
