@@ -43,6 +43,7 @@ const Order = () => {
       }
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));
+      console.log(result.data);
       setData(
         result.data.map((item, index) => {
           return {
@@ -59,7 +60,7 @@ const Order = () => {
             }),
             amount: item.details
               .reduce((acc, i) => {
-                return acc + i.price * i.quantity;
+                return acc + i.product_price * i.product_quantity;
               }, 0)
               .toLocaleString("en-US", {
                 style: "currency",
@@ -115,7 +116,7 @@ const Order = () => {
             }),
             amount: item.details
               .reduce((acc, i) => {
-                return acc + i.price * i.quantity;
+                return acc + i.product_price * i.product_quantity;
               }, 0)
               .toLocaleString("en-US", {
                 style: "currency",

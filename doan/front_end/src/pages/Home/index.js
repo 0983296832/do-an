@@ -128,16 +128,18 @@ const Home = () => {
           order.map((item) => {
             return {
               id: item._id,
-              customer: item.user_name,
+              customer: item.name,
               amount: item.details
                 .reduce((acc, i) => {
-                  return acc + i.price * i.quantity;
+                  return acc + i.product_price * i.product_quantity;
                 }, 0)
                 .toLocaleString("en-US", {
                   style: "currency",
                   currency: "VND",
                 }),
-              date: `${moment(item.created).zone("+07:00").format("DD/MM/YYYY")}`,
+              date: `${moment(item.created)
+                .zone("+07:00")
+                .format("DD/MM/YYYY")}`,
               method: item.payment_type,
               receive_date: item.receive_date,
               status: item.state,

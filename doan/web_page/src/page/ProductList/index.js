@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/css/product-list.css";
 import ProductView from "../../components/ProductView";
-import giay from "../../assets/image/giay.jpg";
 import Sort from "./Sort";
 import FilterByPrice from "./FilterByPrice";
 import FilterBySize from "./FilterBySize";

@@ -134,10 +134,15 @@ const DetailsProduct = () => {
       try {
         const data = await Products.getProductDetails(id);
         await Products.increaseViews(id);
+        setProductImages(
+          data.data.data.product.image.map((item) => item.imageUrl)
+        );
         setDetail({
           id: data.data.data.product._id,
           product_code: data.data.data.product.product_code,
           price: data.data.data.product.price,
+          brand: data.data.data.product.brand,
+          category: data.data.data.product.category,
           rate: data.data.data.product.rate || 0,
           title: data.data.data.product.name,
           image: data.data.data.product.image[0].imageUrl,
