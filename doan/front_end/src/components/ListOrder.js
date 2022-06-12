@@ -207,8 +207,8 @@ const ListTable = ({
     },
     {
       title: "Name",
-      dataIndex: "user_name",
-      key: "user_name",
+      dataIndex: "name",
+      key: "name",
       fixed: "left",
       width: 150,
       editable: true,
@@ -369,33 +369,29 @@ const ListTable = ({
     },
     {
       title: "Product Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "product_name",
+      key: "product_name",
       editable: true,
     },
     {
       title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: () => {
+      dataIndex: "product_image",
+      key: "product_image",
+      render: (_, record) => {
         return (
-          <img
-            src="https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-            alt=""
-            className="product__img"
-          />
+          <img src={record.product_image} alt="" className="product__img" />
         );
       },
       hidden: noImg,
     },
     {
       title: "Price",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "product_price",
+      key: "product_price",
       editable: true,
       render: (_, record) => {
         return (
-          <div>{`${Number(record.price).toLocaleString("en-US", {
+          <div>{`${Number(record.product_price).toLocaleString("en-US", {
             style: "currency",
             currency: "VND",
           })}`}</div>
@@ -404,32 +400,32 @@ const ListTable = ({
     },
     {
       title: "Color",
-      dataIndex: "color",
-      key: "color",
+      dataIndex: "product_color",
+      key: "product_color",
       editable: true,
     },
     {
       title: "Category",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "product_category",
+      key: "product_category",
       editable: true,
     },
     {
       title: "Brand",
-      dataIndex: "brand",
-      key: "brand",
+      dataIndex: "product_brand",
+      key: "product_brand",
       editable: true,
     },
     {
       title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
+      dataIndex: "product_quantity",
+      key: "product_quantity",
       editable: true,
     },
     {
       title: "Size",
-      dataIndex: "size",
-      key: "size",
+      dataIndex: "product_size",
+      key: "product_size",
       editable: true,
     },
   ].filter((column) => !column.hidden);

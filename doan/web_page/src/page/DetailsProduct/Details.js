@@ -128,6 +128,8 @@ const Details = ({ data, loading }) => {
               product_quantity: number,
               product_size: data?.size[activeSize],
               product_color: data?.color[activeColor],
+              product_brand: data?.brand,
+              product_category: data?.category,
             })
           }
         >

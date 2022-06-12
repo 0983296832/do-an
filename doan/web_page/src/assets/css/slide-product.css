@@ -1,12 +1,12 @@
 .product-images-slider .swiper-slide {
-    padding-top: 100%;
-    overflow: hidden;
-    position: relative;
+    /* padding-top: 100%; */
+  
+    /* position: relative; */
   }
   .product-images-slider .swiper-slide img {
-    position: absolute;
-    top: 0;
-    left: 0;
+    /* position: absolute; */
+    /* top: 0;
+    left: 0; */
     width: 100%;
   }
   .product-images-slider .swiper-button-prev {
