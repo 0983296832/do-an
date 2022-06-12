@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
-import { Checkbox } from "antd";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { CartContext } from "../../context/CartContext";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, checkedList, totalCart }) => {
   const { removeFromCart, increaseQuantity, decreaseQuantity } =
     useContext(CartContext);
   const [number, setNumber] = useState(item.product_quantity);
@@ -23,20 +22,18 @@ const CartItem = ({ item }) => {
   };
 
   const increase = async () => {
-    await increaseQuantity(item.id, number + 1);
+    await increaseQuantity(item._id, number + 1);
+    totalCart(checkedList);
     setNumber((pre) => pre + 1);
   };
   const decrease = async () => {
-    await decreaseQuantity(item.id, number - 1);
+    await decreaseQuantity(item._id, number - 1);
+    totalCart(checkedList);
     setNumber((pre) => pre - 1);
-  };
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
   };
   return (
     <div className="cart-item">
       <div className="cart-item-left">
-        <Checkbox onChange={onChange} />
         <img src={item.product_image} />
         <div>
           <h2>{checkLongContent(item.product_name)}</h2>

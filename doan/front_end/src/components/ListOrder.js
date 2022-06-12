@@ -50,6 +50,9 @@ const ListTable = ({
           </Select.Option>
           <Select.Option value="đang giao hàng">đang giao hàng</Select.Option>
           <Select.Option value="đã xác nhận">đã xác nhận</Select.Option>
+          <Select.Option value="đang chờ xác nhận">
+            đang chờ xác nhận
+          </Select.Option>
           <Select.Option value="giao hàng thành công">
             giao hàng thành công
           </Select.Option>
@@ -300,6 +303,9 @@ const ListTable = ({
       render: (_, record) => {
         let colorTag;
         switch (record.state) {
+          case "đang chờ xác nhận":
+            colorTag = "orange";
+            break;
           case "đang đợi gói hàng":
             colorTag = "yellow";
             break;

@@ -13,6 +13,7 @@
 .list-right{
     background-color:#fff;
     width: calc(100% - 350px );
+    min-height: 100vh;
 }
 
 .color-btn{

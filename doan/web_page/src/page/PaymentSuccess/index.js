@@ -4,8 +4,12 @@ import { Button, Result } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Toast from "../../components/Toast";
+import { LOCAL_STORAGE_ORDER_KEY } from "../../constant/constant";
 
 const PaymentSuccess = () => {
+  useEffect(() => {
+    localStorage.removeItem(LOCAL_STORAGE_ORDER_KEY);
+  }, []);
   return (
     <div className="payment-success">
       <Result

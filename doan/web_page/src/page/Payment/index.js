@@ -1,5 +1,5 @@
 import { Divider, Radio, Space } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Toast from "../../components/Toast";
@@ -7,16 +7,22 @@ import "../../assets/css/payment.css";
 import PaymentBill from "./PaymentBill";
 import PaymentForm from "./PaymentForm";
 import VnPay from "./VnPay";
+import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
+import Product from "../../services/productServices";
+import { LOCAL_STORAGE_ORDER_KEY } from "../../constant/constant";
 
 const Payment = () => {
+  const { cartState, removeFromCart } = useContext(CartContext);
+  const { auth } = useContext(AuthContext);
   const [value, setValue] = useState(1);
-  const [monney, setMonney] = useState(2500000);
+  const [formValue, setFormValue] = useState({});
   let navigate = useNavigate();
-
   useEffect(() => {
     const sumQuery = queryString.parse(window.location.search);
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
       if (sumQuery.vnp_ResponseCode == "00") {
+        payment();
         Toast("success", "Thanh toán thành công");
         navigate("/payment-success");
       } else {
@@ -24,9 +30,86 @@ const Payment = () => {
       }
     }
   }, []);
+  const storeOrder = () => {
+    const body = {
+      ...formValue,
+      details: cartState?.cart.filter((item) =>
+        cartState.cartIdChecked.includes(item._id)
+      ),
+      image: cartState?.cart.filter((item) =>
+        cartState.cartIdChecked.includes(item._id)
+      )[0].product_image,
+      payment_type: value === 1 ? "offline" : "online",
+      shipping_unit: "GHN",
+      shipping_fee: 25000,
+      state: "đang chờ xác nhận",
+    };
+
+    localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(body));
+  };
   const onChange = (e) => {
-    console.log("radio checked", e.target.value);
     setValue(e.target.value);
+  };
+  const payment = async () => {
+    const sumQuery = queryString.parse(window.location.search);
+    if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
+      const body = JSON.parse(localStorage.getItem(LOCAL_STORAGE_ORDER_KEY));
+      if (body?.details.length > 0) {
+        if (auth.token) {
+          await Product.createOrder(auth.data._id, body);
+        } else await Product.createOrder("random", body);
+        cartState.cartIdChecked.map((item) => removeFromCart(item, "noToast"));
+        navigate("/payment-success");
+        Toast("success", "Đặt hàng thành công");
+        return;
+      } else {
+        Toast("error", "Giỏ hàng đang trống");
+        return;
+      }
+    }
+    if (
+      !formValue.name ||
+      !formValue.phone ||
+      !formValue.address ||
+      !formValue.email ||
+      cartState?.cartIdChecked.length < 1
+    ) {
+      Toast("error", "Vui lòng nhập đầy đủ thông tin");
+      return;
+    } else {
+      try {
+        const body = {
+          ...formValue,
+          details: cartState?.cart.filter((item) =>
+            cartState.cartIdChecked.includes(item._id)
+          ),
+          image: cartState?.cart.filter((item) =>
+            cartState.cartIdChecked.includes(item._id)
+          )[0].product_image,
+          payment_type: value === 1 ? "offline" : "online",
+          shipping_unit: "GHN",
+          shipping_fee: 25000,
+          state: "đang chờ xác nhận",
+        };
+        if (body.details.length > 0) {
+          if (auth.token) {
+            await Product.createOrder(auth.data._id, body);
+          } else await Product.createOrder("random", body);
+          cartState?.cartIdChecked.map((item) =>
+            removeFromCart(item, "noToast")
+          );
+          navigate("/payment-success");
+          Toast("success", "Đặt hàng thành công");
+        } else {
+          navigate("/payment");
+          Toast("error", "Giỏ hàng đang trống");
+          return;
+        }
+      } catch (error) {
+        Toast("error", error.message);
+        return;
+      }
+    }
   };
   return (
     <div className="payment-container">
@@ -34,13 +117,13 @@ const Payment = () => {
         <h2>THÔNG TIN THANH TOÁN</h2>
         <Divider />
         <div className="payment-form-centered">
-          <PaymentForm />
+          <PaymentForm setFormValue={setFormValue} />
         </div>
       </div>
       <div className="payment-bill">
         <h2>ĐƠN HÀNG CỦA BẠN</h2>
         <Divider />
-        <PaymentBill />
+        <PaymentBill cartState={cartState} />
         <Divider />
         <Radio.Group onChange={onChange} value={value}>
           <Space direction="vertical" size={20}>
@@ -51,11 +134,35 @@ const Payment = () => {
         <Divider />
         <div className="cart-payment">
           {value === 2 ? (
-            <VnPay monney={monney} />
+            <VnPay
+              monney={cartState.totalCart + 25000}
+              storeOrder={storeOrder}
+              disabled={
+                !formValue.name ||
+                !formValue.phone ||
+                !formValue.address ||
+                !formValue.email ||
+                cartState?.cartIdChecked.length < 1
+                  ? true
+                  : false
+              }
+            />
           ) : (
-            <Link className="payment-btn" to="/payment-success">
+            <button
+              className="payment-btn"
+              onClick={payment}
+              disabled={
+                !formValue.name ||
+                !formValue.phone ||
+                !formValue.address ||
+                !formValue.email ||
+                cartState?.cartIdChecked.length < 1
+                  ? true
+                  : false
+              }
+            >
               ĐẶT HÀNG
-            </Link>
+            </button>
           )}
         </div>
       </div>

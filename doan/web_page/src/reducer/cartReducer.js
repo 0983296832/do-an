@@ -40,7 +40,7 @@ export const cartReducer = (state, action) => {
     case "REMOVE_FROM_CART":
       return {
         ...state,
-        cart: state.cart.filter((item) => item.id !== action.payload.id),
+        cart: state.cart.filter((item) => item._id !== action.payload.id),
         total: state.cart.reduce(
           (total, item) => total + item.product_quantity * item.product_price,
           0
@@ -51,7 +51,7 @@ export const cartReducer = (state, action) => {
       return {
         ...state,
         cart: state.cart.map((item) => {
-          if (item.id === action.payload.id) {
+          if (item._id === action.payload.id) {
             return {
               ...item,
               product_quantity: item.product_quantity + 1,
@@ -65,7 +65,7 @@ export const cartReducer = (state, action) => {
         ...state,
         cart: state.cart
           .map((item) => {
-            if (item.id === action.payload.id) {
+            if (item._id === action.payload.id) {
               return {
                 ...item,
                 product_quantity: item.product_quantity - 1,
@@ -75,13 +75,28 @@ export const cartReducer = (state, action) => {
           })
           .filter((item) => item.product_quantity > 0),
       };
-    case "TOTAL_PRICE_AMOUNT":
+    case "TOTAL_PRICE":
       return {
         ...state,
         total: state.cart.reduce(
           (total, item) => total + item.product_quantity * item.product_price,
           0
         ),
+      };
+    case "TOTAL_PRICE_CART":
+      return {
+        ...state,
+        totalCart: state.cart
+          .filter((item) => action.payload.includes(item._id))
+          .reduce(
+            (total, item) => total + item.product_quantity * item.product_price,
+            0
+          ),
+        cartIdChecked: action.payload,
+      };
+    case "CHANGE_AMOUNT":
+      return {
+        ...state,
         amount: state.cart.length,
       };
     default:

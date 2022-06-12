@@ -4,7 +4,6 @@ import queryString from "query-string";
 import dateFormat from "dateformat";
 import sha256 from "sha256";
 
-
 const HASH_SECRET = process.env.REACT_APP_HASH_SECRET;
 const TMNCODE = process.env.REACT_APP_TMNCODE;
 const VNP_URL = process.env.REACT_APP_VNP_URL;
@@ -26,9 +25,9 @@ function sortObject(o) {
   return sorted;
 }
 
-const VnPay = ({ monney }) => {
-  // const { setPaymentSuccess } = useContext(CartContext);
+const VnPay = ({ monney, storeOrder, disabled }) => {
   const onSubmit = async () => {
+    storeOrder();
     const tmnCode = TMNCODE;
     const secretKey = HASH_SECRET;
     const returnUrl = VNP_RETURN;
@@ -76,7 +75,6 @@ const VnPay = ({ monney }) => {
     window.location.href = vnpUrl;
   };
   const sumQuery = queryString.parse(window.location.search);
-  console.log(JSON.stringify(sumQuery));
   if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
     console.log("get result params", sumQuery);
     const returnSecretHash = sumQuery["vnp_SecureHash"].toString();
@@ -90,7 +88,7 @@ const VnPay = ({ monney }) => {
     } else console.log("fail checksum");
   }
   return (
-    <button className="payment-btn" onClick={onSubmit}>
+    <button className="payment-btn" onClick={onSubmit} disabled={disabled}>
       ĐẶT HÀNG
     </button>
   );

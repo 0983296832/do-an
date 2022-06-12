@@ -4,6 +4,7 @@ import Users from "../services/userServices";
 import { AuthContext } from "../context/AuthContext";
 import Toast from "../components/Toast";
 import { LOCAL_STORAGE_CART_KEY } from "../constant/constant";
+import { v4 as uuidv4 } from "uuid";
 
 export const CartContext = createContext();
 
@@ -11,6 +12,8 @@ const initialCart = {
   cart: [],
   total: 0,
   amount: 0,
+  cartIdChecked: [],
+  totalCart: 0,
 };
 
 const CartProvider = ({ children }) => {
@@ -45,8 +48,12 @@ const CartProvider = ({ children }) => {
     getCart();
   }, [auth]);
 
+  const totalCart = (idArr) => {
+    dispatch({ type: "TOTAL_PRICE_CART", payload: idArr });
+  };
   useEffect(() => {
-    dispatch({ type: "TOTAL_PRICE_AMOUNT" });
+    dispatch({ type: "CHANGE_AMOUNT" });
+    dispatch({ type: "TOTAL_PRICE" });
     if (!auth.token) {
       localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cartState));
     }
@@ -59,13 +66,13 @@ const CartProvider = ({ children }) => {
         if (data.data) {
           dispatch({
             type: "ADD_TO_CART_SUCCESS",
-            payload: { ...data.data, id: data.data._id },
+            payload: { ...data.data },
           });
         }
       } else {
         dispatch({
           type: "ADD_TO_CART_SUCCESS",
-          payload: item,
+          payload: { ...item, _id: uuidv4() },
         });
       }
       Toast("success", "Thêm vào giỏ hàng thành công");
@@ -74,16 +81,18 @@ const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = async (id) => {
+  const removeFromCart = async (id, toast) => {
+    console.log(id);
     try {
       if (auth.token) {
         await Users.removeFromCart(auth.data._id, { cart_id: id });
         dispatch({ type: "REMOVE_FROM_CART", payload: { id } });
-        Toast("success", "Xóa khỏi giỏ hàng thành công");
+        if (toast !== "noToast")
+          Toast("success", "Xóa khỏi giỏ hàng thành công");
       } else {
         dispatch({ type: "REMOVE_FROM_CART", payload: { id } });
-
-        Toast("success", "Xóa khỏi giỏ hàng thành công");
+        if (toast !== "noToast")
+          Toast("success", "Xóa khỏi giỏ hàng thành công");
       }
     } catch (error) {
       Toast("error", error.message);
@@ -130,6 +139,7 @@ const CartProvider = ({ children }) => {
         removeFromCart,
         increaseQuantity,
         decreaseQuantity,
+        totalCart,
       }}
     >
       {children}

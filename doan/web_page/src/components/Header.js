@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "../assets/image/logo.png";
 import { Input, Select, Button } from "antd";
 import "../assets/css/header.css";
@@ -15,18 +15,20 @@ import sportLogo from "../assets/image/giay-the-thao-logo.webp";
 import sneakerLogo from "../assets/image/sneaker-logo.webp";
 import gucciLogo from "../assets/image/GUCCI-logo.webp";
 import { Link, useLocation } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
 
 const { Option, OptGroup } = Select;
 
 const Header = () => {
+  const { cartState } = useContext(CartContext);
   let location = useLocation();
   const menu = [
-    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/nike" },
-    { logoImg: adidasLogo, title: "ADIDAS", link: "" },
+    { logoImg: nikeLogo, title: "GIÀY NIKE", link: "/Nike" },
+    { logoImg: adidasLogo, title: "ADIDAS", link: "/Adidas" },
     { logoImg: mlbLogo, title: "GIÀY MLB", link: "" },
     { logoImg: balenciagaLogo, title: "BALENCIAGA", link: "" },
     { logoImg: converseLogo, title: "CONVERSE", link: "" },
-    { logoImg: vansLogo, title: "VANS", link: "" },
+    { logoImg: vansLogo, title: "VANS", link: "/Vans" },
     { logoImg: sportLogo, title: "GIÀY THỂ THAO", link: "" },
     { logoImg: sneakerLogo, title: "GIÀY SNEAKER", link: "" },
     { logoImg: gucciLogo, title: "GUCCI", link: "" },
@@ -69,13 +71,16 @@ const Header = () => {
           />
         </div>
         <div className="header-infor">
-          <FiShoppingCart className="infor-icon" />
-          <h5 className="infor-money">1.230.000đ</h5>
+          <Link to="/cart">
+            <FiShoppingCart className="infor-icon" style={{ color: "black" }} />
+          </Link>
+
+          <h5 className="infor-money">{cartState.total || 0}đ</h5>
           <Link to="/profile" style={{ color: "black" }}>
             <AiOutlineUser className="infor-icon" />
           </Link>
 
-          <h6 className="cart-count">1</h6>
+          <h6 className="cart-count">{cartState.amount}</h6>
         </div>
       </div>
       <div className="menu ">
