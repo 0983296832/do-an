@@ -10,6 +10,8 @@ import {
   Tooltip,
 } from "antd";
 import moment from "moment";
+import Product from "../../services/productServices";
+import Toast from "../../components/Toast";
 const { TextArea } = Input;
 
 const CommentList = ({ comments }) => (
@@ -81,17 +83,36 @@ const Editor = ({
   </>
 );
 
-const CommentInput = () => {
+const CommentInput = ({ id, setDetail, detail }) => {
+  console.log(detail);
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState("");
   const [author, setAuthor] = useState("");
   const [rate, setRate] = useState(0);
 
-  const handleSubmit = () => {
-    if (!comment && !author) return;
+  const handleSubmit = async () => {
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      if (!comment && !author) return;
+
+      const newComment = {
+        name: author,
+        vote: rate,
+        content: comment,
+      };
+      await Product.comment(id, newComment);
+      let rates = detail.rate;
+      if (detail.rate == 0) {
+        rates = Math.round((detail.rate + rate) / 0.5) * 0.5;
+      } else {
+        rates = Math.round((detail.rate + rate) / 2 / 0.5) * 0.5;
+      }
+      setDetail({
+        ...detail,
+        comments: [...detail.comments, 1],
+        rate: rates,
+      });
       setSubmitting(false);
       setComment("");
       setAuthor("");
@@ -106,7 +127,11 @@ const CommentInput = () => {
           datetime: moment().fromNow(),
         },
       ]);
-    }, 1000);
+      Toast("success", "Bình luận thành công");
+    } catch (error) {
+      setSubmitting(false);
+      Toast("error", error.message);
+    }
   };
 
   const handleChangeComment = (e) => {
@@ -121,7 +146,6 @@ const CommentInput = () => {
 
   return (
     <>
-      {comments.length > 0 && <CommentList comments={comments} />}
       <Comment
         avatar={
           <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
@@ -139,6 +163,7 @@ const CommentInput = () => {
           />
         }
       />
+      {comments.length > 0 && <CommentList comments={comments} />}
     </>
   );
 };

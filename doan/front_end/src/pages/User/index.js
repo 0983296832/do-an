@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserService from "../../services/userServices";
-import { Input } from "antd";
+import { Input, Tooltip } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Select } from "antd";
 import { Button } from "antd";
@@ -14,7 +14,18 @@ import BasicPagination from "../../components/Pagination";
 const { Option } = Select;
 
 const userColumns = [
-  { field: "id", headerName: "ID", width: 70 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 80,
+    renderCell: (params) => {
+      return (
+        <Tooltip placement="topLeft" title={params.row.id}>
+          {params.row.id.slice(0, 7) + "..."}
+        </Tooltip>
+      );
+    },
+  },
   {
     field: "user",
     headerName: "User",

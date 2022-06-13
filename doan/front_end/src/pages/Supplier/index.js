@@ -66,13 +66,13 @@ const Supplier = () => {
               {
                 key: index + 100000,
                 product_code,
-                name,
-                price,
-                color,
-                quantity,
-                brand,
-                size,
-                category,
+                product_name: name,
+                product_price: price,
+                product_color: color,
+                product_quantity: quantity,
+                product_brand: brand,
+                product_size: size,
+                product_category: category,
               },
             ],
             amount: (item.price * item.quantity).toLocaleString("en-US", {
@@ -135,19 +135,22 @@ const Supplier = () => {
               {
                 key: index + 100000,
                 product_code,
-                name,
-                price,
-                color,
-                quantity,
-                brand,
-                size,
-                category,
+                product_name: name,
+                product_price: price,
+                product_color: color,
+                product_quantity: quantity,
+                product_brand: brand,
+                product_size: size,
+                product_category: category,
               },
             ],
-            amount: (item.price * item.quantity).toLocaleString("en-US", {
-              style: "currency",
-              currency: "VND",
-            }),
+            amount: (item.product_price * item.product_quantity).toLocaleString(
+              "en-US",
+              {
+                style: "currency",
+                currency: "VND",
+              }
+            ),
           };
         })
       );

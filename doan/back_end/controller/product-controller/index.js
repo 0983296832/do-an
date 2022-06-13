@@ -40,17 +40,11 @@ exports.getAll = async (req, res) => {
     const product = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
 
-    const size = await productsDB.find({
-      details: { $elemMatch: { size: "36" } },
-      product_code: { $regex: "Nike" },
-    });
-
     return res.status(200).json({
       status: "200",
       message: "get all product successfully",
       data: product,
       count: count,
-      size: size,
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
@@ -220,7 +214,7 @@ exports.comment = async (req, res) => {
       vote: req.body.vote,
     });
     const commentSaved = await comment.save();
-    await productsDB.findById(req.params.id, (err, result) => {
+    await productsDB.findById(req.params.id).then((result, err) => {
       if (err) {
         return res.status(500).json({
           success: "false",
@@ -228,6 +222,13 @@ exports.comment = async (req, res) => {
         });
       } else {
         result.comments.push(commentSaved);
+        let rate = result.votes;
+        if (result.votes == 0) {
+          rate = Math.round((result.votes + commentSaved.vote) / 0.5) * 0.5;
+        } else {
+          rate = Math.round((result.votes + commentSaved.vote) / 2 / 0.5) * 0.5;
+        }
+        result.votes = rate;
         result.save();
       }
     });

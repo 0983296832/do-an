@@ -127,7 +127,7 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
-
+  console.log(detail);
   useEffect(() => {
     const getDetail = async () => {
       setLoading(true);
@@ -149,7 +149,7 @@ const DetailsProduct = () => {
           priceSale:
             data.data.data.product.price *
             ((100 - data.data.data.product.discount) / 100),
-          comments: data.data.data.product.comments.length,
+          comments: data.data.data.product.comments,
           sales: data.data.data.product.sales,
           size: [...new Set(data.data.data.product.details.map((i) => i.size))],
           color: [
@@ -204,7 +204,7 @@ const DetailsProduct = () => {
               <p>- Size: 35-43.</p>
             </TabPane>
             <TabPane tab="Đánh giá của khách hàng" key="2">
-              <CommentInput />
+              <CommentInput id={id} setDetail={setDetail} detail={detail} />
             </TabPane>
           </Tabs>
           {/* <h1>Mô tả sản phẩm</h1>

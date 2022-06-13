@@ -35,6 +35,13 @@ const productColumns = [
     field: "name",
     headerName: "Name",
     width: 150,
+    renderCell: (params) => {
+      return (
+        <Tooltip placement="topLeft" title={params.row.name}>
+          {params.row.name.slice(0, 15) + "..."}
+        </Tooltip>
+      );
+    },
   },
   {
     field: "category",

@@ -39,7 +39,7 @@ const Details = ({ data, loading }) => {
           defaultValue={data?.rate}
           style={{ fontSize: 15, marginRight: 10 }}
         />
-        <span>({data?.comments} đánh giá của khách hàng)</span>
+        <span>({data?.comments?.length} đánh giá của khách hàng)</span>
       </div>
       <div className="details-price">
         {data?.discount > 0 && <h2 className="sale">{data?.price}đ</h2>}
