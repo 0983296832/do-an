@@ -56,6 +56,7 @@ const Payment = () => {
     };
 
     localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(body));
+    return false;
   };
   const onChange = (e) => {
     setValue(e.target.value);
@@ -149,10 +150,7 @@ const Payment = () => {
               storeOrder={storeOrder}
             />
           ) : (
-            <button
-              className="payment-btn"
-              onClick={payment}
-            >
+            <button className="payment-btn" onClick={payment}>
               ĐẶT HÀNG
             </button>
           )}

@@ -40,11 +40,17 @@ exports.getAll = async (req, res) => {
     const product = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
 
+    const size = await productsDB.find({
+      details: { $elemMatch: { size: "36" } },
+      product_code: { $regex: "Nike" },
+    });
+
     return res.status(200).json({
       status: "200",
       message: "get all product successfully",
       data: product,
       count: count,
+      size: size,
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });

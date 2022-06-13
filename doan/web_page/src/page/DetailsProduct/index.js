@@ -143,7 +143,7 @@ const DetailsProduct = () => {
           price: data.data.data.product.price,
           brand: data.data.data.product.brand,
           category: data.data.data.product.category,
-          rate: data.data.data.product.rate || 0,
+          rate: data.data.data.product.votes,
           title: data.data.data.product.name,
           image: data.data.data.product.image[0].imageUrl,
           priceSale:

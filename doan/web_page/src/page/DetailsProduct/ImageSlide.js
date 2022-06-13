@@ -27,6 +27,7 @@ const ProductImagesSlider = ({ images }) => {
               src={item}
               alt="A image to apply the ImageZoom plugin"
               zoom="200"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </SwiperSlide>
         ))}

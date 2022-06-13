@@ -321,6 +321,9 @@ const ListTable = ({
           case "đã hủy":
             colorTag = "red";
             break;
+          default:
+            colorTag = "pink";
+            break;
         }
         return <Tag color={colorTag}>{record.state}</Tag>;
       },
