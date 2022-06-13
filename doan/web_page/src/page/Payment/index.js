@@ -31,6 +31,16 @@ const Payment = () => {
     }
   }, []);
   const storeOrder = () => {
+    if (
+      !formValue.name ||
+      !formValue.phone ||
+      !formValue.address ||
+      !formValue.email ||
+      cartState?.cartIdChecked.length < 1
+    ) {
+      Toast("error", "Vui lòng nhập đầy đủ thông tin");
+      return true;
+    }
     const body = {
       ...formValue,
       details: cartState?.cart.filter((item) =>
@@ -137,29 +147,11 @@ const Payment = () => {
             <VnPay
               monney={cartState.totalCart + 25000}
               storeOrder={storeOrder}
-              disabled={
-                !formValue.name ||
-                !formValue.phone ||
-                !formValue.address ||
-                !formValue.email ||
-                cartState?.cartIdChecked.length < 1
-                  ? true
-                  : false
-              }
             />
           ) : (
             <button
               className="payment-btn"
               onClick={payment}
-              disabled={
-                !formValue.name ||
-                !formValue.phone ||
-                !formValue.address ||
-                !formValue.email ||
-                cartState?.cartIdChecked.length < 1
-                  ? true
-                  : false
-              }
             >
               ĐẶT HÀNG
             </button>
