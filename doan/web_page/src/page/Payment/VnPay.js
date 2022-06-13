@@ -27,7 +27,8 @@ function sortObject(o) {
 
 const VnPay = ({ monney, storeOrder, disabled }) => {
   const onSubmit = async () => {
-    storeOrder();
+    const error = storeOrder();
+    if (error) return;
     const tmnCode = TMNCODE;
     const secretKey = HASH_SECRET;
     const returnUrl = VNP_RETURN;
@@ -88,7 +89,7 @@ const VnPay = ({ monney, storeOrder, disabled }) => {
     } else console.log("fail checksum");
   }
   return (
-    <button className="payment-btn" onClick={onSubmit} disabled={disabled}>
+    <button className="payment-btn" onClick={onSubmit}>
       ĐẶT HÀNG
     </button>
   );

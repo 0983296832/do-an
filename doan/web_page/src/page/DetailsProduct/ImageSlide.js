@@ -5,7 +5,7 @@ import "swiper/css/thumbs";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper";
 import { useState } from "react";
-import ImageZoom from "react-image-zooom";
+// import ImageZoom from "react-image-zooom";
 
 const ProductImagesSlider = ({ images }) => {
   const [activeThumb, setActiveThumb] = useState();
@@ -23,11 +23,12 @@ const ProductImagesSlider = ({ images }) => {
       >
         {images.map((item, index) => (
           <SwiperSlide key={index}>
-            <ImageZoom
+            {/* <ImageZoom
               src={item}
               alt="A image to apply the ImageZoom plugin"
               zoom="200"
-            />
+            /> */}
+            <img src={item} alt="" />
           </SwiperSlide>
         ))}
       </Swiper>

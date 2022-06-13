@@ -31,6 +31,16 @@ const Payment = () => {
     }
   }, []);
   const storeOrder = () => {
+    if (
+      !formValue.name ||
+      !formValue.phone ||
+      !formValue.address ||
+      !formValue.email ||
+      cartState?.cartIdChecked?.length < 1
+    ) {
+      Toast("error", "Vui lòng nhập đầy đủ thông tin");
+      return true;
+    }
     const body = {
       ...formValue,
       details: cartState?.cart.filter((item) =>
@@ -54,7 +64,7 @@ const Payment = () => {
     const sumQuery = queryString.parse(window.location.search);
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
       const body = JSON.parse(localStorage.getItem(LOCAL_STORAGE_ORDER_KEY));
-      if (body?.details.length > 0) {
+      if (body?.details?.length > 0) {
         if (auth.token) {
           await Product.createOrder(auth.data._id, body);
         } else await Product.createOrder("random", body);
@@ -72,7 +82,7 @@ const Payment = () => {
       !formValue.phone ||
       !formValue.address ||
       !formValue.email ||
-      cartState?.cartIdChecked.length < 1
+      cartState?.cartIdChecked?.length < 1
     ) {
       Toast("error", "Vui lòng nhập đầy đủ thông tin");
       return;
@@ -91,7 +101,7 @@ const Payment = () => {
           shipping_fee: 25000,
           state: "đang chờ xác nhận",
         };
-        if (body.details.length > 0) {
+        if (body?.details.length > 0) {
           if (auth.token) {
             await Product.createOrder(auth.data._id, body);
           } else await Product.createOrder("random", body);
@@ -137,30 +147,9 @@ const Payment = () => {
             <VnPay
               monney={cartState.totalCart + 25000}
               storeOrder={storeOrder}
-              disabled={
-                !formValue.name ||
-                !formValue.phone ||
-                !formValue.address ||
-                !formValue.email ||
-                cartState?.cartIdChecked.length < 1
-                  ? true
-                  : false
-              }
             />
           ) : (
-            <button
-              className="payment-btn"
-              onClick={payment}
-              disabled={
-                !formValue.name ||
-                !formValue.phone ||
-                !formValue.address ||
-                !formValue.email ||
-                cartState?.cartIdChecked.length < 1
-                  ? true
-                  : false
-              }
-            >
+            <button className="payment-btn" onClick={payment}>
               ĐẶT HÀNG
             </button>
           )}
