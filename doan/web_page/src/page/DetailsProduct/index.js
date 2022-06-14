@@ -127,7 +127,6 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
-  console.log(detail);
   useEffect(() => {
     const getDetail = async () => {
       setLoading(true);
@@ -149,7 +148,18 @@ const DetailsProduct = () => {
           priceSale:
             data.data.data.product.price *
             ((100 - data.data.data.product.discount) / 100),
-          comments: data.data.data.product.comments,
+          comments: data.data.data.product.comments
+            .map((item) => {
+              return {
+                id: item._id,
+                avatar: "https://joeschmoe.io/api/v1/random",
+                content: item.content,
+                rate: item.vote,
+                author: item.name,
+                datetime: item.created,
+              };
+            })
+            .sort((a, b) => new Date(b.datetime) - new Date(a.datetime)),
           sales: data.data.data.product.sales,
           size: [...new Set(data.data.data.product.details.map((i) => i.size))],
           color: [

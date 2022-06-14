@@ -15,29 +15,43 @@ import Toast from "../../components/Toast";
 const { TextArea } = Input;
 
 const CommentList = ({ comments }) => (
-  <List
-    dataSource={comments}
-    header={`${comments.length} ${comments.length > 1 ? "replies" : "reply"}`}
-    itemLayout="horizontal"
-    renderItem={(props) => (
-      <Comment
-        {...props}
-        datetime={
-          <div>
-            <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-              <span>{moment().fromNow()}</span>
-            </Tooltip>
-            <Rate
-              allowHalf
-              defaultValue={props.rate}
-              disabled
-              style={{ marginLeft: 10, fontSize: 12 }}
-            />
-          </div>
-        }
-      />
-    )}
-  />
+  <div
+    id="scrollableDiv"
+    style={{
+      height: 400,
+      overflow: "auto",
+      padding: "0 16px",
+      border: "1px solid rgba(140, 140, 140, 0.35)",
+    }}
+  >
+    <List
+      dataSource={comments}
+      header={`${comments.length} ${comments.length > 1 ? "replies" : "reply"}`}
+      itemLayout="horizontal"
+      renderItem={(props) => {
+        return (
+          <Comment
+            {...props}
+            datetime={
+              <div>
+                <Tooltip
+                  title={moment(props.datetime).format("YYYY-MM-DD HH:mm:ss")}
+                >
+                  <span>{moment(props.datetime).fromNow()}</span>
+                </Tooltip>
+                <Rate
+                  allowHalf
+                  defaultValue={props.rate}
+                  disabled
+                  style={{ marginLeft: 10, fontSize: 12 }}
+                />
+              </div>
+            }
+          />
+        );
+      }}
+    />
+  </div>
 );
 
 const Editor = ({
@@ -84,8 +98,7 @@ const Editor = ({
 );
 
 const CommentInput = ({ id, setDetail, detail }) => {
-  console.log(detail);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(detail?.comments);
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState("");
   const [author, setAuthor] = useState("");
@@ -110,7 +123,7 @@ const CommentInput = ({ id, setDetail, detail }) => {
       }
       setDetail({
         ...detail,
-        comments: [...detail.comments, 1],
+        comments: [...detail.comments, { ...newComment, datetime: Date.now() }],
         rate: rates,
       });
       setSubmitting(false);
@@ -118,14 +131,14 @@ const CommentInput = ({ id, setDetail, detail }) => {
       setAuthor("");
       setRate(0);
       setComments([
-        ...comments,
         {
           author: author,
           rate: rate,
           avatar: "https://joeschmoe.io/api/v1/random",
           content: <p>{comment}</p>,
-          datetime: moment().fromNow(),
+          datetime: Date.now(),
         },
+        ...comments,
       ]);
       Toast("success", "Bình luận thành công");
     } catch (error) {

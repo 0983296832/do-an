@@ -60,6 +60,7 @@ const CartProvider = ({ children }) => {
   }, [cartState.cart]);
 
   const addToCart = async (item) => {
+    console.log(item);
     try {
       if (auth.token) {
         const data = await Users.addToCart(auth.data._id, item);
@@ -70,6 +71,7 @@ const CartProvider = ({ children }) => {
           });
         }
       } else {
+        console.log(item);
         dispatch({
           type: "ADD_TO_CART_SUCCESS",
           payload: { ...item, _id: uuidv4() },
@@ -131,6 +133,10 @@ const CartProvider = ({ children }) => {
     }
   };
 
+  const logOut = () => {
+    dispatch({ type: "LOG_OUT" });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -140,6 +146,7 @@ const CartProvider = ({ children }) => {
         increaseQuantity,
         decreaseQuantity,
         totalCart,
+        logOut,
       }}
     >
       {children}

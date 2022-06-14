@@ -4,11 +4,13 @@ import { Divider, Rate } from "antd";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
 import Toast from "../../components/Toast";
 
 const Details = ({ data, loading }) => {
   const { addToCart } = useContext(CartContext);
+  const { auth } = useContext(AuthContext);
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
   const [number, setNumber] = useState(1);
@@ -121,6 +123,7 @@ const Details = ({ data, loading }) => {
           className="add-cart"
           onClick={() =>
             handleAddToCart({
+              user_id: auth.data ? auth?.data._id : "",
               product_code: data?.product_code,
               product_name: data?.title,
               product_price: data?.priceSale,

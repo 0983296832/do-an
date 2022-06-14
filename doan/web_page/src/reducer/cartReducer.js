@@ -16,11 +16,24 @@ export const cartReducer = (state, action) => {
         return {
           ...state,
           cart: state.cart.map((item) => {
-            if (item.id === action.payload.id) {
+            if (
+              item.product_code === action.payload.product_code &&
+              item.product_size === action.payload.product_size &&
+              item.product_color === action.payload.product_color
+            ) {
+              if (action.payload.user_id == "") {
+                return {
+                  ...item,
+                  product_quantity:
+                    item.product_quantity + action.payload.product_quantity,
+                };
+              }
               return {
                 ...item,
                 product_quantity:
-                  item.product_quantity + action.payload.product_quantity,
+                  item.product_quantity +
+                  action.payload.product_quantity -
+                  item.product_quantity,
               };
             }
             return item;
@@ -98,6 +111,14 @@ export const cartReducer = (state, action) => {
       return {
         ...state,
         amount: state.cart.length,
+      };
+    case "LOG_OUT":
+      return {
+        cart: [],
+        total: 0,
+        amount: 0,
+        cartIdChecked: [],
+        totalCart: 0,
       };
     default:
       return state;

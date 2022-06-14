@@ -44,31 +44,11 @@ exports.findAll = async (req, res) => {
       status: "200",
       message: "get all user successfully!",
       result: users.map((i) => {
-        const {
-          _id: id,
-          name,
-          name_surname,
-          email,
-          role,
-          comments,
-          orders,
-          status,
-          image,
-          phone,
-          sex,
-        } = i;
+        const { _id: id, ...rest } = i;
+        const { password, ...last } = rest._doc;
         return {
           id,
-          name,
-          name_surname,
-          email,
-          role,
-          comments,
-          orders,
-          status,
-          image,
-          phone,
-          sex,
+          ...last,
         };
       }),
       count,
@@ -155,6 +135,10 @@ exports.updateById = async (req, res) => {
     newBody = { ...req.body, password: hashedPassword };
   } else {
     newBody = { ...req.body };
+  }
+
+  if (req.body.birth) {
+    newBody.birth = new Date(req.body.birth);
   }
 
   try {
@@ -298,6 +282,7 @@ exports.deleteImage = async (req, res) => {
 exports.addToCart = async (req, res) => {
   try {
     const cartItemExist = await cartsDB.find({
+      user_id: req.params.id,
       product_code: req.body.product_code,
       product_color: req.body.product_color,
       product_size: req.body.product_size,
@@ -305,6 +290,7 @@ exports.addToCart = async (req, res) => {
     if (cartItemExist.length > 0) {
       cartsDB
         .find({
+          user_id: req.params.id,
           product_code: req.body.product_code,
           product_color: req.body.product_color,
           product_size: req.body.product_size,
@@ -316,11 +302,13 @@ exports.addToCart = async (req, res) => {
             return res.status(200).json({
               status: "200",
               message: "add to cart success",
+              data: result[0],
             });
           }
         });
     } else {
       const cart = new cartsDB({
+        user_id: req.params.id,
         product_code: req.body.product_code,
         product_name: req.body.product_name,
         product_price: req.body.product_price,

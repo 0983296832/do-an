@@ -4,6 +4,7 @@ const usersDB = require("../../models/user/userModel");
 const Features = require("../../lib/feature");
 
 const _ = require("lodash");
+const cartsDB = require("../../models/user/cartModel");
 
 exports.order = async (req, res) => {
   try {
@@ -20,6 +21,7 @@ exports.order = async (req, res) => {
         await usersDB.findByIdAndUpdate(req.params.id, {
           $pull: { carts: item._id },
         });
+        await cartsDB.findByIdAndDelete(item._id);
       }
 
       product.details.map(async (i) => {

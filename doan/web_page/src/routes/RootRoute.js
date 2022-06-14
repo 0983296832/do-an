@@ -11,6 +11,7 @@ import PaymentSuccess from "../page/PaymentSuccess";
 import ProductList from "../page/ProductList";
 import Profile from "../page/Profile";
 import Register from "../page/Register";
+import ProtectRoute from "../guard/ProtectRoute";
 
 const RootRoute = () => {
   return (
@@ -25,7 +26,9 @@ const RootRoute = () => {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<ProtectRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
       <Footer />
     </BrowserRouter>

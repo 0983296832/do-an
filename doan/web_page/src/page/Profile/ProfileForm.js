@@ -41,14 +41,17 @@ const EditUser = ({ data, loading }) => {
         formData.append("image", file);
         await User.uploadImage(data._id, formData);
       }
-      console.log(sex);
+      let newBirth = birth;
+      if (typeof birth === "string") {
+        newBirth = moment(birth).zone("+07:00").format(dateFormat).toString();
+      }
       await User.updateUser(data._id, {
         name,
         name_surname,
         address,
         sex,
         phone,
-        birth,
+        newBirth,
         email,
       });
       Toast("success", "Update success");

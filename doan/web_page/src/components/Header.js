@@ -75,7 +75,7 @@ const Header = () => {
             <FiShoppingCart className="infor-icon" style={{ color: "black" }} />
           </Link>
 
-          <h5 className="infor-money">{cartState.total || 0}đ</h5>
+          <h5 className="infor-money">{cartState.total}đ</h5>
           <Link to="/profile" style={{ color: "black" }}>
             <AiOutlineUser className="infor-icon" />
           </Link>

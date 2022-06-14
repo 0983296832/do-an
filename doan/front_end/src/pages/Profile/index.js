@@ -57,6 +57,10 @@ const Profile = () => {
         formData.append("image", file);
         await Users.uploadImage(id, formData);
       }
+      let newBirth = birth;
+      if (typeof birth === "string") {
+        newBirth = moment(birth).zone("+07:00").format(dateFormat).toString();
+      }
       await Users.updateUser(id, {
         name,
         name_surname,
@@ -64,7 +68,7 @@ const Profile = () => {
         role,
         sex,
         phone,
-        birth,
+        newBirth,
         email,
       });
       Toast("success", "Update success");

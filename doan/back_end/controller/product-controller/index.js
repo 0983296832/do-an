@@ -56,7 +56,8 @@ exports.getDetail = async (req, res) => {
     const product = await productsDB
       .findById(req.params.id)
       .populate({ path: "image" })
-      .populate({ path: "supplier" });
+      .populate({ path: "supplier" })
+      .populate({ path: "comments" });
     return res.status(200).json({
       status: "200",
       message: "get product successfully",
