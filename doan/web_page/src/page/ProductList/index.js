@@ -20,7 +20,7 @@ const ProductList = () => {
   const [pageCount, setPageCount] = useState(0);
   // const [searchBy, setSearchBy] = useState("");
   const [sort, setSort] = useState("mặc định");
-  const [priceFilter, setPriceFilter] = useState([10, 7000]);
+  const [priceFilter, setPriceFilter] = useState([10, 3000]);
   const [sizeFilter, setSizeFilter] = useState("");
   const [colorFilter, setColorFilter] = useState("");
 

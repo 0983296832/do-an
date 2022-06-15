@@ -97,7 +97,7 @@ exports.login = async (req, res) => {
       { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "60s",
       }
     );
     const refreshToken = jwt.sign(
@@ -154,7 +154,7 @@ exports.refreshToken = async (req, res) => {
       { _id, name, email, role },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "60s",
       }
     );
     const newRefreshToken = jwt.sign(

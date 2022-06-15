@@ -84,7 +84,7 @@ module.exports = function (query, queryString) {
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(
-      /\b(gte|gt|lt|lte|regex|elemMatch)\b/g,
+      /\b(gte|gt|lt|lte|regex|elemMatch|eq)\b/g,
       (match) => "$" + match
     );
 

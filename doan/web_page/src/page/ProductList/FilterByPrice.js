@@ -28,7 +28,7 @@ const FilterByPrice = ({ priceFilter, setPriceFilter }) => {
         <Box sx={{ width: 200 }}>
           <Slider
             min={10}
-            max={7000}
+            max={3000}
             value={price}
             onChange={handleChangePrice}
           />

@@ -187,7 +187,7 @@ const DetailsProduct = () => {
             <ProductImagesSlider images={productImages} />
           </div>
           <div className="details-right">
-            <Details data={detail} loading={loading} />
+            <Details data={detail} loading={loading} id={id} />
           </div>
         </div>
         <div className="details-desc">

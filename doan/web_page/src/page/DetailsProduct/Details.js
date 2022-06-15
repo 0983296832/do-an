@@ -8,7 +8,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
 import Toast from "../../components/Toast";
 
-const Details = ({ data, loading }) => {
+const Details = ({ data, loading, id }) => {
   const { addToCart } = useContext(CartContext);
   const { auth } = useContext(AuthContext);
   const [activeSize, setActiveSize] = useState();
@@ -124,6 +124,7 @@ const Details = ({ data, loading }) => {
           onClick={() =>
             handleAddToCart({
               user_id: auth.data ? auth?.data._id : "",
+              product_id: id,
               product_code: data?.product_code,
               product_name: data?.title,
               product_price: data?.priceSale,

@@ -90,7 +90,6 @@ const Home = () => {
     }
     setLoading(false);
   };
-  console.log(data.slice(0, 10));
   useEffect(() => {
     getData();
   }, []);
