@@ -76,6 +76,7 @@ exports.order = async (req, res) => {
       shipping_unit: req.body.shipping_unit,
       shipping_fee: req.body.shipping_fee,
       note: req.body.note,
+      user_id: req.body.details[0].user_id,
     });
     const savedOrder = await order.save();
     if (req.params.id != "random") {

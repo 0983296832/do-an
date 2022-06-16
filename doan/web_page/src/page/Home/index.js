@@ -9,6 +9,8 @@ import Address from "./Address";
 import Loading from "../../components/Loading";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
+import { BackTop } from "antd";
+import { UpCircleOutlined } from "@ant-design/icons";
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -104,6 +106,11 @@ const Home = () => {
         <ProductView data={data.slice(10, 20)} title="Giày Adidas" />
         <ProductView data={data.slice(20, 30)} title="Giày Vans" />
         <FeedBack />
+        <BackTop>
+          <div style={style}>
+            <UpCircleOutlined />
+          </div>
+        </BackTop>
         <Post />
         <Address />
       </div>
@@ -111,3 +118,14 @@ const Home = () => {
 };
 
 export default Home;
+
+const style = {
+  height: 40,
+  width: 40,
+  lineHeight: "40px",
+  borderRadius: "50%",
+  backgroundColor: "#1088e9",
+  color: "#fff",
+  textAlign: "center",
+  fontSize: 25,
+};

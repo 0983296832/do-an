@@ -24,8 +24,7 @@ exports.getAll = async (req, res) => {
       productsDB
         .find()
         .populate({ path: "image" })
-        .populate({ path: "orders" })
-        .populate({ path: "carts" }),
+        .populate({ path: "supplier" }),
       req.query
     )
       .sorting()

@@ -128,6 +128,7 @@ const ProductManagement = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "_id",
         };
       } else {
         const key = searchBy + "[regex]";
@@ -135,6 +136,7 @@ const ProductManagement = () => {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          sort: "_id",
         };
       }
       const result = await Products.getProducts(params);

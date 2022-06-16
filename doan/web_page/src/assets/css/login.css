@@ -99,6 +99,14 @@
     right: 0;
     transform: translate(-50%,-50%)
   }
+  .noti-icon{
+    position: absolute;
+    font-size:17px;
+    color: #eb1708;
+    top: 50%;
+    right: -10%;
+    transform: translate(-50%,-50%)
+  }
   .pass-icon{
     position: absolute;
     font-size:27px;
@@ -138,4 +146,8 @@
   }
   .social-icon:first-child{
     color: #397ff9;
+  }
+
+  .login-form p{
+    margin-bottom:0px !important;
   }

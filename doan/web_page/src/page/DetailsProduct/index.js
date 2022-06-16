@@ -176,7 +176,7 @@ const DetailsProduct = () => {
       setLoading(false);
     };
     getDetail();
-  }, []);
+  }, [id]);
   if (loading) {
     return <Loading />;
   } else

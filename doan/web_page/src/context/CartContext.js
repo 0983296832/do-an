@@ -71,7 +71,6 @@ const CartProvider = ({ children }) => {
           });
         }
       } else {
-        console.log(item);
         dispatch({
           type: "ADD_TO_CART_SUCCESS",
           payload: { ...item, _id: uuidv4() },

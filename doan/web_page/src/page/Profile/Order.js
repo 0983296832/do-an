@@ -92,7 +92,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
           loading={loading}
           title={`Chi tiết đơn hàng : ${data?._id}`}
         >
-          <DetailOrder data={data} />
+          <DetailOrder data={data} setOrder={setOrder} orders={orders} />
         </Modal>
       </div>
     );

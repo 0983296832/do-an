@@ -316,6 +316,8 @@ exports.addToCart = async (req, res) => {
         product_quantity: req.body.product_quantity,
         product_color: req.body.product_color,
         product_size: req.body.product_size,
+        product_category: req.body.product_category,
+        product_brand: req.body.product_brand,
       });
       const cartSaved = await cart.save();
       usersDB.findById(req.params.id).then((result, err) => {

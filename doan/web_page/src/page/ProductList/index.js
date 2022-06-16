@@ -8,11 +8,12 @@ import FilterByColor from "./FilterByColor";
 import { useParams } from "react-router-dom";
 import Toast from "../../components/Toast";
 import Products from "../../services/productServices";
-
+import queryString from "query-string";
 import { Divider } from "antd";
 import Loading from "../../components/Loading";
 
 const ProductList = () => {
+  const sumQuery = queryString.parse(window.location.search);
   const { type } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,8 +26,44 @@ const ProductList = () => {
   const [colorFilter, setColorFilter] = useState("");
 
   const getData = async (pageNum) => {
+    if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
+      setLoading(true);
+      try {
+        let params = {
+          page: pageNum,
+          limit: 12,
+          ["brand[regex]"]: sumQuery.brand == "tất cả" ? "" : sumQuery.brand,
+          ["name[regex]"]: sumQuery.name,
+          sort: sort === "mặc định" ? "" : sort,
+          ["price[gte]"]: priceFilter[0] * 1000,
+          ["price[lte]"]: priceFilter[1] * 1000,
+          ["detailsSize[elemMatch]"]: sizeFilter,
+          ["detailsColor[elemMatch]"]: colorFilter,
+        };
+        const { data } = await Products.getProducts(params);
+        setPageCount(Math.ceil(data.count / 10));
+        setData(
+          data.data.map((item) => {
+            return {
+              id: item._id,
+              title: item.name,
+              image: item.image[0].imageUrl,
+              price: item.price,
+              category: item.category,
+              rate: item.rate || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+            };
+          })
+        );
+      } catch (error) {
+        Toast("error", error.message);
+      }
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-
     try {
       let params = {
         page: pageNum,
@@ -92,7 +129,7 @@ const ProductList = () => {
         </div>
         <div className="list-right">
           <ProductView
-            title="Giày Nike"
+            title={`Giày ${type || ""}`}
             data={data}
             btn={false}
             pagination

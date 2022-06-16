@@ -11,7 +11,7 @@ const SignUpForm = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm(); 
   const watchFields = watch(["password", "confirm_password"]);
   const onRegister = async ({ confirm_password, ...rest }) => {
     const sendData = { role: 2, ...rest };

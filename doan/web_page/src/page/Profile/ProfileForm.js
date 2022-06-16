@@ -30,7 +30,7 @@ const EditUser = ({ data, loading }) => {
       setAddress(data?.address);
       setName_surname(data?.name_surname);
     }
-  }, []);
+  }, [data]);
 
   const saveData = async (e) => {
     e.preventDefault();

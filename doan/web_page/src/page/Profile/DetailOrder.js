@@ -2,22 +2,77 @@ import React from "react";
 import { Divider, Steps, Tag, Tooltip } from "antd";
 
 import Loading from "../../components/Loading";
+import Orders from "../../services/orderServices";
+import Toast from "../../components/Toast";
+import { Link } from "react-router-dom";
 const { Step } = Steps;
 
-const DetailOrder = ({ data, loading }) => {
+const DetailOrder = ({ data, loading, orders, setOrder }) => {
+  const stepData = [
+    "đặt hàng",
+    "đang chờ xác nhận",
+    "đã xác nhận",
+    "đang đợi gói hàng",
+    "đang giao hàng",
+    "giao hàng thành công",
+  ];
+  const handleCancel = async () => {
+    try {
+      await Orders.cancelOrder(data._id, { state: "đã hủy" });
+      setOrder(
+        orders.map((item) => {
+          if (item._id === data._id) {
+            return { ...item, state: "đã hủy" };
+          } else return item;
+        })
+      );
+      Toast("success", "Đã hủy đơn hàng thành công");
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
   if (loading) {
     return <Loading />;
   } else
     return (
       <div>
-        <HandleStep state={data.state} />
+        {data.state === "đã hủy" ? (
+          <Steps size="small" current={2} status="error">
+            <Step title="Đăt hàng" />
+            <Step title="Đang chờ xác nhận" />
+            <Step title="Đã hủy" />
+          </Steps>
+        ) : data.state == "giao hàng không thành công" ? (
+          <Steps size="small" current={6} status="error">
+            <Step title="Đăt hàng" />
+            <Step title="Đang chờ xác nhận" />
+            <Step title="Đã xác nhận" />
+            <Step title="Đang đợi gói hàng" />
+            <Step title="Đang giao hàng" />
+            <Step title="Giao hàng thành công" />
+            <Step title="Giao hàng không thành công" />
+          </Steps>
+        ) : (
+          <Steps
+            size="small"
+            current={stepData.indexOf(data.state.trim())}
+            status="finish"
+          >
+            <Step title="Đăt hàng" />
+            <Step title="Đang chờ xác nhận" />
+            <Step title="Đã xác nhận" />
+            <Step title="Đang đợi gói hàng" />
+            <Step title="Đang giao hàng" />
+            <Step title="Giao hàng thành công" />
+          </Steps>
+        )}
         <div
           style={{
             backgroundColor: "#f7f7f796",
             padding: "0 12px 12px 12px",
             marginTop: 15,
-            fontSize:"16px",
-            color:"#464646"
+            fontSize: "16px",
+            color: "#464646",
           }}
         >
           <div className="letter"></div>
@@ -98,6 +153,25 @@ const DetailOrder = ({ data, loading }) => {
               )}
               đ
             </h4>
+          </div>
+        </div>
+        <div className="order-item-btn-group" style={{ marginTop: 17 }}>
+          <div className="order-item-btn">
+            {data?.state === "đang chờ xác nhận" ? (
+              <button className="btn-cancel" onClick={handleCancel}>
+                Hủy
+              </button>
+            ) : (
+              <div style={{ margin: "5px 0" }}>
+                <Link to="/" className="btn-cancel">
+                  Mua lại
+                </Link>
+
+                <Link to="/" className="btn-cancel">
+                  Đánh giá
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -181,55 +255,4 @@ const TagRender = ({ state }) => {
       break;
   }
   return <Tag color={colorTag}>{state}</Tag>;
-};
-
-const HandleStep = ({ state }) => {
-  let current;
-  switch (state) {
-    case "đang chờ xác nhận":
-      current = 0;
-    case "đang đợi gói hàng":
-      current = 1;
-    case "đã xác nhận":
-      current = 2;
-    case "đang giao hàng":
-      current = 3;
-    case "giao hàng thành công":
-      current = 4;
-    case "giao hàng không thành công":
-      current = 5;
-  }
-  if (state === "đã hủy")
-    return (
-      <Steps size="small" current={2} status="error">
-        <Step title="Đăt hàng" />
-        <Step title="Đang chờ xác nhận" />
-        <Step title="Đã hủy" />
-      </Steps>
-    );
-  else
-    return (
-      <Steps
-        size="small"
-        current={current}
-        status={current === 5 ? "error" : "finish"}
-      >
-        <Step title="Đăt hàng" />
-        <Step title="Đang chờ xác nhận" />
-        {state === "giao hàng không thành công" ? (
-          <>
-            <Step title="Đã được xác nhận" />
-            <Step title="Đang giao hàng" />
-            <Step title="Giao hàng thành công" />
-            <Step title="Giao hàng không thành công" />
-          </>
-        ) : (
-          <>
-            <Step title="Đã được xác nhận" />
-            <Step title="Đang giao hàng" />
-            <Step title="Giao hàng thành công" />
-          </>
-        )}
-      </Steps>
-    );
 };
