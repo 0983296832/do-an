@@ -34,6 +34,7 @@ const Product = ({ data }) => {
           <div className="product-price">
             {data.sale && <h4 className="sale">{data.price}đ</h4>}
             <h4>{data.priceSale}đ</h4>
+            {/* <h4>{data.sales} lượt bán</h4> */}
           </div>
         </div>
       </Link>

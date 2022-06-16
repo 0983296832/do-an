@@ -40,6 +40,12 @@ const userColumns = [
     width: 150,
   },
   {
+    field: "address",
+    headerName: "Dia chi",
+    width: 150,
+  },
+
+  {
     field: "status",
     headerName: "Status",
     width: 160,
@@ -71,6 +77,13 @@ const Datatable = () => {
           page: pageNum,
           limit: 10,
         };
+      } else if (searchBy === "age" || searchBy === "height") {
+        const key = searchBy + "[eq]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: Number(searchKey),
+        };
       } else {
         const key = searchBy + "[regex]";
         params = {
@@ -80,18 +93,22 @@ const Datatable = () => {
         };
       }
       const result = await UserService.getUsers(params);
+      console.log(result);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(({ id, email, name, image, status, phone }) => {
-          return {
-            id: id,
-            email: email,
-            user: name,
-            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-            status: status,
-            phone: phone,
-          };
-        })
+        result.result.map(
+          ({ id, email, name, image, status, phone, address }) => {
+            return {
+              id: id,
+              email: email,
+              user: name,
+              img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+              status: status,
+              phone: phone,
+              address,
+            };
+          }
+        )
       );
     } catch (error) {
       Toast("error", error.message);
@@ -114,26 +131,43 @@ const Datatable = () => {
     }
 
     setLoading(true);
-    const key = searchBy + "[regex]";
     try {
-      const params = {
-        page: 1,
-        limit: 10,
-        [key]: searchKey,
-      };
+      // const key = searchBy + "[regex]";
+      let params;
+      if (searchBy === "all") {
+        setSearchKey("");
+        params = {
+          limit: 10,
+        };
+      } else if (searchBy === "age" || searchBy === "height") {
+        const key = searchBy + "[eq]";
+        params = {
+          limit: 10,
+          [key]: Number(searchKey),
+        };
+      } else {
+        const key = searchBy + "[regex]";
+        params = {
+          limit: 10,
+          [key]: searchKey,
+        };
+      }
       const result = await UserService.getUsers(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(({ id, email, name, image, status, phone }) => {
-          return {
-            id: id,
-            email: email,
-            user: name,
-            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-            status: status,
-            phone: phone,
-          };
-        })
+        result.result.map(
+          ({ id, email, name, image, status, phone, address }) => {
+            return {
+              id: id,
+              email: email,
+              user: name,
+              img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+              status: status,
+              phone: phone,
+              address,
+            };
+          }
+        )
       );
     } catch (error) {
       Toast("error", error.message);

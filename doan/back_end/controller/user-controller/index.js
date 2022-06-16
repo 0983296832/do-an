@@ -6,6 +6,7 @@ const cloudinary = require("../../helper/cloudinaryConfig");
 const ImageModel = require("../../models/user/imageModel");
 const Features = require("../../lib/feature");
 
+// tìm tất cả user
 exports.findAll = async (req, res) => {
   try {
     const features = new Features(
@@ -40,35 +41,16 @@ exports.findAll = async (req, res) => {
     const users = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
 
+    // chỉ hiện những thông tin cần thiết trừ mật khẩu
     return res.status(200).json({
       status: "200",
       message: "get all user successfully!",
       result: users.map((i) => {
-        const {
-          _id: id,
-          name,
-          name_surname,
-          email,
-          role,
-          comments,
-          orders,
-          status,
-          image,
-          phone,
-          sex,
-        } = i;
+        const { _id: id, ...rest } = i;
+        const { password, ...last } = rest._doc;
         return {
           id,
-          name,
-          name_surname,
-          email,
-          role,
-          comments,
-          orders,
-          status,
-          image,
-          phone,
-          sex,
+          ...last,
         };
       }),
       count,
@@ -81,6 +63,7 @@ exports.findAll = async (req, res) => {
     });
   }
 };
+// tìm theo email
 exports.findByEmail = async (req, res) => {
   if (!req.body.email) {
     return res.status(400).json({
@@ -105,6 +88,7 @@ exports.findByEmail = async (req, res) => {
   }
 };
 
+// tìm theo id
 exports.findById = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).json({
@@ -132,6 +116,8 @@ exports.findById = async (req, res) => {
     });
   }
 };
+
+// update người dùng
 exports.updateById = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).json({
@@ -141,6 +127,8 @@ exports.updateById = async (req, res) => {
     });
   }
 
+  // nếu trong body gửi từ client đến server có pass thì sẽ mã hóa và lưu trong db
+  // ngược lại sẽ thay đổi như bt
   let newBody;
   if (req.body.password) {
     //validate the password
@@ -157,6 +145,7 @@ exports.updateById = async (req, res) => {
     newBody = { ...req.body };
   }
 
+  // update trong db
   try {
     const data = await usersDB.findByIdAndUpdate(req.params.id, newBody, {
       useFindAndModify: false,
@@ -176,12 +165,13 @@ exports.updateById = async (req, res) => {
   }
 };
 
+// đổi mật khẩu
 exports.changePassword = async (req, res) => {
   try {
     const user = await usersDB.findById(req.params.id);
     if (!user)
       return res.status(400).json({ status: "400", message: "user not found" });
-    //check password
+    //check password nếu mật khẩu cũ giống trong dtb thì sẽ cho update
     const validPass = await bcrypt.compare(
       req.body.old_password,
       user.password
@@ -206,6 +196,8 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+
+// xóa người dùng theo mã
 exports.deleteById = async (req, res) => {
   if (!req.params.id) {
     return res.status(400).json({
@@ -227,6 +219,7 @@ exports.deleteById = async (req, res) => {
   }
 };
 
+// upload ảnh
 exports.upload = async (req, res) => {
   if (!req.body) {
     return res
@@ -250,6 +243,7 @@ exports.upload = async (req, res) => {
     await ImageModel.deleteOne({ user_id: id });
     // Save img
     const image = await newImage.save();
+    // lưu trong db người dùng
     usersDB.findById(id, (err, result) => {
       if (err) {
         return res.status(500).json({
@@ -268,6 +262,7 @@ exports.upload = async (req, res) => {
     return res.status(400).json({ status: "400", message: err.message });
   }
 };
+// xóa image
 exports.deleteImage = async (req, res) => {
   try {
     const imageId = req.params.id;
@@ -295,13 +290,16 @@ exports.deleteImage = async (req, res) => {
   }
 };
 
+// thêm sản phẩm vào giỏ hàng
 exports.addToCart = async (req, res) => {
   try {
+    // tìm sản phẩm đã có trong giỏ hàng
     const cartItemExist = await cartsDB.find({
       product_code: req.body.product_code,
       product_color: req.body.product_color,
       product_size: req.body.product_size,
     });
+    // nếu có thì sẽ update số lượng và lưu lại
     if (cartItemExist.length > 0) {
       cartsDB
         .find({
@@ -320,6 +318,7 @@ exports.addToCart = async (req, res) => {
           }
         });
     } else {
+      // nếu không thì sẽ tạo 1 giỏ hàng mới
       const cart = new cartsDB({
         product_code: req.body.product_code,
         product_name: req.body.product_name,
@@ -330,6 +329,7 @@ exports.addToCart = async (req, res) => {
         product_size: req.body.product_size,
       });
       const cartSaved = await cart.save();
+      // sau đó thêm giỏ hàng vừa tạo vào db người dùng
       usersDB.findById(req.params.id).then((result, err) => {
         if (result) {
           result.carts.push(cartSaved);
@@ -352,8 +352,10 @@ exports.addToCart = async (req, res) => {
   }
 };
 
+// update giỏ hàng(số lượng)
 exports.updateCart = async (req, res) => {
   try {
+    // tìm và update số lượng sp
     await cartsDB.findByIdAndUpdate(req.params.id, {
       product_quantity: req.body.product_quantity,
     });
@@ -365,8 +367,10 @@ exports.updateCart = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
+// xóa sp trong giỏ
 exports.deleteCart = async (req, res) => {
   try {
+    // tìm trong giỏ hàng và người dùng r xóa
     await cartsDB.findByIdAndDelete(req.body.cart_id);
     await usersDB.findByIdAndUpdate(req.params.id, {
       $pull: { carts: req.body.cart_id },

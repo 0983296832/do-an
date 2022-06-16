@@ -17,11 +17,13 @@ import { useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Auth from "../services/authServices";
 import Toast from "./Toast";
-
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoSettingsSharp } from "react-icons/io5";
+//Menu
 const Wrapper = ({ children }) => {
   const { auth } = useContext(AuthContext);
-
   let location = useLocation();
+
   const data = [
     {
       title: "Main",
@@ -30,7 +32,11 @@ const Wrapper = ({ children }) => {
     {
       title: "Lists",
       children: [
-        { icon: <FaRegUser />, link: "Users", path: "/user" },
+        {
+          icon: <FaRegUser />,
+          link: "User",
+          path: "/user",
+        },
         { icon: <BiStoreAlt />, link: "Products", path: "/product" },
         { icon: <AiOutlineCreditCard />, link: "Orders", path: "/order" },
         { icon: <MdLocalShipping />, link: "Suppliers", path: "/supplier" },
@@ -45,7 +51,8 @@ const Wrapper = ({ children }) => {
     },
     {
       title: "Services",
-      children: [{ icon: <AiOutlineSetting />, link: "Settings", path: "/" }],
+      // children: [{ icon: <AiOutlineSetting />, link: "Settings", path: "/" }],
+      children: [{ icon: <IoSettingsSharp />, link: "Settings", path: "/" }],
     },
     {
       title: "User",
@@ -71,8 +78,9 @@ const Wrapper = ({ children }) => {
       <div>
         <div className="wrapper__layout">
           <div className="menu">
-            <div className="logo">logo</div>
+            <div className="logo"></div>
             <div className="side__bar">
+              {/* map data */}
               {data.map((item, index) => {
                 return (
                   <div key={index}>
@@ -88,16 +96,12 @@ const Wrapper = ({ children }) => {
                 <SearchInput />
               </div>
               <div className="header__option">
-                <div className="option__icon language__icon">
-                  <AiOutlineGlobal />
-                  <span style={{ fontSize: ".9rem" }}>English</span>
-                </div>
                 <div className="option__icon">
                   <BiMoon />
                 </div>
 
                 <div className="option__icon">
-                  <AiOutlineBell />
+                  <IoMdNotificationsOutline />
                 </div>
                 <div className="option__icon">
                   <BiMessageDots />
@@ -150,12 +154,22 @@ const Sidebar = ({ data }) => {
           return (
             <Link to={""} className="part__nav" key={index} onClick={logout}>
               {item.icon}
-              <span>{item.link}</span>
+              <span>
+                {item.link}
+                {item.extraIcon}
+              </span>
             </Link>
           );
         } else
           return (
-            <Link to={item.path} className="part__nav" key={index}>
+            <Link
+              to={item.path}
+              className="part__nav"
+              key={index}
+              // style={{
+              //   marginBottom: item.link === "User" && 30,
+              // }}
+            >
               {item.icon}
               <span>{item.link}</span>
             </Link>

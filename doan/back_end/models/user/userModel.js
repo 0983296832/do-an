@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema({
     max: 255,
     default: "",
   },
+  // age: {
+  //   type: Number,
+  // },
   email: {
     type: String,
     required: true,
@@ -26,6 +29,10 @@ const userSchema = new mongoose.Schema({
     min: 6,
   },
   phone: {
+    type: String,
+    default: "",
+  },
+  hobbie: {
     type: String,
     default: "",
   },

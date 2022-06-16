@@ -6,8 +6,10 @@ const commentDB = require("../../models/product/commentModel");
 const suppliersDB = require("../../models/product/supplierModel");
 const Features = require("../../lib/feature");
 
+// tìm tất cả sản phẩm
 exports.getAll = async (req, res) => {
   try {
+    //tìm sản phẩm
     const features = new Features(
       productsDB
         .find()
@@ -20,6 +22,7 @@ exports.getAll = async (req, res) => {
       .searching()
       .filtering();
 
+    //đếm sản phẩm vừa tìm được
     const counting = new Features(
       productsDB
         .find()
@@ -51,6 +54,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
+// tìm 1 sản phẩm
 exports.getDetail = async (req, res) => {
   try {
     const product = await productsDB
@@ -67,13 +71,16 @@ exports.getDetail = async (req, res) => {
   }
 };
 
+//sửa sản phẩm
 exports.updateProduct = async (req, res) => {
   try {
+    // ktra thông tin nhận từ client có trống hay không
     if (_.isEmpty(req.body)) {
       return res
         .status(400)
         .json({ status: "400", message: "body can not be empty" });
     }
+    // cập nhật nó theo thông tin vừa gửi
     const data = await productsDB.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
@@ -85,6 +92,7 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
+// xóa sản phẩm
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await productsDB.findById(req.params.id);
@@ -103,6 +111,7 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// tạo mới sản phẩm(không dùng đên)
 exports.create = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {
@@ -134,6 +143,7 @@ exports.create = async (req, res) => {
   }
 };
 
+// thêm ảnh cho sản phẩm
 exports.uploadProductImage = async (req, res) => {
   try {
     if (_.isEmpty(req.files)) {
@@ -141,6 +151,7 @@ exports.uploadProductImage = async (req, res) => {
         .status(400)
         .json({ status: "400", message: "body can not be empty" });
     }
+    // /ktra xem sản phẩm có hay chưa
     const productExists = await productsDB.findById(req.params.id);
     if (!productExists) {
       return res
@@ -148,6 +159,7 @@ exports.uploadProductImage = async (req, res) => {
         .json({ status: "400", message: "product not found" });
     }
 
+    //hàm upload ảnh lên cloudinary sau đó trả về các đường dẫn của ảnh
     const uploads = async (path) => {
       if (!path) return;
       const newPath = await cloudinary.uploader.upload(path, {
@@ -163,6 +175,7 @@ exports.uploadProductImage = async (req, res) => {
       return result;
     };
 
+    // gọi hàm upload ảnh lên cloudinary rồi lưu vào database
     let urls = [];
     const files = req.files;
     Promise.all(files.map((file) => uploads(file.path)))
@@ -201,6 +214,7 @@ exports.uploadProductImage = async (req, res) => {
   }
 };
 
+//comment sản phẩm
 exports.comment = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {
@@ -214,6 +228,7 @@ exports.comment = async (req, res) => {
       vote: req.body.vote,
     });
     const commentSaved = await comment.save();
+    // sau khi lưu comment vào dtb comment rồi sẽ lưu vào trong từng sản phẩm đc comment
     await productsDB.findById(req.params.id, (err, result) => {
       if (err) {
         return res.status(500).json({
@@ -235,6 +250,7 @@ exports.comment = async (req, res) => {
   }
 };
 
+// thêm sản phẩm
 exports.importProduct = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {
@@ -242,10 +258,12 @@ exports.importProduct = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "content can not be empty" });
     }
+    //tìm sản phẩm xem có tồn tại hay không
     const existProduct = await productsDB.findOne({
       product_code: req.body.product_code,
     });
     if (existProduct) {
+      // nếu có tồn tại thì sẽ tạo mới hóa đơn trong nhà cung cấp
       const newProductImport = new suppliersDB({
         name: req.body.name,
         supplier_name: req.body.supplier_name,
@@ -263,11 +281,13 @@ exports.importProduct = async (req, res) => {
       });
       const savedProductImport = await newProductImport.save();
       const { color, quantity, size } = savedProductImport;
+      // tìm đến sản phẩm đó và update các giá trị màu sz và số lượng
       const existColorAndSize = existProduct.details.find(
         (item) => item.color === color && item.size === size
       );
 
       let newDetails;
+      // nếu có tồn tại màu và sz trước đó r thì tăng số lượng
       if (existColorAndSize) {
         newDetails = existProduct.details.map((item) => {
           if (item.color === color && item.size === size) {
@@ -282,7 +302,7 @@ exports.importProduct = async (req, res) => {
       } else {
         newDetails = [...existProduct.details, { color, quantity, size }];
       }
-
+      //  ngược lại sẽ thêm màu và sz mới vào chi tiết sản phẩm
       productsDB
         .findOne({ product_code: req.body.product_code })
         .then((result, err) => {
@@ -311,6 +331,8 @@ exports.importProduct = async (req, res) => {
         data: result,
       });
     }
+
+    // ngược lại nếu sp chưa tồn tại thì tạo mới hóa đơn nhà cùng cấp và tạo sản phẩm mới
     const newProductImport = new suppliersDB({
       name: req.body.name,
       address: req.body.address,
@@ -359,6 +381,7 @@ exports.importProduct = async (req, res) => {
   }
 };
 
+// tìm nhà cung cấp
 exports.getSupplier = async (req, res) => {
   try {
     const features = new Features(suppliersDB.find(), req.query)
@@ -398,6 +421,7 @@ exports.getSupplier = async (req, res) => {
   }
 };
 
+// sửa nhà cung cấp
 exports.updateSupplier = async (req, res) => {
   try {
     const { id } = req.params;
@@ -428,6 +452,7 @@ exports.updateSupplier = async (req, res) => {
   }
 };
 
+//tăng lượt xem sản phẩm
 exports.increaseViews = async (req, res) => {
   try {
     await productsDB.findByIdAndUpdate(req.params.id, {

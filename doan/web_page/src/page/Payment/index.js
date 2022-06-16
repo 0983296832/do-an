@@ -36,7 +36,7 @@ const Payment = () => {
       !formValue.phone ||
       !formValue.address ||
       !formValue.email ||
-      cartState?.cartIdChecked?.length < 1
+      cartState?.cartIdChecked.length < 1
     ) {
       Toast("error", "Vui lòng nhập đầy đủ thông tin");
       return true;
@@ -56,6 +56,7 @@ const Payment = () => {
     };
 
     localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(body));
+    return false;
   };
   const onChange = (e) => {
     setValue(e.target.value);

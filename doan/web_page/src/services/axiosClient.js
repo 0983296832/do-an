@@ -39,7 +39,6 @@ axiosClient.interceptors.request.use(
         Toast("error", "login expired");
         localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
         window.location.href = "http://localhost:3000/login";
-        
         return;
       });
 

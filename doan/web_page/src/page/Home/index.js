@@ -45,10 +45,11 @@ const Home = () => {
                 image: item.image[0].imageUrl,
                 price: item.price,
                 category: item.category,
-                rate: item.rate || 0,
+                rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,
                 priceSale: item.price * ((100 - item.discount) / 100),
+                sales: item.sales,
               };
             })
           : {};
@@ -61,10 +62,11 @@ const Home = () => {
                 image: item.image[0].imageUrl,
                 price: item.price,
                 category: item.category,
-                rate: item.rate || 0,
+                rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,
                 priceSale: item.price * ((100 - item.discount) / 100),
+                sales: item.sales,
               };
             })
           : {};
@@ -77,10 +79,11 @@ const Home = () => {
                 image: item.image[0].imageUrl,
                 price: item.price,
                 category: item.category,
-                rate: item.rate || 0,
+                rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,
                 priceSale: item.price * ((100 - item.discount) / 100),
+                sales: item.sales,
               };
             })
           : [];

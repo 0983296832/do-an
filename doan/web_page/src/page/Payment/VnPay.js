@@ -25,7 +25,7 @@ function sortObject(o) {
   return sorted;
 }
 
-const VnPay = ({ monney, storeOrder, disabled }) => {
+const VnPay = ({ monney, storeOrder }) => {
   const onSubmit = async () => {
     const error = storeOrder();
     if (error) return;

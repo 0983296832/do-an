@@ -47,6 +47,24 @@ module.exports = function (query, queryString) {
 
     const excludedFields = ["page", "sort", "limit", "search", "searchName"];
     excludedFields.forEach((el) => delete queryObj[el]);
+    if (queryObj.detailsSize) {
+      if (queryObj.detailsSize.elemMatch != "") {
+        queryObj.details = {
+          elemMatch: { size: queryObj.detailsSize.elemMatch },
+        };
+      } else {
+        delete queryObj.detailsSize;
+      }
+    }
+    if (queryObj.detailsColor) {
+      if (queryObj.detailsColor.elemMatch != "") {
+        queryObj.details = {
+          elemMatch: { color: queryObj.detailsColor.elemMatch },
+        };
+      } else {
+        delete queryObj.detailsColor;
+      }
+    }
     // let queryStr;
     // if (queryObj.price) {
     //   const regex = /\d+/g;
@@ -63,12 +81,15 @@ module.exports = function (query, queryString) {
     // } else {
     //   queryStr = JSON.stringify(queryObj);
     // }
+
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(
-      /\b(gte|gt|lt|lte|regex)\b/g,
+      /\b(gte|gt|lt|lte|regex|elemMatch|eq)\b/g,
       (match) => "$" + match
     );
+
     this.query = this.query.find(JSON.parse(queryStr));
+    console.log(JSON.parse(queryStr));
     return this;
   };
   //localhost:3000/product/get-all?price[gte]=300&price[lte]=10000

@@ -8,11 +8,9 @@ import {
   Slider,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Button } from "antd";
 
-const FilterByPrice = () => {
-  const [price, setPrice] = React.useState([200, 3000]);
-
+const FilterByPrice = ({ priceFilter, setPriceFilter }) => {
+  const [price, setPrice] = React.useState(priceFilter);
   const handleChangePrice = (event, newValue) => {
     setPrice(newValue);
   };
@@ -30,7 +28,7 @@ const FilterByPrice = () => {
         <Box sx={{ width: 200 }}>
           <Slider
             min={10}
-            max={7000}
+            max={3000}
             value={price}
             onChange={handleChangePrice}
           />
@@ -45,7 +43,12 @@ const FilterByPrice = () => {
               margin: "10px 0",
             }}
           >
-            <button className="filter-btn">Lọc</button>
+            <button
+              className="filter-btn"
+              onClick={() => setPriceFilter(price)}
+            >
+              Lọc
+            </button>
           </div>
         </Box>
       </AccordionDetails>

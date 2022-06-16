@@ -9,12 +9,15 @@ const {
 const sendEmail = require("../../untils/sendEmail");
 const { passwordValidation } = require("../../validate/validate");
 
+// lưu refreshToken
 let arrRefreshToken = [];
+// tạo mã code mỗi 2p 1 lần
 let code = 600494;
 setInterval(() => {
   code = Math.floor(100000 + Math.random() * 900000);
 }, 120000);
 
+// đăng ký
 exports.register = async (req, res) => {
   if (_.isEmpty(req.body)) {
     return res.status(400).json({
@@ -60,6 +63,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// đăng nhập
 exports.login = async (req, res) => {
   if (_.isEmpty(req.body)) {
     return res.status(400).json({
@@ -100,6 +104,7 @@ exports.login = async (req, res) => {
         expiresIn: "20s",
       }
     );
+    // tạo refreshToken và lưu vào cookie
     const refreshToken = jwt.sign(
       { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_REFRESH,
@@ -107,6 +112,7 @@ exports.login = async (req, res) => {
         expiresIn: "365d",
       }
     );
+    // lưu vào trong mảng refreshToken ở trên đầu
     arrRefreshToken.push(refreshToken);
     res.header("auth-token", token);
     res.cookie("refreshToken", refreshToken, {
@@ -128,22 +134,28 @@ exports.login = async (req, res) => {
   }
 };
 
+// refreshToken
 exports.refreshToken = async (req, res) => {
   if (!req.headers?.cookie) {
     return res
       .status(400)
       .json({ status: 400, message: "You are not authenticated" });
   }
+  // lấy refreshToken từ cookie
   const refreshToken = req.headers?.cookie.substring(
     req.headers.cookie.indexOf("=") + 1
   );
+  //nếu ko có refreshToken thì báo chưa dăng nhập
   if (!refreshToken) {
     return res
       .status(400)
       .json({ status: 400, message: "You are not authenticated" });
   }
+  // ktra nếu ko có trong mảng trên thì báo lỗi
   if (!arrRefreshToken.includes(refreshToken))
     return res.status(400).json({ status: 400, message: "Token is not valid" });
+
+  // ngược lại sẽ tạo token mới và refreshToken mối
   jwt.verify(refreshToken, process.env.TOKEN_REFRESH, (err, user) => {
     if (err) {
       return res.status(400).json({ status: 400, message: err.message });
@@ -180,12 +192,15 @@ exports.refreshToken = async (req, res) => {
   });
 };
 
+// đăng xuất
 exports.logout = (req, res) => {
   res.removeHeader("auth-token");
   return res.status(200).json({ status: "200", message: "logout success" });
 };
+
+//quên mật khẩu
 exports.forgotPassword = async (req, res) => {
-  // Send Email to email provided but first check if user exists
+  // ktra email có tồn tại hay không
   const { email } = req.body;
 
   try {
@@ -202,7 +217,7 @@ exports.forgotPassword = async (req, res) => {
       <h1>You have requested a password reset</h1>
       <h1>Your code: ${code}</h1> 
     `;
-
+    // gửi email
     try {
       await sendEmail({
         to: user.email,
@@ -221,6 +236,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+// check mã otp trong email ktra nếu giống code đã tạo bên trên thì cho đổi mk
 exports.checkOtp = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {
@@ -241,7 +257,7 @@ exports.checkOtp = async (req, res) => {
     res.status(400).json({ status: 400, message: "code is not correct" });
   }
 };
-
+// đỏi mật khẩu
 exports.resetPassword = async (req, res) => {
   try {
     const user = await usersDB.findOne({ email: req.body.email });

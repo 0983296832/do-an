@@ -28,6 +28,7 @@ const ListTable = ({
   noImg,
   noOrder,
   setData,
+  noAmount,
 }) => {
   const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
@@ -55,6 +56,9 @@ const ListTable = ({
           </Select.Option>
           <Select.Option value="giao hàng thành công">
             giao hàng thành công
+          </Select.Option>
+          <Select.Option value="giao hàng không thành công">
+            giao hàng không thành công
           </Select.Option>
           <Select.Option value="đã hủy">đã hủy</Select.Option>
         </Select>
@@ -265,6 +269,7 @@ const ListTable = ({
       key: "amount",
       width: 150,
       editable: false,
+      hidden: noAmount,
     },
     {
       title: "Payment Type",
@@ -318,8 +323,14 @@ const ListTable = ({
           case "giao hàng thành công":
             colorTag = "green";
             break;
+          case "giao hàng không thành công":
+            colorTag = "purple";
+            break;
           case "đã hủy":
             colorTag = "red";
+            break;
+          default:
+            colorTag = "pink";
             break;
         }
         return <Tag color={colorTag}>{record.state}</Tag>;

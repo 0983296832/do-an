@@ -143,7 +143,7 @@ const DetailsProduct = () => {
           price: data.data.data.product.price,
           brand: data.data.data.product.brand,
           category: data.data.data.product.category,
-          rate: data.data.data.product.rate || 0,
+          rate: data.data.data.product.votes,
           title: data.data.data.product.name,
           image: data.data.data.product.image[0].imageUrl,
           priceSale:
@@ -151,6 +151,7 @@ const DetailsProduct = () => {
             ((100 - data.data.data.product.discount) / 100),
           comments: data.data.data.product.comments.length,
           sales: data.data.data.product.sales,
+          material: data.data.data.product.material,
           size: [...new Set(data.data.data.product.details.map((i) => i.size))],
           color: [
             ...new Set(data.data.data.product.details.map((i) => i.color)),

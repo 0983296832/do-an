@@ -113,8 +113,8 @@ const Home = () => {
           result[1].status === "fulfilled" ? result[1].value.count : {};
         const order =
           result[2].status === "fulfilled" ? result[2].value.data : [];
-        setNumbers([user, product, 500, 500]);
-        const numberArr = [user, product, 500, 500];
+        setNumbers([user, product, 500, 10000]);
+        const numberArr = [user, product, 500, 10000];
         setData(
           dataOriginal.map((item, index) => {
             return {

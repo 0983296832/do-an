@@ -5,6 +5,7 @@ const Features = require("../../lib/feature");
 
 const _ = require("lodash");
 
+// tạo mới order
 exports.order = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {
@@ -12,16 +13,18 @@ exports.order = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
+    // hàm để tìm sản phẩm và update số lượng sp
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
         product_code: item.product_code,
       });
+      //  kiểm tra nếu có người dùng thì sẽ xóa nhưng sp vừa order ra khỏi giỏ hàng
       if (req.params.id != "random") {
         await usersDB.findByIdAndUpdate(req.params.id, {
           $pull: { carts: item._id },
         });
       }
-
+      // tìm sản phẩm và giảm số lượng sản phẩm đó đồng thời tăng số lương đã bán
       product.details.map(async (i) => {
         if (i.color == item.color && i.size == item.size) {
           const newItem = { ...i, quantity: i.quantity - item.quantity };
@@ -47,6 +50,7 @@ exports.order = async (req, res) => {
         }
       });
     };
+    // gọi hàm trên
     Promise.all(
       req.body.details
         .map((item) => {
@@ -62,6 +66,7 @@ exports.order = async (req, res) => {
         })
         .map((item) => findByIdAndUpdateProduct(item))
     );
+    // tạo order trong dtb order
     const order = new ordersDB({
       details: req.body.details,
       name: req.body.name,
@@ -76,6 +81,8 @@ exports.order = async (req, res) => {
       note: req.body.note,
     });
     const savedOrder = await order.save();
+    // sau khi lưu xong sẽ kiểm tra nếu có người dùng sẽ tìm và thêm order cho ng dùng đó
+    // ngược lại thì chỉ tạo order trong dtb và không lưu cho ai cả
     if (req.params.id != "random") {
       usersDB.findById(req.params.id).then((result, err) => {
         if (err) {
@@ -101,6 +108,7 @@ exports.order = async (req, res) => {
   }
 };
 
+// tìm tất cả order
 exports.getAll = async (req, res) => {
   try {
     const features = new Features(ordersDB.find(), req.query)
@@ -136,6 +144,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
+// update các thông tin của order chỉ cho update tên sđt email và trạng thái đơn hàng
 exports.update = async (req, res) => {
   try {
     if (_.isEmpty(req.body)) {

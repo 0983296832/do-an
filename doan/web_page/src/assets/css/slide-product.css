@@ -9,6 +9,9 @@
     left: 0; */
     width: 100%;
   }
+  figure{
+    width: 100% !important;
+  }
   .product-images-slider .swiper-button-prev {
     left: 0;
     color: #000;

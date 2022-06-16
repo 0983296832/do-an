@@ -41,6 +41,7 @@ const productColumns = [
     headerName: "Category",
     width: 100,
   },
+
   {
     field: "brand",
     headerName: "Brand",
@@ -86,6 +87,7 @@ const productColumns = [
     headerName: "Views",
     width: 100,
   },
+
   {
     field: "votes",
     headerName: "Votes",
