@@ -39,7 +39,7 @@ const SignUpForm = () => {
         <input
           type="email"
           placeholder="Email"
-          autoComplete="off"
+          autoComplete={+false}
           {...register("email", { required: true })}
         />
       </div>

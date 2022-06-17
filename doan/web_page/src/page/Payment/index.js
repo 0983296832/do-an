@@ -10,10 +10,13 @@ import VnPay from "./VnPay";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import Product from "../../services/productServices";
-import { LOCAL_STORAGE_ORDER_KEY } from "../../constant/constant";
+import {
+  LOCAL_STORAGE_CART_KEY,
+  LOCAL_STORAGE_ORDER_KEY,
+} from "../../constant/constant";
 
 const Payment = () => {
-  const { cartState, removeFromCart } = useContext(CartContext);
+  const { cartState, removeFromCart, setCart } = useContext(CartContext);
   const { auth } = useContext(AuthContext);
   const [value, setValue] = useState(1);
   const [formValue, setFormValue] = useState({});
@@ -53,6 +56,7 @@ const Payment = () => {
       shipping_unit: "GHN",
       shipping_fee: 25000,
       state: "đang chờ xác nhận",
+      cart: cartState.cartIdChecked,
     };
 
     localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(body));
@@ -64,12 +68,14 @@ const Payment = () => {
   const payment = async () => {
     const sumQuery = queryString.parse(window.location.search);
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
-      const body = JSON.parse(localStorage.getItem(LOCAL_STORAGE_ORDER_KEY));
+      const { cart, ...body } = JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_ORDER_KEY)
+      );
       if (body?.details.length > 0) {
         if (auth.token) {
           await Product.createOrder(auth.data._id, body);
         } else await Product.createOrder("random", body);
-        cartState.cartIdChecked.map((item) => removeFromCart(item, "noToast"));
+        cart.map((item) => removeFromCart(item, "noToast"));
         navigate("/payment-success");
         Toast("success", "Đặt hàng thành công");
         return;

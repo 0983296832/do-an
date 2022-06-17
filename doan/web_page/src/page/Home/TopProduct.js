@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../assets/css/top-product.css";
 import "antd/dist/antd.css";
 import { Tabs } from "antd";
 import Product from "../../components/Product";
+import { Link } from "react-router-dom";
 const { TabPane } = Tabs;
 
 const TopProduct = ({ data }) => {
+  const [tabIndex, seTabIndex] = useState(0);
   const onChange = (key) => {
-    console.log(key);
+    seTabIndex(key);
   };
   return (
     <div>
@@ -16,10 +18,10 @@ const TopProduct = ({ data }) => {
         <h1>Giày Thể Thao</h1>
       </div>
       <div>
-        <Tabs defaultActiveKey="1" centered>
+        <Tabs defaultActiveKey="1" centered onChange={onChange}>
           <TabPane tab="Hot Và Mới" key="1">
             <div className="top-product">
-              {data.map((item, index) => {
+              {data.slice(0, 10).map((item, index) => {
                 return (
                   <div key={index}>
                     <Product data={item} />
@@ -30,7 +32,7 @@ const TopProduct = ({ data }) => {
           </TabPane>
           <TabPane tab="Sales" key="2">
             <div className="top-product">
-              {data.map((item, index) => {
+              {data.slice(10, 20).map((item, index) => {
                 return (
                   <div key={index}>
                     <Product data={item} />
@@ -47,9 +49,14 @@ const TopProduct = ({ data }) => {
             justifyContent: "center",
           }}
         >
-          <a href="#" className="view-btn">
+          <Link
+            to={`/product-list-search?name=&brand=tất cả&sort=${
+              tabIndex === 0 ? "-sale" : "-discount"
+            }`}
+            className="view-btn"
+          >
             Xem thêm sản phẩm
-          </a>
+          </Link>
         </div>
       </div>
     </div>

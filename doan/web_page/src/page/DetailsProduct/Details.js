@@ -16,7 +16,6 @@ const Details = ({ data, loading, id }) => {
   const [number, setNumber] = useState(1);
 
   const handleAddToCart = (data) => {
-    console.log(data);
     if (!data.product_color || !data.product_size) {
       Toast("error", "Chưa có màu sắc hoặc size");
       return;

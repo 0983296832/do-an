@@ -8,6 +8,14 @@ const Orders = {
     const url = "/order/update/" + id;
     return axiosClient.put(url, body);
   },
+  getRevenue: () => {
+    const url = "/order/get-revenue";
+    return axiosClient.get(url);
+  },
+  getRevenueBy: (date) => {
+    const url = "/order/get-revenue-by/" + date;
+    return axiosClient.get(url);
+  },
 };
 
 export default Orders;

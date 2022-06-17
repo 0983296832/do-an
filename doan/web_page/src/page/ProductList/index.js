@@ -19,7 +19,6 @@ const ProductList = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  // const [searchBy, setSearchBy] = useState("");
   const [sort, setSort] = useState("mặc định");
   const [priceFilter, setPriceFilter] = useState([10, 3000]);
   const [sizeFilter, setSizeFilter] = useState("");
@@ -29,24 +28,42 @@ const ProductList = () => {
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
       setLoading(true);
       try {
-        let params = {
-          page: pageNum,
-          limit: 12,
-          ["brand[regex]"]: sumQuery.brand == "tất cả" ? "" : sumQuery.brand,
-          ["name[regex]"]: sumQuery.name,
-          sort: sort === "mặc định" ? "" : sort,
-          ["price[gte]"]: priceFilter[0] * 1000,
-          ["price[lte]"]: priceFilter[1] * 1000,
-          ["detailsSize[elemMatch]"]: sizeFilter,
-          ["detailsColor[elemMatch]"]: colorFilter,
-        };
+        let params;
+        if (sumQuery.name !== "undefined") {
+          params = {
+            page: pageNum,
+            limit: 12,
+            ["brand[regex]"]: sumQuery.brand == "tất cả" ? "" : sumQuery.brand,
+            ["name[regex]"]: sumQuery.name,
+            sort: sort === "mặc định" ? "" : sort,
+            ["price[gte]"]: priceFilter[0] * 1000,
+            ["price[lte]"]: priceFilter[1] * 1000,
+            ["detailsSize[elemMatch]"]: sizeFilter,
+            ["detailsColor[elemMatch]"]: colorFilter,
+            sort: sumQuery.sort || "",
+          };
+        } else {
+          params = {
+            page: pageNum,
+            limit: 12,
+            ["brand[regex]"]: sumQuery.brand == "tất cả" ? "" : sumQuery.brand,
+            sort: sort === "mặc định" ? "" : sort,
+            ["price[gte]"]: priceFilter[0] * 1000,
+            ["price[lte]"]: priceFilter[1] * 1000,
+            ["detailsSize[elemMatch]"]: sizeFilter,
+            ["detailsColor[elemMatch]"]: colorFilter,
+            sort: sumQuery.sort || "",
+          };
+        }
+
         const { data } = await Products.getProducts(params);
-        setPageCount(Math.ceil(data.count / 10));
+        setPageCount(Math.ceil(data.count / 12));
         setData(
           data.data.map((item) => {
             return {
               id: item._id,
               title: item.name,
+              product_code: item.product_code,
               image: item.image[0].imageUrl,
               price: item.price,
               category: item.category,
@@ -54,6 +71,10 @@ const ProductList = () => {
               sale: item.discount > 0,
               discount: item.discount,
               priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
             };
           })
         );
@@ -76,12 +97,13 @@ const ProductList = () => {
         ["detailsColor[elemMatch]"]: colorFilter,
       };
       const { data } = await Products.getProducts(params);
-      setPageCount(Math.ceil(data.count / 10));
+      setPageCount(Math.ceil(data.count / 12));
       setData(
         data.data.map((item) => {
           return {
             id: item._id,
             title: item.name,
+            product_code: item.product_code,
             image: item.image[0].imageUrl,
             price: item.price,
             category: item.category,
@@ -89,6 +111,10 @@ const ProductList = () => {
             sale: item.discount > 0,
             discount: item.discount,
             priceSale: item.price * ((100 - item.discount) / 100),
+            size: [...new Set(item.details.map((i) => i.size))],
+            color: [...new Set(item.details.map((i) => i.color))],
+            brand: item.brand,
+            category: item.category,
           };
         })
       );

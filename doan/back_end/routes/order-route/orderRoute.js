@@ -10,5 +10,12 @@ route.post("/create/:id", controller.order);
 route.put("/update/:id", controller.update);
 route.get("/get-all", controller.getAll);
 route.get("/get-by-id/:id", controller.getByOrderById);
+route.get("/get-revenue", checkAuth, checkRole, controller.getRevenue);
+route.get(
+  "/get-revenue-by/:date",
+  checkAuth,
+  checkRole,
+  controller.getRevenueBy
+);
 
 module.exports = route;

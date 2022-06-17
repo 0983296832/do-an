@@ -24,6 +24,10 @@ const Products = {
     const url = `/product/delete/${id}`;
     return axiosClient.delete(url);
   },
+  getEarning: () => {
+    const url = "/product/get-earning";
+    return axiosClient.get(url);
+  },
 };
 
 export default Products;

@@ -59,8 +59,11 @@ const CartProvider = ({ children }) => {
     }
   }, [cartState.cart]);
 
+  const setCart = (cart) => {
+    dispatch({ type: "SET_CART", payload: cart });
+  };
+
   const addToCart = async (item) => {
-    console.log(item);
     try {
       if (auth.token) {
         const data = await Users.addToCart(auth.data._id, item);
@@ -83,7 +86,6 @@ const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (id, toast) => {
-    console.log(id);
     try {
       if (auth.token) {
         await Users.removeFromCart(auth.data._id, { cart_id: id });
@@ -146,6 +148,7 @@ const CartProvider = ({ children }) => {
         decreaseQuantity,
         totalCart,
         logOut,
+        setCart,
       }}
     >
       {children}

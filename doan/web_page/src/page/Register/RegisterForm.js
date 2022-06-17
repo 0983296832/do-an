@@ -33,7 +33,7 @@ const RegisterForm = () => {
       <form className="login-form" onSubmit={handleSubmit(onRegister)}>
         <div className="text-field">
           <input
-            autoComplete="off"
+            autoComplete={+false}
             type="text"
             id="user"
             placeholder="Enter your user name..."
@@ -51,7 +51,7 @@ const RegisterForm = () => {
         </div>
         <div className="text-field">
           <input
-            autoComplete="off"
+            autoComplete={+false}
             type="email"
             id="email"
             placeholder="Enter your email"
@@ -69,7 +69,7 @@ const RegisterForm = () => {
         </div>
         <div className="text-field">
           <input
-            autoComplete="off"
+            autoComplete={+false}
             type={showPass ? "text" : "password"}
             id="password"
             placeholder="Enter your password"
@@ -97,7 +97,7 @@ const RegisterForm = () => {
         </div>
         <div className="text-field">
           <input
-            autoComplete="off"
+            autoComplete={+false}
             type={showConFirmPass ? "text" : "password"}
             id="password-confirm"
             placeholder="Enter your confirm password"

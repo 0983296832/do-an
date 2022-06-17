@@ -2,6 +2,7 @@ const ordersDB = require("../../models/order/orderModels");
 const productsDB = require("../../models/product/product");
 const usersDB = require("../../models/user/userModel");
 const Features = require("../../lib/feature");
+const moment = require("moment");
 
 const _ = require("lodash");
 const cartsDB = require("../../models/user/cartModel");
@@ -163,6 +164,65 @@ exports.getByOrderById = async (req, res) => {
     return res
       .status(200)
       .json({ status: "200", message: "success", data: order });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getRevenue = async (req, res) => {
+  try {
+    const data = await ordersDB.find({
+      state: "giao hàng thành công",
+    });
+    const revenue = data
+      .map((item) => {
+        return item.details.reduce((acc, item) => {
+          return acc + item.product_price * item.product_quantity;
+        }, 25000);
+      })
+      .reduce((acc, item) => {
+        return acc + item;
+      }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+exports.getRevenueBy = async (req, res) => {
+  try {
+    const date = req.params.date;
+    let day;
+
+    if (date == "day") {
+      day = moment(new Date()).format("MM/DD/YYYY");
+    } else if (date == "week") {
+      day = moment().day(1).format("MM/DD/YYYY");
+    } else if (date == "month") {
+      day = moment().startOf("month").format("MM/DD/YYYY");
+    } else if (date == "year") {
+      day = moment().startOf("year").format("MM/DD/YYYY");
+    }
+    const data = await ordersDB.find({
+      state: "giao hàng thành công",
+      receive_date: {
+        $gte: new Date(day),
+      },
+    });
+
+    const revenue = data
+      .map((item) => {
+        return item.details.reduce((acc, item) => {
+          return acc + item.product_price * item.product_quantity;
+        }, 25000);
+      })
+      .reduce((acc, item) => {
+        return acc + item;
+      }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

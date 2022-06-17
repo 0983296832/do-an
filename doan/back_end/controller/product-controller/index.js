@@ -448,3 +448,17 @@ exports.increaseViews = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
+
+exports.getEarning = async (req, res) => {
+  try {
+    const data = await suppliersDB.find();
+    const revenue = data.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
