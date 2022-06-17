@@ -73,8 +73,6 @@ const AddProduct = () => {
     }
   };
   const onFinish = async (values) => {
-    console.log(values);
-    return;
     try {
       const data = await Products.addProduct({
         ...values,
