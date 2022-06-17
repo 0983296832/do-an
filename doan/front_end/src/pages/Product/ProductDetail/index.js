@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, InputNumber, Table } from "antd";
+import { Button, Input, InputNumber, Select, Table } from "antd";
 import "../../../assets/css/product-detail.css";
 import ImgUpload from "../../../components/ImageUpload";
 import { useParams } from "react-router-dom";
@@ -22,6 +22,7 @@ const ProductDetail = () => {
   const [desc, setDesc] = useState();
   const [votes, setVotes] = useState();
   const [price, setPrice] = useState();
+  const [category, setCategory] = useState();
   const [columns, setColumns] = useState([
     {
       title: "Color",
@@ -53,6 +54,7 @@ const ProductDetail = () => {
     setVotes(product.votes);
     setDisabled(!disabled);
     setPrice(product.price);
+    setCategory(product.category);
   };
 
   useEffect(() => {
@@ -92,6 +94,7 @@ const ProductDetail = () => {
         setDesc(data.product.desc);
         setVotes(data.product.votes);
         setPrice(data.product.price);
+        setCategory(data.product.category);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -120,6 +123,7 @@ const ProductDetail = () => {
         desc,
         votes,
         price,
+        category,
       });
       Toast("success", "Product updated successfully");
     } catch (error) {
@@ -162,11 +166,27 @@ const ProductDetail = () => {
             </div>
             <div className="formInput-product">
               <label>Category</label>
-              <Input
+              {/* <Input
                 placeholder="Basic usage"
                 disabled
                 defaultValue={product?.category}
-              />
+              /> */}
+              <Select
+                style={{
+                  width: 120,
+                }}
+                allowClear
+                defaultValue={category}
+                onChange={(value) => setCategory(value)}
+                disabled={disabled}
+              >
+                <Select.Option value="giày thể thao">
+                  Giày thể thao
+                </Select.Option>
+                <Select.Option value="giày thời trang">
+                  Giày thời trang
+                </Select.Option>
+              </Select>
             </div>
             <div className="formInput-product">
               <label>Description</label>
@@ -222,7 +242,10 @@ const ProductDetail = () => {
                 placeholder="Basic usage"
                 min={0}
                 value={price}
-                prefix="đ"
+                formatter={(value) =>
+                  `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value.replace(/\đ\s?|(,*)/g, "")}
                 disabled={disabled}
                 onChange={(value) => setPrice(value)}
                 style={{ width: "40%" }}

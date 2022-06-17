@@ -17,5 +17,11 @@ route.get(
   checkRole,
   controller.getRevenueBy
 );
+route.get(
+  "/get-revenue-by-haft-year",
+  checkAuth,
+  checkRole,
+  controller.getRevenueByHaflYear
+);
 
 module.exports = route;

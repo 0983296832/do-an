@@ -16,6 +16,10 @@ const Orders = {
     const url = "/order/get-revenue-by/" + date;
     return axiosClient.get(url);
   },
+  getRevenueByHalfYear: () => {
+    const url = "/order/get-revenue-by-haft-year";
+    return axiosClient.get(url);
+  },
 };
 
 export default Orders;

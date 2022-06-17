@@ -97,6 +97,7 @@ const Home = () => {
     week: 0,
     month: 0,
   });
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     let isCancel = false;
@@ -116,6 +117,7 @@ const Home = () => {
           OrderServices.getRevenueBy("day"),
           OrderServices.getRevenueBy("week"),
           OrderServices.getRevenueBy("month"),
+          OrderServices.getRevenueByHalfYear(),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};
@@ -133,6 +135,8 @@ const Home = () => {
           result[6].status === "fulfilled" ? result[6].value.data : [];
         const orderRevenueByMonth =
           result[7].status === "fulfilled" ? result[7].value.data : [];
+        const orderRevenueByHaflYear =
+          result[8].status === "fulfilled" ? result[8].value.data : [];
         setNumbers([user, product, orderRevenue, productEarning]);
         const numberArr = [user, product, orderRevenue, productEarning];
         setData(
@@ -171,6 +175,7 @@ const Home = () => {
           week: orderRevenueByWeek,
           month: orderRevenueByMonth,
         });
+        setChartData(orderRevenueByHaflYear);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -201,7 +206,11 @@ const Home = () => {
         <div className="home__revenue">
           <Progress data={progressData} />
           <div className="revenue__chart">
-            <ChartComponent title="Last 6 Months (Revenue)" aspect={2 / 1} />
+            <ChartComponent
+              title="Last 6 Months (Revenue)"
+              aspect={2 / 1}
+              data={chartData.slice(0, 6)}
+            />
           </div>
         </div>
         <h1 className="trans">Last Five Transactions</h1>

@@ -1,7 +1,9 @@
-import { Button, Form, Input, InputNumber, Select } from "antd";
+import { AutoComplete, Button, Form, Input, InputNumber, Select } from "antd";
+import { useEffect, useState } from "react";
 import Toast from "../../../components/Toast";
-
 import Products from "../../../services/productServices";
+import Supplier from "../../../services/supplierServices";
+
 const layout = {
   labelCol: {
     span: 4,
@@ -18,9 +20,66 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 const AddProduct = () => {
-  const onFinish = async (values) => {
+  const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState({});
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => form.resetFields(), [formValue]);
+  const onSearch = async (searchText) => {
     try {
-      const data = await Products.addProduct(values.product);
+      const search = searchText;
+      const params = {
+        page: 1,
+        limit: 10000,
+        "product_code[regex]": search,
+      };
+
+      const { data } = await Products.getProducts(params);
+
+      setOptions(
+        !searchText
+          ? []
+          : data.map((item) => {
+              return { value: item.product_code };
+            })
+      );
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
+
+  const onSelect = async (data) => {
+    try {
+      const params = {
+        limit: 1,
+        page: 1,
+        "product_code[regex]": data,
+      };
+      const dataSearch = await Supplier.getSupplier(params);
+
+      setFormValue({
+        product_code: dataSearch.data[0].product_code,
+        supplier_name: dataSearch.data[0].supplier_name,
+        address: dataSearch.data[0].address,
+        phone: dataSearch.data[0].phone,
+        name: dataSearch.data[0].name,
+        price: dataSearch.data[0].price,
+        brand: dataSearch.data[0].brand,
+        category: dataSearch.data[0].category,
+        gender: dataSearch.data[0].gender,
+      });
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
+  const onFinish = async (values) => {
+    console.log(values);
+    return;
+    try {
+      const data = await Products.addProduct({
+        ...values,
+        price: values.price + values.price / 2,
+      });
       if (data) {
         Toast("success", " Add new product success");
       } else {
@@ -37,13 +96,15 @@ const AddProduct = () => {
         <h1>Add new product</h1>
       </div>
       <Form
+        initialValues={formValue}
         {...layout}
+        form={form}
         name="nest-messages"
         onFinish={onFinish}
         validateMessages={validateMessages}
       >
         <Form.Item
-          name={["product", "product_code"]}
+          name="product_code"
           label="Product Code"
           rules={[
             {
@@ -51,10 +112,18 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <AutoComplete
+            options={options}
+            style={{
+              width: 200,
+            }}
+            onSearch={onSearch}
+            onSelect={onSelect}
+            allowClear
+          />
         </Form.Item>
         <Form.Item
-          name={["product", "supplier_name"]}
+          name="supplier_name"
           label="Supplier Name"
           rules={[
             {
@@ -65,7 +134,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "address"]}
+          name="address"
           label="Address"
           rules={[
             {
@@ -76,7 +145,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "phone"]}
+          name="phone"
           label="Phone"
           rules={[
             {
@@ -87,7 +156,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "name"]}
+          name="name"
           label="Product Name"
           rules={[
             {
@@ -98,7 +167,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "price"]}
+          name="price"
           label="Price"
           rules={[
             {
@@ -106,10 +175,17 @@ const AddProduct = () => {
             },
           ]}
         >
-          <InputNumber min={0} />
+          <InputNumber
+            min={0}
+            style={{ width: "40%" }}
+            formatter={(value) =>
+              `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value.replace(/\đ\s?|(,*)/g, "")}
+          />
         </Form.Item>
         <Form.Item
-          name={["product", "color"]}
+          name="color"
           label="Color"
           rules={[
             {
@@ -120,7 +196,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "gender"]}
+          name="gender"
           label="Gender"
           rules={[
             {
@@ -139,7 +215,7 @@ const AddProduct = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          name={["product", "category"]}
+          name="category"
           label="Category"
           rules={[
             {
@@ -150,7 +226,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "brand"]}
+          name="brand"
           label="Brand"
           rules={[
             {
@@ -161,7 +237,7 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          name={["product", "size"]}
+          name="size"
           label="Size"
           rules={[
             {
@@ -172,7 +248,7 @@ const AddProduct = () => {
           <InputNumber min={0} />
         </Form.Item>
         <Form.Item
-          name={["product", "quantity"]}
+          name="quantity"
           label="Quantity"
           rules={[
             {

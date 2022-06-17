@@ -227,3 +227,69 @@ exports.getRevenueBy = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
+exports.getRevenueByHaflYear = async (req, res) => {
+  try {
+    const getRevenueByMonth = async (month) => {
+      try {
+        const data = await ordersDB.find({
+          state: "giao hàng thành công",
+          receive_date: {
+            $gte: new Date(
+              moment().month(month).startOf("month").format("MM/DD/YYYY")
+            ),
+            $lte: new Date(
+              moment().month(month).endOf("month").format("MM/DD/YYYY")
+            ),
+          },
+        });
+        if (data.length == 0) return 0;
+        const revenue = data
+          .map((item) => {
+            return item.details.reduce((acc, item) => {
+              return acc + item.product_price * item.product_quantity;
+            }, 25000);
+          })
+          .reduce((acc, item) => {
+            return acc + item;
+          }, 0);
+        return revenue;
+      } catch (error) {
+        return res.status(400).json({ status: "400", message: error.message });
+      }
+    };
+
+    Promise.all(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) =>
+        getRevenueByMonth(month - 1)
+      )
+    )
+      .then((data) => {
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        return res.status(200).json({
+          status: "200",
+          message: "get revenue success",
+          data: data.map((item, index) => {
+            return { name: monthNames[index], Total: item };
+          }),
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({ status: "400", message: err.message })
+      );
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
