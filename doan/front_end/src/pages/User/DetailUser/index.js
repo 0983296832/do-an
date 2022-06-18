@@ -11,12 +11,15 @@ import Modal from "../Modal/Modal";
 import moment from "moment";
 import EditUser from "../EditUser";
 import { v4 as uuidv4 } from "uuid";
+import Orders from "../../../services/orderServices";
 
 const DetailUser = () => {
   const [user, setUser] = useState();
   const { id } = useParams();
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState([]);
+  const [data, setData] = useState([]);
 
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
@@ -27,7 +30,14 @@ const DetailUser = () => {
       setLoading(true);
       try {
         const { result } = await Users.getUserById(id);
+        const { data } = await Orders.getRevenueByHalfYear(id);
         setUser(result);
+        setChartData(data);
+        setData(
+          result.orders.map((item) => {
+            return { ...item, id: item._id, key: uuidv4() };
+          })
+        );
       } catch (error) {
         Toast("error", error.message);
       }
@@ -37,7 +47,7 @@ const DetailUser = () => {
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -111,18 +121,21 @@ const DetailUser = () => {
             </div>
           </Card>
           <div className="revenue__chart">
-            <ChartComponent title="Last 6 Months (Revenue)" aspect={3 / 1} />
+            <ChartComponent
+              title="Last 6 Months (Revenue)"
+              aspect={3 / 1}
+              data={chartData.slice(0, 6)}
+            />
           </div>
         </div>
         <div style={{ width: 1115 }}>
           <h1 className="trans">Transactions</h1>
           <ListTable
-            data={user.orders.map((item) => {
-              return { ...item, id: item._id, key: uuidv4() };
-            })}
+            data={data}
             noSup
             XAxis={1700}
             YAxis={400}
+            setData={setData}
           />
         </div>
         <Modal

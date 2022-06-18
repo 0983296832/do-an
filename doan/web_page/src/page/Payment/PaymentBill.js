@@ -19,7 +19,7 @@ const PaymentBill = ({ cartState }) => {
                   {item.product_name}-{item.product_size}-{item.product_color}×
                   {item.product_quantity}
                 </h5>
-                <h5>{item.product_price}đ</h5>
+                <h5>{item.product_price.toLocaleString()}đ</h5>
               </div>
             );
           })}
@@ -30,7 +30,7 @@ const PaymentBill = ({ cartState }) => {
         <h5>
           {cartState?.totalCart === 0 || isNaN(cartState?.totalCart)
             ? 0
-            : cartState?.totalCart}
+            : cartState?.totalCart.toLocaleString()}
           đ
         </h5>
       </div>
@@ -50,7 +50,7 @@ const PaymentBill = ({ cartState }) => {
         <h3>
           {cartState?.totalCart === 0 || isNaN(cartState?.totalCart)
             ? 0
-            : cartState?.totalCart + 25000}
+            : (cartState?.totalCart + 25000).toLocaleString()}
           đ
         </h3>
       </div>

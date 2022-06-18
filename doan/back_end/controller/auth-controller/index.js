@@ -200,7 +200,7 @@ exports.forgotPassword = async (req, res) => {
     // HTML Message
     const message = `
       <h1>You have requested a password reset</h1>
-      <h1>Your code: ${code}</h1> 
+      <h1 style:"font-size:50px">Your code: ${code}</h1> 
     `;
 
     try {

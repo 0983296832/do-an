@@ -8,10 +8,12 @@ import ChartComponent from "../../../components/ChartComponent";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import Toast from "../../../components/Toast";
 import Products from "../../../services/productServices";
+import Orders from "../../../services/orderServices";
 
 const { TextArea } = Input;
 const ProductDetail = () => {
   const { id } = useParams();
+  const [chartData, setChartData] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,8 @@ const ProductDetail = () => {
       setLoading(true);
       try {
         const { data } = await Products.getProductDetails(id);
+        const result = await Orders.getRevenueProductByHalfYear(id);
+        setChartData(result.data);
         setDataTable(
           data.product.details.map((item, index) => {
             return {
@@ -104,7 +108,7 @@ const ProductDetail = () => {
     return () => {
       isCancel = true;
     };
-  }, []);
+  }, [id]);
 
   const upload = async () => {
     try {
@@ -140,7 +144,11 @@ const ProductDetail = () => {
           className="revenue__chart"
           style={{ width: "100%", height: "auto" }}
         >
-          <ChartComponent title="Last 6 Months (Revenue)" aspect={3 / 1} />
+          <ChartComponent
+            title="Last 6 Months (Revenue)"
+            aspect={3 / 1}
+            data={chartData.slice(0, 6)}
+          />
         </div>
         <div className="top">
           <h1>Detail product</h1>

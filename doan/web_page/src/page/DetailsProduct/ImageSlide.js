@@ -27,7 +27,7 @@ const ProductImagesSlider = ({ images }) => {
               src={item}
               alt="A image to apply the ImageZoom plugin"
               zoom="200"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              style={{ width: "100%", height: "600px", objectFit: "cover" }}
             />
           </SwiperSlide>
         ))}
@@ -39,7 +39,10 @@ const ProductImagesSlider = ({ images }) => {
         slidesPerView={images.length < 4 ? images.length : 4}
         modules={[Navigation, Thumbs]}
         className="product-images-slider-thumbs"
-        style={{ maxWidth: images.length >= 4 ? "100%" : 300 }}
+        style={{
+          maxWidth:
+            images.length >= 4 ? "100%" : images.length == 1 ? 100 : 300,
+        }}
       >
         {images.map((item, index) => (
           <SwiperSlide key={index}>

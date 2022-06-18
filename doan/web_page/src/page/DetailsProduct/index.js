@@ -24,101 +24,7 @@ const DetailsProduct = () => {
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: false,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      soldOut: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: false,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      soldOut: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      soldOut: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: true,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-    {
-      image: giay,
-      title: "Giày Mlb Boston và phối đồ siêu đẹp Rep 1:1",
-      sale: false,
-      category: "Nike",
-      rate: 5,
-      price: 1200000,
-      priceSale: 1200000,
-    },
-  ]);
+  const [moreProduct, setMoreProduct] = useState([]);
   const [productImages, setProductImages] = useState([
     giay01,
     giay02,
@@ -133,6 +39,34 @@ const DetailsProduct = () => {
       try {
         const data = await Products.getProductDetails(id);
         await Products.increaseViews(id);
+        const params = {
+          page: 1,
+          limit: 11,
+          "product_code[regex]": data.data.data.product.brand,
+        };
+        const moreProduct = await Products.getProducts(params);
+        setMoreProduct(
+          moreProduct.data.data
+            .map((item) => {
+              return {
+                id: item._id,
+                title: item.name,
+                product_code: item.product_code,
+                image: item.image[0].imageUrl,
+                price: item.price,
+                category: item.category,
+                rate: item.votes || 0,
+                sale: item.discount > 0,
+                discount: item.discount,
+                priceSale: item.price * ((100 - item.discount) / 100),
+                size: [...new Set(item.details.map((i) => i.size))],
+                color: [...new Set(item.details.map((i) => i.color))],
+                brand: item.brand,
+                category: item.category,
+              };
+            })
+            .filter((i) => i.id !== id)
+        );
         setProductImages(
           data.data.data.product.image.map((item) => item.imageUrl)
         );
@@ -224,7 +158,7 @@ const DetailsProduct = () => {
         <div className="more-product">
           <h1>Sản phẩm liên quan</h1>
           <Divider />
-          <SlideProduct data={data} />
+          <SlideProduct data={moreProduct} />
         </div>
       </div>
     );

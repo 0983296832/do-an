@@ -44,7 +44,6 @@ const Product = ({ data }) => {
         <div
           className="product-addToCart"
           onClick={() => {
-            console.log("open");
             setDisabled(true);
           }}
         >
@@ -126,8 +125,10 @@ const Product = ({ data }) => {
             <Rate disabled defaultValue={data.rate} />
           </div>
           <div className="product-price">
-            {data.sale && <h4 className="sale">{data.price}đ</h4>}
-            <h4>{data.priceSale}đ</h4>
+            {data.sale && (
+              <h4 className="sale">{data.price.toLocaleString()}đ</h4>
+            )}
+            <h4>{data.priceSale.toLocaleString()}đ</h4>
           </div>
         </div>
       </Link>

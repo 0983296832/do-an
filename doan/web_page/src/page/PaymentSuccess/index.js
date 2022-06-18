@@ -1,29 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/css/payment-success.css";
 import { Button, Result } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Toast from "../../components/Toast";
 import { LOCAL_STORAGE_ORDER_KEY } from "../../constant/constant";
+import Order from "../../services/orderServices";
+import Loading from "../../components/Loading";
 
 const PaymentSuccess = () => {
+  const [orderId, setOrderId] = useState(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    const getOrderId = async () => {
+      setLoading(true);
+      try {
+        const params = {
+          page: 1,
+          limit: 1,
+          sort: "-created",
+        };
+        const data = await Order.getAllOrderById(params);
+        setOrderId(data[0]._id);
+      } catch (error) {
+        Toast("error", "Có lỗi xảy ra");
+      }
+      setLoading(false);
+    };
     localStorage.removeItem(LOCAL_STORAGE_ORDER_KEY);
+    getOrderId();
   }, []);
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="payment-success">
       <Result
         key="result"
         status="success"
         title="Bạn đã đặt hàng thành công!!!"
-        subTitle="Bạn đã đặt hàng thanh công, chúng tôi đã gửi mẫ đơn hàng trong email của bạn mã là:1831273631923.Kiểm tra email để xem chi tiết."
+        subTitle={`Bạn đã đặt hàng thanh công, chúng tôi đã gửi mẫ đơn hàng trong email của bạn mã là: ${orderId} .Kiểm tra email để xem chi tiết.`}
         extra={[
           <Link to="/" key="buy">
             <Button>Tiếp Tục Mua Sắm</Button>
           </Link>,
-          <Button type="primary" key="console">
-            Xem Đơn Hàng
-          </Button>,
+          <Link to={`/order/${orderId}`} key="order">
+            <Button type="primary">Xem Đơn Hàng</Button>
+          </Link>,
         ]}
       />
     </div>

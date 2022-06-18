@@ -74,7 +74,7 @@ const Footer = () => {
       img: giaohang,
     },
   ];
-  if (location.pathname === "/login"|| location.pathname === "/register") {
+  if (location.pathname === "/login" || location.pathname === "/register") {
     return null;
   }
   return (

@@ -16,8 +16,12 @@ const Orders = {
     const url = "/order/get-revenue-by/" + date;
     return axiosClient.get(url);
   },
-  getRevenueByHalfYear: () => {
-    const url = "/order/get-revenue-by-haft-year";
+  getRevenueByHalfYear: (id) => {
+    const url = "/order/get-revenue-by-haft-year/" + id;
+    return axiosClient.get(url);
+  },
+  getRevenueProductByHalfYear: (id) => {
+    const url = "/order/get-revenue-product-by-haft-year/" + id;
     return axiosClient.get(url);
   },
 };

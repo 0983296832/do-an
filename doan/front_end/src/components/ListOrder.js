@@ -96,7 +96,10 @@ const ListTable = ({
   };
   const save = async () => {
     try {
-      if (location.pathname === "/order") {
+      if (
+        location.pathname === "/order" ||
+        location.pathname.includes("/user-detail")
+      ) {
         const { id, user_name, address, phone, state, receive_date } =
           form.getFieldValue();
         if (state === "giao hàng thành công") {
@@ -145,6 +148,7 @@ const ListTable = ({
             address,
             phone,
             state,
+            receive_date: "",
           });
           setData(
             data.map((item) => {
@@ -155,15 +159,16 @@ const ListTable = ({
                   address,
                   phone,
                   state,
+                  receive_date: "",
                 };
               } else return item;
             })
           );
         }
       } else {
-        const { id, user_name, address, phone } = form.getFieldValue();
+        const { id, supplier_name, address, phone } = form.getFieldValue();
         await Suppliers.updateSupplier(id, {
-          user_name,
+          supplier_name,
           address,
           phone,
         });
@@ -172,7 +177,7 @@ const ListTable = ({
             if (item.id === id) {
               return {
                 ...item,
-                user_name,
+                supplier_name,
                 address,
                 phone,
               };

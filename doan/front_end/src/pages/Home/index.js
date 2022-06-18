@@ -117,7 +117,7 @@ const Home = () => {
           OrderServices.getRevenueBy("day"),
           OrderServices.getRevenueBy("week"),
           OrderServices.getRevenueBy("month"),
-          OrderServices.getRevenueByHalfYear(),
+          OrderServices.getRevenueByHalfYear("all"),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};

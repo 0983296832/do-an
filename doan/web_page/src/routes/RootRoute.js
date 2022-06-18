@@ -28,7 +28,7 @@ const RootRoute = () => {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/order" element={<Order />} />
+        <Route path="/order/:id" element={<Order />} />
         <Route element={<ProtectRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>

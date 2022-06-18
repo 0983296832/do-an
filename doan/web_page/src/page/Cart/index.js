@@ -19,7 +19,12 @@ const Cart = () => {
           <h2>CỘNG GIỎ HÀNG</h2>
           <div className="cart-sum">
             <h4>Tạm tính</h4>
-            <h3>{cartState.totalCart || 0}đ</h3>
+            <h3>
+              {cartState.totalCart
+                ? Number(cartState.totalCart).toLocaleString()
+                : 0}
+              đ
+            </h3>
           </div>
           <Divider />
           <div>
@@ -38,7 +43,7 @@ const Cart = () => {
             <h2>
               {cartState.totalCart === 0 || isNaN(cartState.totalCart)
                 ? 0
-                : cartState.totalCart + 25000}
+                : (cartState.totalCart + 25000).toLocaleString()}
               đ
             </h2>
           </div>

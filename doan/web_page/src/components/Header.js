@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import logo from "../assets/image/logo.png";
-import { Select, Button, AutoComplete, Menu, Dropdown } from "antd";
+import { Select, Button, AutoComplete, Menu, Dropdown, Badge } from "antd";
 import "../assets/css/header.css";
 import {
   FileSearchOutlined,
@@ -42,7 +42,7 @@ const user = (
       {
         key: "2",
         label: (
-          <Link to="/order">
+          <Link to="/order/null">
             <FileSearchOutlined /> Tra cứu đơn hàng
           </Link>
         ),
@@ -185,15 +185,27 @@ const Header = () => {
         </div>
         <div className="header-infor">
           <Link to="/cart">
-            <FiShoppingCart className="infor-icon" style={{ color: "black" }} />
+            <Badge
+              count={cartState.amount}
+              color="black"
+              size="small"
+              title={`Giỏ hàng của bạn đang có ${cartState.amount} sản phẩm`}
+            >
+              <FiShoppingCart
+                className="infor-icon"
+                style={{ color: "black" }}
+              />
+            </Badge>
           </Link>
 
-          <h5 className="infor-money">{cartState.total}đ</h5>
+          <h5 className="infor-money">
+            {Number(cartState.total).toLocaleString()}đ
+          </h5>
           <Dropdown overlay={user} placement="bottom" className="infor-icon">
             <AiOutlineUser className="infor-icon" />
           </Dropdown>
 
-          <h6 className="cart-count">{cartState.amount}</h6>
+          {/* <h6 className="cart-count">{cartState.amount}</h6> */}
         </div>
       </div>
       <div className="menu ">

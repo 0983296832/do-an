@@ -21,6 +21,7 @@ const validateMessages = {
 
 const AddProduct = () => {
   const [form] = Form.useForm();
+  const [disabled, setDisabled] = useState(false);
   const [formValue, setFormValue] = useState({});
   const [options, setOptions] = useState([]);
 
@@ -68,6 +69,7 @@ const AddProduct = () => {
         category: dataSearch.data[0].category,
         gender: dataSearch.data[0].gender,
       });
+      setDisabled(true);
     } catch (error) {
       Toast("error", error.message);
     }
@@ -86,6 +88,10 @@ const AddProduct = () => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+  const onClear = () => {
+    setFormValue({});
+    setDisabled(false);
   };
 
   return (
@@ -118,6 +124,7 @@ const AddProduct = () => {
             onSearch={onSearch}
             onSelect={onSelect}
             allowClear
+            onClear={onClear}
           />
         </Form.Item>
         <Form.Item
@@ -129,7 +136,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="address"
@@ -140,7 +147,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="phone"
@@ -151,7 +158,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="name"
@@ -162,7 +169,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="price"
@@ -180,6 +187,7 @@ const AddProduct = () => {
               `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
             parser={(value) => value.replace(/\đ\s?|(,*)/g, "")}
+            disabled={disabled}
           />
         </Form.Item>
         <Form.Item
@@ -207,6 +215,7 @@ const AddProduct = () => {
               width: 120,
             }}
             allowClear
+            disabled={disabled}
           >
             <Select.Option value="male">Male</Select.Option>
             <Select.Option value="female">Female</Select.Option>
@@ -221,7 +230,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="brand"
@@ -232,7 +241,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={disabled} />
         </Form.Item>
         <Form.Item
           name="size"

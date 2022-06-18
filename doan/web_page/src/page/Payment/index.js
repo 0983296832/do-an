@@ -16,7 +16,7 @@ import {
 } from "../../constant/constant";
 
 const Payment = () => {
-  const { cartState, removeFromCart, setCart } = useContext(CartContext);
+  const { cartState, removeFromCart } = useContext(CartContext);
   const { auth } = useContext(AuthContext);
   const [value, setValue] = useState(1);
   const [formValue, setFormValue] = useState({});
@@ -27,7 +27,7 @@ const Payment = () => {
       if (sumQuery.vnp_ResponseCode == "00") {
         payment();
         Toast("success", "Thanh toán thành công");
-        navigate("/payment-success");
+        navigate("/payment-success/");
       } else {
         Toast("error", "Thanh toán thất bại");
       }

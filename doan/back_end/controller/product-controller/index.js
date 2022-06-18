@@ -414,14 +414,12 @@ exports.updateSupplier = async (req, res) => {
         .status(400)
         .json({ status: "400", message: "can not find supplier" });
     }
-    const result = await suppliersDB.updateOne(
-      { _id: id },
+    const result = await suppliersDB.findByIdAndUpdate(
+      id,
       {
-        $set: {
-          name: req.body.name,
-          address: req.body.address,
-          phone: req.body.phone,
-        },
+        supplier_name: req.body.supplier_name,
+        address: req.body.address,
+        phone: req.body.phone,
       },
       { new: true }
     );

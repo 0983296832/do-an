@@ -161,6 +161,7 @@ const ProductList = () => {
             pagination
             pageCount={pageCount}
             setPage={setPage}
+            page={page}
           />
         </div>
       </div>

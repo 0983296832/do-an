@@ -18,10 +18,16 @@ route.get(
   controller.getRevenueBy
 );
 route.get(
-  "/get-revenue-by-haft-year",
+  "/get-revenue-by-haft-year/:id",
   checkAuth,
   checkRole,
   controller.getRevenueByHaflYear
+);
+route.get(
+  "/get-revenue-product-by-haft-year/:id",
+  checkAuth,
+  checkRole,
+  controller.getRevenueProductByHaflYear
 );
 
 module.exports = route;

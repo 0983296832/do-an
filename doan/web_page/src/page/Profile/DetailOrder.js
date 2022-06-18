@@ -102,11 +102,13 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           </div>
           <div>
             <h4>
-              {data.details.reduce(
-                (total, item) =>
-                  total + item.product_quantity * item.product_price,
-                0
-              )}
+              {data.details
+                .reduce(
+                  (total, item) =>
+                    total + item.product_quantity * item.product_price,
+                  0
+                )
+                .toLocaleString()}
               đ
             </h4>
           </div>
@@ -117,7 +119,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
             <h4>Phí vận chuyển: </h4>
           </div>
           <div>
-            <h4> {data.shipping_fee}đ</h4>
+            <h4> {data.shipping_fee.toLocaleString()}đ</h4>
           </div>
         </div>
 
@@ -146,11 +148,13 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           <div>
             <h4 style={{ color: "#f00", fontSize: 20 }}>
               {" "}
-              {data.details.reduce(
-                (total, item) =>
-                  total + item.product_quantity * item.product_price,
-                25000
-              )}
+              {data.details
+                .reduce(
+                  (total, item) =>
+                    total + item.product_quantity * item.product_price,
+                  25000
+                )
+                .toLocaleString()}
               đ
             </h4>
           </div>
@@ -208,7 +212,7 @@ const Order = ({ data, loading }) => {
               </div>
               <div className="order-right">
                 <TagRender state={data?.state} />
-                <h4>{item.product_price}đ</h4>
+                <h4>{item.product_price.toLocaleString()}đ</h4>
                 <h5>x{item.product_quantity}</h5>
               </div>
             </div>
