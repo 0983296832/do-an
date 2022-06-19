@@ -16,6 +16,9 @@ const TableList = ({ dataTable: rows }) => {
     {
       let colorTag;
       switch (row.status) {
+        case "đang chờ xác nhận":
+          colorTag = "orange";
+          break;
         case "đang đợi gói hàng":
           colorTag = "yellow";
           break;
@@ -27,6 +30,9 @@ const TableList = ({ dataTable: rows }) => {
           break;
         case "giao hàng thành công":
           colorTag = "green";
+          break;
+        case "giao hàng không thành công":
+          colorTag = "purple";
           break;
         case "đã hủy":
           colorTag = "red";

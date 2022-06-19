@@ -24,6 +24,10 @@ const Users = {
     const url = `user/change-password/${id}`;
     return axiosClient.put(url, body);
   },
+  getTopUser: () => {
+    const url = `product/get-top-users`;
+    return axiosClient.get(url);
+  },
 };
 
 export default Users;

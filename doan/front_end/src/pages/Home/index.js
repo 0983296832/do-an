@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "../../assets/css/home.css";
 import Wigget from "../../components/Wigget";
 import { FaRegUser } from "react-icons/fa";
+import { Card, Dropdown, Menu } from "antd";
+import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsCoin } from "react-icons/bs";
 import { MdAttachMoney } from "react-icons/md";
@@ -15,6 +17,7 @@ import OrderServices from "../../services/orderServices";
 
 import Toast from "../../components/Toast";
 import moment from "moment";
+import TopProductSales from "./TopProductSales";
 
 const Home = () => {
   const dataOriginal = [
@@ -90,7 +93,6 @@ const Home = () => {
   ];
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
-  const [numbers, setNumbers] = useState([]);
   const [dataTable, setDataTable] = useState([]);
   const [progressData, setProgressData] = useState({
     day: 0,
@@ -98,26 +100,53 @@ const Home = () => {
     month: 0,
   });
   const [chartData, setChartData] = useState([]);
+  const [topData, setTopData] = useState([]);
+  const [indexTop, setIndexTop] = useState(0);
+  const menu = (
+    <Menu
+      items={[
+        {
+          label: <span onClick={() => setIndexTop(0)}>Revenue</span>,
+          key: "0",
+        },
+        {
+          label: <span onClick={() => setIndexTop(1)}>Top sales</span>,
+          key: "1",
+        },
+        {
+          label: <span onClick={() => setIndexTop(2)}>Top users</span>,
+          key: "3",
+        },
+      ]}
+    />
+  );
 
   useEffect(() => {
     let isCancel = false;
     const fetchData = async () => {
       setLoading(true);
       try {
-        const params = {
+        const ordersParams = {
           page: 1,
           limit: 5,
+        };
+        const topProductsParams = {
+          page: 1,
+          limit: 5,
+          sort: "-sales",
         };
         let result = await Promise.allSettled([
           Users.getUsers(),
           Products.getProducts(),
-          OrderServices.getOrder(params),
+          OrderServices.getOrder(ordersParams),
           OrderServices.getRevenue(),
           Products.getEarning(),
           OrderServices.getRevenueBy("day"),
           OrderServices.getRevenueBy("week"),
           OrderServices.getRevenueBy("month"),
           OrderServices.getRevenueByHalfYear("all"),
+          Products.getProducts(topProductsParams),
+          Users.getTopUser(),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};
@@ -137,7 +166,29 @@ const Home = () => {
           result[7].status === "fulfilled" ? result[7].value.data : [];
         const orderRevenueByHaflYear =
           result[8].status === "fulfilled" ? result[8].value.data : [];
-        setNumbers([user, product, orderRevenue, productEarning]);
+        const TopProductSales =
+          result[9].status === "fulfilled" ? result[9].value.data : [];
+        const TopUser =
+          result[10].status === "fulfilled" ? result[10].value.data : [];
+        setTopData([
+          ...TopProductSales.map((item) => {
+            return {
+              name: item.name,
+              number: item.sales,
+              image:
+                item.image[0].imageUrl || "https://via.placeholder.com/150",
+            };
+          }),
+          ...TopUser.map((item) => {
+            return {
+              name: item.name,
+              number: item.orders.length,
+              image:
+                item.image.imageUrl || "https://joeschmoe.io/api/v1/random",
+            };
+          }),
+        ]);
+
         const numberArr = [user, product, orderRevenue, productEarning];
         setData(
           dataOriginal.map((item, index) => {
@@ -204,7 +255,38 @@ const Home = () => {
             })}
         </div>
         <div className="home__revenue">
-          <Progress data={progressData} />
+          <Card
+            size="small"
+            title={`${
+              indexTop === 0
+                ? "Total Revenue"
+                : indexTop === 1
+                ? "Top Products With Sales"
+                : "Top Users With Orders"
+            }`}
+            extra={
+              <Dropdown overlay={menu}>
+                <FiMoreVertical className="progress-icon" />
+              </Dropdown>
+            }
+            headStyle={{ color: "gray" }}
+            style={{
+              width: 370,
+              boxShadow: "2px 4px 10px 1px rgba(201, 201, 201, 0.47)",
+              borderRadius: "8px",
+            }}
+            bordered={false}
+          >
+            {indexTop === 0 ? (
+              <Progress data={progressData} />
+            ) : (
+              <TopProductSales
+                data={
+                  indexTop === 1 ? topData.slice(0, 5) : topData.slice(5, 10)
+                }
+              />
+            )}
+          </Card>
           <div className="revenue__chart">
             <ChartComponent
               title="Last 6 Months (Revenue)"

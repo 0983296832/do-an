@@ -168,6 +168,57 @@ exports.update = async (req, res) => {
     const order = await ordersDB.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    const findByIdAndUpdateProduct = async (item) => {
+      const product = await productsDB.findOne({
+        product_code: item.product_code,
+      });
+
+      product.details.map(async (i) => {
+        if (i.color == item.color && i.size == item.size) {
+          const newItem = { ...i, quantity: i.quantity + item.quantity };
+          await productsDB.updateOne(
+            { product_code: item.product_code },
+            {
+              $pull: {
+                details: {
+                  color: i.color,
+                  quantity: i.quantity,
+                  size: i.size,
+                },
+              },
+            }
+          );
+          await productsDB.updateOne(
+            { product_code: item.product_code },
+            {
+              $push: { details: newItem },
+              $inc: { sales: -item.quantity },
+            }
+          );
+        }
+      });
+    };
+    if (
+      req.body.state === "đã hủy" ||
+      req.body.state === "giao hàng không thành công"
+    ) {
+      const order = await ordersDB.findById(req.params.id);
+      Promise.all(
+        order.details
+          .map((item) => {
+            return {
+              ...item,
+              image: item.product_image,
+              price: item.product_price,
+              quantity: item.product_quantity,
+              size: item.product_size,
+              color: item.product_color,
+              name: item.product_name,
+            };
+          })
+          .map((item) => findByIdAndUpdateProduct(item))
+      );
+    }
     return res
       .status(200)
       .json({ status: "200", message: "success", data: order });
@@ -216,11 +267,11 @@ exports.getRevenueBy = async (req, res) => {
     if (date == "day") {
       day = moment(new Date()).format("MM/DD/YYYY");
     } else if (date == "week") {
-      day = moment().day(1).format("MM/DD/YYYY");
+      day = moment(new Date()).startOf("week").format("MM/DD/YYYY");
     } else if (date == "month") {
-      day = moment().startOf("month").format("MM/DD/YYYY");
+      day = moment(new Date()).startOf("month").format("MM/DD/YYYY");
     } else if (date == "year") {
-      day = moment().startOf("year").format("MM/DD/YYYY");
+      day = moment(new Date()).startOf("year").format("MM/DD/YYYY");
     }
     const data = await ordersDB.find({
       state: "giao hàng thành công",
@@ -348,8 +399,10 @@ exports.getRevenueProductByHaflYear = async (req, res) => {
         const revenue = data
           .map((item) => {
             return item.details.reduce((acc, item) => {
-              return acc + item.product_price * item.product_quantity;
-            }, 25000);
+              if (item.product_id == req.params.id) {
+                return acc + item.product_price * item.product_quantity;
+              }
+            }, 0);
           })
           .reduce((acc, item) => {
             return acc + item;
