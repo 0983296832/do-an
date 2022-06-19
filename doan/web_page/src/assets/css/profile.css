@@ -181,7 +181,7 @@
 }
 .order-item-wrap{
     padding: 10px 20px;
-    border: 1px solid #e9e9e9;
+    border: 1px solid #cccccc;
 }
 .order-item{
     display:flex;
@@ -189,6 +189,7 @@
     justify-content:space-between;
     padding: 20px 7px;
     width: 700px;
+    border-bottom: 1px solid #cccccc;
 }
 .order-item img{
    width: 100px;
@@ -216,7 +217,7 @@
   color: #f00
 }
 .order-list{
-    height: 600px;
+    height: 800px;
     overflow-y: auto;
 }
 .order-list::-webkit-scrollbar {
@@ -258,7 +259,60 @@
     cursor: pointer;
     margin-left: 7px;
 }
+.order-detail h4:hover{
+    color: rgb(153, 153, 153);
+}
 .order-detail h3{
   margin-bottom: 0 !important;
   margin-right: 14px;
+}
+
+.detail-order-container{
+    width: 100%;
+    padding: 0px 20px;
+}
+.detail-order-container h2{
+    text-align: center;
+    color: #494949;
+    margin-bottom:1.5rem !important;
+}
+.ant-divider-inner-text h3{
+    text-align: center;
+    color: #494949;
+    margin-bottom:0 !important;
+}
+
+.detail-order-item{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+}
+
+.letter{
+    margin-top:30px;
+    height: 0.1875rem;
+    width: 100%;
+    background-position-x: -1.875rem;
+    background-size: 7.25rem 0.1875rem;
+    background-image: repeating-linear-gradient(45deg,#6fa6d6,#6fa6d6 33px,transparent 0,transparent 41px,#f18d9b 0,#f18d9b 74px,transparent 0,transparent 82px);
+}
+.detail-order-info{
+    margin: 0 20px;
+    padding: 0px 0px 0px 10px;
+    display:grid;
+    grid-template-columns: 8fr 1fr;
+    text-align:right;
+    background-color:#fafafa;
+    border-bottom: 1px solid #f0f0f0
+}
+.detail-order-info h4{
+   font-size:16px;
+   color:#464646;
+}
+
+.detail-order-info div{
+    height: 60px;
+    line-height: 60px;
+    border-right: 1px solid #f0f0f0;
+    padding: 0px 10px 0px 10px;
 }

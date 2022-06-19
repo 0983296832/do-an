@@ -60,7 +60,8 @@ exports.getDetail = async (req, res) => {
     const product = await productsDB
       .findById(req.params.id)
       .populate({ path: "image" })
-      .populate({ path: "supplier" });
+      .populate({ path: "supplier" })
+      .populate({ path: "comments" });
     return res.status(200).json({
       status: "200",
       message: "get product successfully",
@@ -228,8 +229,7 @@ exports.comment = async (req, res) => {
       vote: req.body.vote,
     });
     const commentSaved = await comment.save();
-    // sau khi lưu comment vào dtb comment rồi sẽ lưu vào trong từng sản phẩm đc comment
-    await productsDB.findById(req.params.id, (err, result) => {
+    await productsDB.findById(req.params.id).then((result, err) => {
       if (err) {
         return res.status(500).json({
           success: "false",
@@ -237,6 +237,13 @@ exports.comment = async (req, res) => {
         });
       } else {
         result.comments.push(commentSaved);
+        let rate = result.votes;
+        if (result.votes == 0) {
+          rate = Math.round((result.votes + commentSaved.vote) / 0.5) * 0.5;
+        } else {
+          rate = Math.round((result.votes + commentSaved.vote) / 2 / 0.5) * 0.5;
+        }
+        result.votes = rate;
         result.save();
       }
     });

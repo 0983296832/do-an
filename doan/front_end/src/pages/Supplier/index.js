@@ -66,13 +66,13 @@ const Supplier = () => {
               {
                 key: index + 100000,
                 product_code,
-                name,
-                price,
-                color,
-                quantity,
-                brand,
-                size,
-                category,
+                product_name: name,
+                product_price: price,
+                product_color: color,
+                product_quantity: quantity,
+                product_brand: brand,
+                product_size: size,
+                product_category: category,
               },
             ],
             amount: (item.price * item.quantity).toLocaleString("en-US", {
@@ -135,19 +135,22 @@ const Supplier = () => {
               {
                 key: index + 100000,
                 product_code,
-                name,
-                price,
-                color,
-                quantity,
-                brand,
-                size,
-                category,
+                product_name: name,
+                product_price: price,
+                product_color: color,
+                product_quantity: quantity,
+                product_brand: brand,
+                product_size: size,
+                product_category: category,
               },
             ],
-            amount: (item.price * item.quantity).toLocaleString("en-US", {
-              style: "currency",
-              currency: "VND",
-            }),
+            amount: (item.product_price * item.product_quantity).toLocaleString(
+              "en-US",
+              {
+                style: "currency",
+                currency: "VND",
+              }
+            ),
           };
         })
       );
@@ -163,16 +166,16 @@ const Supplier = () => {
     <div className="main-wrapper">
       <div className="datatable">
         <div className="datatableTitle">
-          Supplier Management
+          Quản lý nhà cung cấp
           <Link to="/add-product" className="_link">
-            Add New
+            Thêm Mới
           </Link>
         </div>
         <div className="datatable-feature">
           <div className="feature-input">
-            <h3>What are you looking for?</h3>
+            <h3>Bạn đang tìm kiếm cái gì?</h3>
             <Input
-              placeholder="Search something..."
+              placeholder="Tìm kiếm thứ gì đó..."
               prefix={<SearchOutlined />}
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
@@ -180,7 +183,7 @@ const Supplier = () => {
             />
           </div>
           <div className="feature-select">
-            <h3>Search By:</h3>
+            <h3>Tìm kiếm bởi:</h3>
             <Select
               defaultValue={searchBy}
               style={{
@@ -188,7 +191,7 @@ const Supplier = () => {
               }}
               onChange={(value) => setSearchBy(value)}
             >
-              <Option value="all">All</Option>
+              <Option value="all">Tất cả</Option>
               <Option value="supplier_name">Supplier Name</Option>
               <Option value="name">Product Name</Option>
               <Option value="product_code">Product Code</Option>
@@ -207,7 +210,7 @@ const Supplier = () => {
               size="middle"
               onClick={getDataBySearch}
             >
-              Search
+              Tìm kiếm
             </Button>
           </div>
         </div>

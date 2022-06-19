@@ -4,7 +4,7 @@ import Toast from "../components/Toast";
 import axios from "axios";
 const Auth = {
   login: (body) => {
-    const url = "/auth/login";
+    const url = process.env.REACT_APP_BASE_URL + "/auth/login";
     return axios.post(url, body).then((res) => {
       if (res.data.status === 200) {
         localStorage.setItem(
@@ -16,7 +16,7 @@ const Auth = {
     });
   },
   logout: () => {
-    const url = "/auth/logout";
+    const url = process.env.REACT_APP_BASE_URL + "/auth/logout";
     return axiosClient
       .post(url)
       .then((res) => {
@@ -28,7 +28,7 @@ const Auth = {
       });
   },
   register: (body) => {
-    const url = "/auth/register";
+    const url = process.env.REACT_APP_BASE_URL + "/auth/register";
     return axios.post(url, body);
   },
   sendEmail: (body) => {

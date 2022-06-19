@@ -93,7 +93,6 @@ const Home = () => {
     }
     setLoading(false);
   };
-  console.log(data.slice(0, 10));
   useEffect(() => {
     getData();
   }, []);
@@ -108,7 +107,7 @@ const Home = () => {
         <ProductView data={data.slice(10, 20)} title="Giày Adidas" />
         <ProductView data={data.slice(20, 30)} title="Giày Vans" />
         <FeedBack />
-        <Post />
+        {/* <Post /> */}
         <Address />
       </div>
     );

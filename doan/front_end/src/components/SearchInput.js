@@ -65,6 +65,6 @@ const Complete = () => (
     }}
     options={options}
   >
-    <Input.Search size="medium" placeholder="input here" />
+    <Input.Search size="medium" placeholder="Nhập gì đó ...." />
   </AutoComplete>
 );

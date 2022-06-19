@@ -12,8 +12,8 @@ const Progress = () => {
   return (
     <Card
       size="small"
-      title="Total Revenue"
-      extra={<FiMoreVertical className="progress-icon"/>}
+      title="Tổng Doanh Thu"
+      extra={<FiMoreVertical className="progress-icon" />}
       headStyle={{ color: "gray" }}
       style={{
         width: 370,
@@ -30,31 +30,34 @@ const Progress = () => {
             strokeWidth={5}
           />
         </div>
-        <p className="revenue__progress-title">Total sales made today</p>
-        <p className="revenue__progress-amount">$420</p>
+        <p className="revenue__progress-title">
+          Tổng doanh số bán hàng hôm nay
+        </p>
+        <p className="revenue__progress-amount">420đ</p>
         <p className="revenue__progress-desc">
-          Previous transactions processing. Last payments may not be included.
+          Xử lý các giao dịch trước đó. Các khoản thanh toán cuối cùng có thể
+          không được bao gồm.
         </p>
         <div className="summary">
           <div className="summary__item">
-            <div className="item__title">Target</div>
+            <div className="item__title">Mục tiêu</div>
             <div className="item__result negative">
               <MdKeyboardArrowDown fontSize="small" />
-              <div className="result__amount">$12.4k</div>
+              <div className="result__amount">636đ</div>
             </div>
           </div>
           <div className="summary__item">
-            <div className="item__title">Last Week</div>
+            <div className="item__title">Tuần Trước </div>
             <div className="item__result positive">
               <MdKeyboardArrowUp fontSize="small" />
-              <div className="result__amount">$12.4k</div>
+              <div className="result__amount">$12.4kđ</div>
             </div>
           </div>
           <div className="summary__item">
-            <div className="item__title">Last Month</div>
+            <div className="item__title">Tháng Trước</div>
             <div className="item__result positive">
               <MdKeyboardArrowUp fontSize="small" />
-              <div className="result__amount">$12.4k</div>
+              <div className="result__amount">$12.4kđ</div>
             </div>
           </div>
         </div>

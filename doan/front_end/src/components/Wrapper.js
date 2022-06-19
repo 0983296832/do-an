@@ -26,43 +26,47 @@ const Wrapper = ({ children }) => {
 
   const data = [
     {
-      title: "Main",
-      children: [{ icon: <MdDashboard />, link: "Dashboard", path: "/" }],
+      title: "Trang chính",
+      children: [{ icon: <MdDashboard />, link: "Trang Quản Trị", path: "/" }],
     },
     {
-      title: "Lists",
+      title: "Danh Sách",
       children: [
         {
           icon: <FaRegUser />,
-          link: "User",
+          link: "Người dùng",
           path: "/user",
         },
-        { icon: <BiStoreAlt />, link: "Products", path: "/product" },
-        { icon: <AiOutlineCreditCard />, link: "Orders", path: "/order" },
-        { icon: <MdLocalShipping />, link: "Suppliers", path: "/supplier" },
+        { icon: <BiStoreAlt />, link: "Các Sản phẩm", path: "/product" },
+        { icon: <AiOutlineCreditCard />, link: "Đơn Hàng", path: "/order" },
+        {
+          icon: <MdLocalShipping />,
+          link: "Các Nhà Cung Cấp",
+          path: "/supplier",
+        },
       ],
     },
     {
-      title: "Useful",
+      title: "Hữu Ích",
       children: [
-        { icon: <ImStatsDots />, link: "Stats", path: "/" },
-        { icon: <AiOutlineBell />, link: "Notifications", path: "/" },
+        { icon: <ImStatsDots />, link: "Số Liệu Thống Kê", path: "/" },
+        { icon: <AiOutlineBell />, link: "Thông Báo", path: "/" },
       ],
     },
     {
-      title: "Services",
+      title: "Địch Vụ",
       // children: [{ icon: <AiOutlineSetting />, link: "Settings", path: "/" }],
-      children: [{ icon: <IoSettingsSharp />, link: "Settings", path: "/" }],
+      children: [{ icon: <IoSettingsSharp />, link: "Cài Đặt", path: "/" }],
     },
     {
-      title: "User",
+      title: "Người Sử Dụng",
       children: [
         {
           icon: <ImProfile />,
-          link: "Profile",
+          link: "Hồ Sơ",
           path: `/profile/${auth?.data?._id}`,
         },
-        { icon: <BiLogOut />, link: "Logout", path: "/login" },
+        { icon: <BiLogOut />, link: "Đăng Xuất", path: "/login" },
       ],
     },
   ];

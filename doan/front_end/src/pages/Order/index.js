@@ -136,12 +136,12 @@ const Order = () => {
   return (
     <div className="main-wrapper">
       <div className="datatable">
-        <div className="datatableTitle">Order Management</div>
+        <div className="datatableTitle">Quản lý đơn hàng</div>
         <div className="datatable-feature">
           <div className="feature-input">
-            <h3>What are you looking for?</h3>
+            <h3>Bạn đang tìm kiếm cái gì?</h3>
             <Input
-              placeholder="Search something..."
+              placeholder="Tìm kiếm thứ gì đó..."
               prefix={<SearchOutlined />}
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
@@ -149,7 +149,7 @@ const Order = () => {
             />
           </div>
           <div className="feature-select">
-            <h3>Search By:</h3>
+            <h3>Tìm kiếm bởi:</h3>
             <Select
               defaultValue={searchBy}
               style={{
@@ -157,7 +157,7 @@ const Order = () => {
               }}
               onChange={(value) => setSearchBy(value)}
             >
-              <Option value="all">All</Option>
+              <Option value="all">Tất cả</Option>
               <Option value="name">Name</Option>
               <Option value="phone">Phone Number</Option>
               <Option value="email">Email</Option>
@@ -175,7 +175,7 @@ const Order = () => {
               size="middle"
               onClick={getDataBySearch}
             >
-              Search
+              Tìm kiếm
             </Button>
           </div>
         </div>

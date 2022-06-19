@@ -127,7 +127,6 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
-
   useEffect(() => {
     const getDetail = async () => {
       setLoading(true);
@@ -149,7 +148,18 @@ const DetailsProduct = () => {
           priceSale:
             data.data.data.product.price *
             ((100 - data.data.data.product.discount) / 100),
-          comments: data.data.data.product.comments.length,
+          comments: data.data.data.product.comments
+            .map((item) => {
+              return {
+                id: item._id,
+                avatar: "https://joeschmoe.io/api/v1/random",
+                content: item.content,
+                rate: item.vote,
+                author: item.name,
+                datetime: item.created,
+              };
+            })
+            .sort((a, b) => new Date(b.datetime) - new Date(a.datetime)),
           sales: data.data.data.product.sales,
           material: data.data.data.product.material,
           size: [...new Set(data.data.data.product.details.map((i) => i.size))],
@@ -178,7 +188,7 @@ const DetailsProduct = () => {
             <ProductImagesSlider images={productImages} />
           </div>
           <div className="details-right">
-            <Details data={detail} loading={loading} />
+            <Details data={detail} loading={loading} id={id} />
           </div>
         </div>
         <div className="details-desc">
@@ -205,7 +215,7 @@ const DetailsProduct = () => {
               <p>- Size: 35-43.</p>
             </TabPane>
             <TabPane tab="Đánh giá của khách hàng" key="2">
-              <CommentInput />
+              <CommentInput id={id} setDetail={setDetail} detail={detail} />
             </TabPane>
           </Tabs>
           {/* <h1>Mô tả sản phẩm</h1>

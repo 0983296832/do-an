@@ -145,7 +145,10 @@ exports.updateById = async (req, res) => {
     newBody = { ...req.body };
   }
 
-  // update trong db
+  if (req.body.birth) {
+    newBody.birth = new Date(req.body.birth);
+  }
+
   try {
     const data = await usersDB.findByIdAndUpdate(req.params.id, newBody, {
       useFindAndModify: false,
@@ -295,6 +298,7 @@ exports.addToCart = async (req, res) => {
   try {
     // tìm sản phẩm đã có trong giỏ hàng
     const cartItemExist = await cartsDB.find({
+      user_id: req.params.id,
       product_code: req.body.product_code,
       product_color: req.body.product_color,
       product_size: req.body.product_size,
@@ -303,6 +307,7 @@ exports.addToCart = async (req, res) => {
     if (cartItemExist.length > 0) {
       cartsDB
         .find({
+          user_id: req.params.id,
           product_code: req.body.product_code,
           product_color: req.body.product_color,
           product_size: req.body.product_size,
@@ -314,12 +319,14 @@ exports.addToCart = async (req, res) => {
             return res.status(200).json({
               status: "200",
               message: "add to cart success",
+              data: result[0],
             });
           }
         });
     } else {
       // nếu không thì sẽ tạo 1 giỏ hàng mới
       const cart = new cartsDB({
+        user_id: req.params.id,
         product_code: req.body.product_code,
         product_name: req.body.product_name,
         product_price: req.body.product_price,

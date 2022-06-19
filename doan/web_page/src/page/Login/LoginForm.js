@@ -44,7 +44,7 @@ const LoginForm = () => {
       <form className="login-form" onSubmit={handleSubmit(onLogin)}>
         <div className="text-field">
           <input
-            autoComplete="off"
+            // autoComplete="off"
             type="email"
             id="email"
             placeholder="Enter your email"
@@ -57,7 +57,7 @@ const LoginForm = () => {
         </div>
         <div className="text-field">
           <input
-            autoComplete="off"
+            // autoComplete="off"
             type={showPass ? "text" : "password"}
             id="password"
             placeholder="Enter your password"

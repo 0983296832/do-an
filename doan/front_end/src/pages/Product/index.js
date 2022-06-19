@@ -35,6 +35,13 @@ const productColumns = [
     field: "name",
     headerName: "Name",
     width: 150,
+    renderCell: (params) => {
+      return (
+        <Tooltip placement="topLeft" title={params.row.name}>
+          {params.row.name.slice(0, 15) + "..."}
+        </Tooltip>
+      );
+    },
   },
   {
     field: "category",
@@ -250,12 +257,12 @@ const ProductManagement = () => {
   return (
     <div className="main-wrapper">
       <div className="datatable" style={{ height: "700px" }}>
-        <div className="datatableTitle">Product Management</div>
+        <div className="datatableTitle">Quản lý sản phẩm</div>
         <div className="datatable-feature">
           <div className="feature-input">
-            <h3>What are you looking for?</h3>
+            <h3>Bạn đang tìm kiếm cái gì?</h3>
             <Input
-              placeholder="Search something..."
+              placeholder="Tìm kiếm thứ gì đó..."
               prefix={<SearchOutlined />}
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
@@ -263,7 +270,7 @@ const ProductManagement = () => {
             />
           </div>
           <div className="feature-select">
-            <h3>Search By:</h3>
+            <h3>Tìm kiếm bởi:</h3>
             <Select
               defaultValue={searchBy}
               style={{
@@ -271,7 +278,7 @@ const ProductManagement = () => {
               }}
               onChange={(value) => setSearchBy(value)}
             >
-              <Option value="all">All</Option>
+              <Option value="all">Tất cả</Option>
               <Option value="product_code">Product Code</Option>
               <Option value="name">Name</Option>
               <Option value="category">Category</Option>
@@ -287,7 +294,7 @@ const ProductManagement = () => {
               size="middle"
               onClick={getDataBySearch}
             >
-              Search
+              Tìm kiếm
             </Button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Input, Checkbox } from "antd";
 import { AuthContext } from "../../context/AuthContext";
+import Users from "../../services/userServices";
 
 const { TextArea } = Input;
 
@@ -12,13 +13,31 @@ const PaymentForm = ({ setFormValue }) => {
   const [address, setAddress] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [note, setNote] = React.useState("");
+  const [data, setData] = React.useState({});
   const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
     setDisabled(!disabled);
   };
   useEffect(() => {
     setFormValue({ name, phone, note, address, email });
   }, [name, email, address, phone, note]);
+  const getDataUser = async () => {
+    const data = await Users.getUserById(auth.data._id);
+    setData(data?.result);
+    if (disabled) {
+      setName(data?.result?.name_surname);
+      setEmail(data?.result?.email);
+      setPhone(data?.result?.phone);
+      setAddress(data?.result?.address);
+    } else {
+      setName("");
+      setEmail("");
+      setPhone("");
+      setAddress("");
+    }
+  };
+  useEffect(() => {
+    getDataUser();
+  }, [disabled]);
   return (
     <form className="form-container">
       <div className="form-group-input">
@@ -28,7 +47,7 @@ const PaymentForm = ({ setFormValue }) => {
           </label>
           <Input
             placeholder="Họ và tên"
-            disabled={disabled}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
@@ -38,7 +57,7 @@ const PaymentForm = ({ setFormValue }) => {
           </label>
           <Input
             placeholder="Số điện thoại"
-            disabled={disabled}
+            value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
@@ -50,7 +69,7 @@ const PaymentForm = ({ setFormValue }) => {
         </label>
         <Input
           placeholder="Nhập email để nhận được mã đơn hàng"
-          disabled={disabled}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
@@ -60,7 +79,7 @@ const PaymentForm = ({ setFormValue }) => {
         </label>
         <Input
           placeholder="Địa chỉ"
-          disabled={disabled}
+          value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
       </div>
@@ -74,6 +93,7 @@ const PaymentForm = ({ setFormValue }) => {
         <label>Ghi chú</label>
         <TextArea
           rows={5}
+          value={note}
           placeholder="Ghi chú cho bên giao hàng ...."
           onChange={(e) => setNote(e.target.value)}
         />

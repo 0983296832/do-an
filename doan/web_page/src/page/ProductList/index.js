@@ -20,9 +20,9 @@ const ProductList = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  // const [searchBy, setSearchBy] = useState("");
+  const [searchBy, setSearchBy] = useState("");
   const [sort, setSort] = useState("mặc định");
-  const [priceFilter, setPriceFilter] = useState([10, 3000]);
+  const [priceFilter, setPriceFilter] = useState([10, 5000]);
   const [sizeFilter, setSizeFilter] = useState("");
   const [colorFilter, setColorFilter] = useState("");
   const [genderFilter, setGenderFilter] = useState("");

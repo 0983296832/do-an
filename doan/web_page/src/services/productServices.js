@@ -25,6 +25,10 @@ const Products = {
     const url = process.env.REACT_APP_BASE_URL + "/product/views/" + id;
     return axios.put(url);
   },
+  comment: (id, body) => {
+    const url = process.env.REACT_APP_BASE_URL + "/product/comment/" + id;
+    return axios.post(url, body);
+  },
 };
 
 export default Products;

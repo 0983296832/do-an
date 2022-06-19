@@ -9,9 +9,7 @@ const Address = () => {
         <a
           href="https://www.google.com/maps?cid=2932074774441584188"
           className="address-btn"
-        >
-          Xem Ngay
-        </a>
+        ></a>
       </div>
     </div>
   );

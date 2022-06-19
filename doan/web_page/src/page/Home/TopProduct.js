@@ -12,8 +12,8 @@ const TopProduct = ({ data }) => {
   return (
     <div>
       <div className="top-title">
-        <h4>Top Những Đôi Giày Sneaker</h4>
-        <h1>Giày Thể Thao</h1>
+        {/* <h4>Top Những Đôi Giày Sneaker</h4> */}
+        <h1>Top Sản Phẩm Trong Shop</h1>
       </div>
       <div>
         <Tabs defaultActiveKey="1" centered>
@@ -40,17 +40,6 @@ const TopProduct = ({ data }) => {
             </div>
           </TabPane>
         </Tabs>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <a href="#" className="view-btn">
-            Xem thêm sản phẩm
-          </a>
-        </div>
       </div>
     </div>
   );

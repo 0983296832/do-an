@@ -19,12 +19,12 @@ import moment from "moment";
 const Home = () => {
   const dataOriginal = [
     {
-      title: "Users",
+      title: "Người Dùng",
       isMoney: false,
       number: 0,
       rate: "0.5%",
       isNegative: true,
-      link: "See all users",
+      link: "Xem tất cả người dùng",
       path: "/user",
       icon: (
         <FaRegUser
@@ -37,12 +37,12 @@ const Home = () => {
       ),
     },
     {
-      title: "Products",
+      title: "Tất cả sản phẩm",
       isMoney: false,
       number: 0,
       rate: "0.5%",
       isNegative: true,
-      link: "View all products",
+      link: "Xem tất cả người dùng",
       path: "/product",
       icon: (
         <AiOutlineShoppingCart
@@ -55,12 +55,12 @@ const Home = () => {
       ),
     },
     {
-      title: "Orders",
+      title: "Đơn Hàng",
       number: 500,
       isMoney: true,
       rate: "0.5%",
       isNegative: true,
-      link: "See all orders",
+      link: "Xem Tổng đơn hàng",
       path: "/order",
       icon: (
         <MdAttachMoney
@@ -70,12 +70,12 @@ const Home = () => {
       ),
     },
     {
-      title: "Earnings",
+      title: "Tiền nhập",
       number: 500,
       isMoney: true,
       rate: "0.5%",
       isNegative: true,
-      link: "View net earnings",
+      link: "Tổng vốn",
       path: "/supplier",
       icon: (
         <BsCoin
@@ -176,10 +176,10 @@ const Home = () => {
         <div className="home__revenue">
           <Progress />
           <div className="revenue__chart">
-            <ChartComponent title="Last 6 Months (Revenue)" aspect={2 / 1} />
+            <ChartComponent title="6 Tháng Qua (Doanh thu)" aspect={2 / 1} />
           </div>
         </div>
-        <h1 className="trans">Last Five Transactions</h1>
+        <h1 className="trans">Năm giao dịch cuối cùng</h1>
         <div className="table">
           <TableList dataTable={dataTable} />
         </div>

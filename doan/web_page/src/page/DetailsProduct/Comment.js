@@ -10,32 +10,48 @@ import {
   Tooltip,
 } from "antd";
 import moment from "moment";
+import Product from "../../services/productServices";
+import Toast from "../../components/Toast";
 const { TextArea } = Input;
 
 const CommentList = ({ comments }) => (
-  <List
-    dataSource={comments}
-    header={`${comments.length} ${comments.length > 1 ? "replies" : "reply"}`}
-    itemLayout="horizontal"
-    renderItem={(props) => (
-      <Comment
-        {...props}
-        datetime={
-          <div>
-            <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-              <span>{moment().fromNow()}</span>
-            </Tooltip>
-            <Rate
-              allowHalf
-              defaultValue={props.rate}
-              disabled
-              style={{ marginLeft: 10, fontSize: 12 }}
-            />
-          </div>
-        }
-      />
-    )}
-  />
+  <div
+    id="scrollableDiv"
+    style={{
+      height: 400,
+      overflow: "auto",
+      padding: "0 16px",
+      border: "1px solid rgba(140, 140, 140, 0.35)",
+    }}
+  >
+    <List
+      dataSource={comments}
+      header={`${comments.length} ${comments.length > 1 ? "replies" : "reply"}`}
+      itemLayout="horizontal"
+      renderItem={(props) => {
+        return (
+          <Comment
+            {...props}
+            datetime={
+              <div>
+                <Tooltip
+                  title={moment(props.datetime).format("YYYY-MM-DD HH:mm:ss")}
+                >
+                  <span>{moment(props.datetime).fromNow()}</span>
+                </Tooltip>
+                <Rate
+                  allowHalf
+                  defaultValue={props.rate}
+                  disabled
+                  style={{ marginLeft: 10, fontSize: 12 }}
+                />
+              </div>
+            }
+          />
+        );
+      }}
+    />
+  </div>
 );
 
 const Editor = ({
@@ -81,32 +97,54 @@ const Editor = ({
   </>
 );
 
-const CommentInput = () => {
-  const [comments, setComments] = useState([]);
+const CommentInput = ({ id, setDetail, detail }) => {
+  const [comments, setComments] = useState(detail?.comments);
   const [submitting, setSubmitting] = useState(false);
   const [comment, setComment] = useState("");
   const [author, setAuthor] = useState("");
   const [rate, setRate] = useState(0);
 
-  const handleSubmit = () => {
-    if (!comment && !author) return;
+  const handleSubmit = async () => {
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      if (!comment && !author) return;
+
+      const newComment = {
+        name: author,
+        vote: rate,
+        content: comment,
+      };
+      await Product.comment(id, newComment);
+      let rates = detail.rate;
+      if (detail.rate == 0) {
+        rates = Math.round((detail.rate + rate) / 0.5) * 0.5;
+      } else {
+        rates = Math.round((detail.rate + rate) / 2 / 0.5) * 0.5;
+      }
+      setDetail({
+        ...detail,
+        comments: [...detail.comments, { ...newComment, datetime: Date.now() }],
+        rate: rates,
+      });
       setSubmitting(false);
       setComment("");
       setAuthor("");
       setRate(0);
       setComments([
-        ...comments,
         {
           author: author,
           rate: rate,
           avatar: "https://joeschmoe.io/api/v1/random",
           content: <p>{comment}</p>,
-          datetime: moment().fromNow(),
+          datetime: Date.now(),
         },
+        ...comments,
       ]);
-    }, 1000);
+      Toast("success", "Bình luận thành công");
+    } catch (error) {
+      setSubmitting(false);
+      Toast("error", error.message);
+    }
   };
 
   const handleChangeComment = (e) => {
@@ -121,7 +159,6 @@ const CommentInput = () => {
 
   return (
     <>
-      {comments.length > 0 && <CommentList comments={comments} />}
       <Comment
         avatar={
           <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
@@ -139,6 +176,7 @@ const CommentInput = () => {
           />
         }
       />
+      {comments.length > 0 && <CommentList comments={comments} />}
     </>
   );
 };

@@ -3,8 +3,8 @@ import logo from "../assets/image/logo.png";
 import { Input, Select, Button } from "antd";
 import "../assets/css/header.css";
 import { SearchOutlined } from "@ant-design/icons";
-import { FiShoppingCart } from "react-icons/fi";
-import { AiOutlineUser } from "react-icons/ai";
+import { MdOutlineAddShoppingCart } from "react-icons/md";
+import { ImUser } from "react-icons/im";
 import nikeLogo from "../assets/image/nike-logo.webp";
 import adidasLogo from "../assets/image/adidas-logo.webp";
 import mlbLogo from "../assets/image/mlb-logo.webp";
@@ -72,12 +72,15 @@ const Header = () => {
         </div>
         <div className="header-infor">
           <Link to="/cart">
-            <FiShoppingCart className="infor-icon" style={{ color: "black" }} />
+            <MdOutlineAddShoppingCart
+              className="infor-icon"
+              style={{ color: "black" }}
+            />
           </Link>
 
-          <h5 className="infor-money">{cartState.total || 0}đ</h5>
+          <h5 className="infor-money">{cartState.total}đ</h5>
           <Link to="/profile" style={{ color: "black" }}>
-            <AiOutlineUser className="infor-icon" />
+            <ImUser className="infor-icon" />
           </Link>
 
           <h6 className="cart-count">{cartState.amount}</h6>

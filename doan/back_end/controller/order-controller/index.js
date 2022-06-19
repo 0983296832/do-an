@@ -4,6 +4,7 @@ const usersDB = require("../../models/user/userModel");
 const Features = require("../../lib/feature");
 
 const _ = require("lodash");
+const cartsDB = require("../../models/user/cartModel");
 
 // tạo mới order
 exports.order = async (req, res) => {
@@ -23,6 +24,7 @@ exports.order = async (req, res) => {
         await usersDB.findByIdAndUpdate(req.params.id, {
           $pull: { carts: item._id },
         });
+        await cartsDB.findByIdAndDelete(item._id);
       }
       // tìm sản phẩm và giảm số lượng sản phẩm đó đồng thời tăng số lương đã bán
       product.details.map(async (i) => {
@@ -155,6 +157,17 @@ exports.update = async (req, res) => {
     const order = await ordersDB.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    return res
+      .status(200)
+      .json({ status: "200", message: "success", data: order });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getByOrderById = async (req, res) => {
+  try {
+    const order = await ordersDB.findById(req.params.id);
     return res
       .status(200)
       .json({ status: "200", message: "success", data: order });

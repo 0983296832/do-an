@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
       { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "60s",
       }
     );
     // tạo refreshToken và lưu vào cookie
@@ -166,7 +166,7 @@ exports.refreshToken = async (req, res) => {
       { _id, name, email, role },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "60s",
       }
     );
     const newRefreshToken = jwt.sign(

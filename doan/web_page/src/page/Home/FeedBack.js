@@ -9,7 +9,7 @@ const FeedBack = () => {
         "https://1sneaker.vn/wp-content/uploads/2021/03/Trang-phuc-bo-sat-unisex-3-100x100.jpg",
       desc: "Giày bên shop có nhiều mẫu đẹp lắm, nhưng mà mình ưu mỗi van cá mập thôi, vừa mới mua bên shop, giày vừa, đẹp, sau ra mua ủng hộ shop tiếp",
       rate: 5,
-      name: "Lê Văn Bình",
+      name: "Đoàn Duy Thành",
     },
     {
       image:

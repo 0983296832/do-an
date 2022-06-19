@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserService from "../../services/userServices";
-import { Input } from "antd";
+import { Input, Tooltip } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Select } from "antd";
 import { Button } from "antd";
@@ -14,7 +14,18 @@ import BasicPagination from "../../components/Pagination";
 const { Option } = Select;
 
 const userColumns = [
-  { field: "id", headerName: "ID", width: 70 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 80,
+    renderCell: (params) => {
+      return (
+        <Tooltip placement="topLeft" title={params.row.id}>
+          {params.row.id.slice(0, 7) + "..."}
+        </Tooltip>
+      );
+    },
+  },
   {
     field: "user",
     headerName: "User",
@@ -217,16 +228,16 @@ const Datatable = () => {
     <div className="main-wrapper">
       <div className="datatable">
         <div className="datatableTitle">
-          User Management
+          Quản lý người dùng
           <Link to="/add-user" className="_link">
-            Add New
+            Thêm mới
           </Link>
         </div>
         <div className="datatable-feature">
           <div className="feature-input">
-            <h3>What are you looking for?</h3>
+            <h3>Bạn đang tìm kiếm cái gì?</h3>
             <Input
-              placeholder="Search something..."
+              placeholder="Tìm kiếm cái gì đó..."
               prefix={<SearchOutlined />}
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
@@ -234,7 +245,7 @@ const Datatable = () => {
             />
           </div>
           <div className="feature-select">
-            <h3>Search By:</h3>
+            <h3>Tìm kiếm bởi:</h3>
             <Select
               defaultValue={searchBy}
               style={{
@@ -242,7 +253,7 @@ const Datatable = () => {
               }}
               onChange={(value) => setSearchBy(value)}
             >
-              <Option value="all">All</Option>
+              <Option value="all">Tất Cả</Option>
               <Option value="name">Name</Option>
               <Option value="phone">Phone Number</Option>
               <Option value="email">Email</Option>
@@ -257,7 +268,7 @@ const Datatable = () => {
               size="middle"
               onClick={getDataBySearch}
             >
-              Search
+              Tìm Kiếm
             </Button>
           </div>
         </div>
