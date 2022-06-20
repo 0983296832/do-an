@@ -237,7 +237,7 @@ const ListTable = ({
       render: (_, record) => {
         return (
           <div>
-            {moment(record.receive_date).zone("+07:00").format("DD/MM/YYYY")}
+            {moment(record.created).zone("+07:00").format("DD/MM/YYYY")}
           </div>
         );
       },

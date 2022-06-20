@@ -291,7 +291,12 @@ exports.getRevenueBy = async (req, res) => {
       }, 0);
     return res
       .status(200)
-      .json({ status: "200", message: "get revenue success", data: revenue });
+      .json({
+        status: "200",
+        message: "get revenue success",
+        data: revenue,
+        details: data,
+      });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

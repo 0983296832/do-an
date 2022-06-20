@@ -50,7 +50,7 @@ const Order = () => {
             ...item,
             id: item._id,
             key: index,
-            created: moment(item.created).zone("+07:00").format("DD/MM/YYYY"),
+            created: item.created,
             details: item.details.map((i, idx) => {
               return {
                 ...i,
@@ -106,7 +106,7 @@ const Order = () => {
             ...item,
             id: item._id,
             key: index,
-            created: moment(item.created).zone("+07:00").format("DD/MM/YYYY"),
+            created: item.created,
             details: item.details.map((i, idx) => {
               return {
                 ...i,

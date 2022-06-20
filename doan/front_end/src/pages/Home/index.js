@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../assets/css/home.css";
 import Wigget from "../../components/Wigget";
 import { FaRegUser } from "react-icons/fa";
-import { Card, Dropdown, Menu } from "antd";
+import { Card, Dropdown, Menu, Tabs, Badge } from "antd";
 import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsCoin } from "react-icons/bs";
@@ -14,10 +14,12 @@ import TableList from "./Table";
 import Users from "../../services/userServices";
 import Products from "../../services/productServices";
 import OrderServices from "../../services/orderServices";
-
 import Toast from "../../components/Toast";
 import moment from "moment";
 import TopProductSales from "./TopProductSales";
+import TableProductSale from "./TableProductSale";
+
+const { TabPane } = Tabs;
 
 const Home = () => {
   const dataOriginal = [
@@ -102,6 +104,8 @@ const Home = () => {
   const [chartData, setChartData] = useState([]);
   const [topData, setTopData] = useState([]);
   const [indexTop, setIndexTop] = useState(0);
+  const [dataProducts, setDataProducts] = useState([]);
+  const [productsOutOfStock, setProductsOutOfStock] = useState([]);
   const menu = (
     <Menu
       items={[
@@ -147,6 +151,7 @@ const Home = () => {
           OrderServices.getRevenueByHalfYear("all"),
           Products.getProducts(topProductsParams),
           Users.getTopUser(),
+          Products.getProductsOutOfStock(),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};
@@ -160,6 +165,8 @@ const Home = () => {
           result[4].status === "fulfilled" ? result[4].value.data : [];
         const orderRevenueByDay =
           result[5].status === "fulfilled" ? result[5].value.data : [];
+        const dataProducts =
+          result[5].status === "fulfilled" ? result[5].value.details : [];
         const orderRevenueByWeek =
           result[6].status === "fulfilled" ? result[6].value.data : [];
         const orderRevenueByMonth =
@@ -170,6 +177,10 @@ const Home = () => {
           result[9].status === "fulfilled" ? result[9].value.data : [];
         const TopUser =
           result[10].status === "fulfilled" ? result[10].value.data : [];
+        const productsOutOfStock =
+          result[11].status === "fulfilled" ? result[11].value.data : [];
+        if (productsOutOfStock.length > 0)
+          Toast("warn", "There are some products out of stock");
         setTopData([
           ...TopProductSales.map((item) => {
             return {
@@ -227,6 +238,41 @@ const Home = () => {
           month: orderRevenueByMonth,
         });
         setChartData(orderRevenueByHaflYear);
+        setDataProducts(
+          dataProducts
+            .map((product) => product.details)
+            .flat(Infinity)
+            .reduce((acc, cur) => {
+              if (acc.find((i) => i.product_id === cur.product_id)) {
+                return acc.map((i) => {
+                  if (i.product_id === cur.product_id) {
+                    return {
+                      ...i,
+                      product_quantity:
+                        i.product_quantity + cur.product_quantity,
+                    };
+                  } else return i;
+                });
+              } else {
+                acc.push({
+                  product_id: cur.product_id,
+                  product_quantity: cur.product_quantity,
+                  product_image: cur.product_image,
+                  product_name: cur.product_name,
+                  product_price: cur.product_price,
+                  product_code: cur.product_code,
+                });
+                return acc;
+              }
+            }, [])
+            .map((item) => {
+              return {
+                ...item,
+                product_amount: item.product_quantity * item.product_price,
+              };
+            })
+        );
+        setProductsOutOfStock(productsOutOfStock);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -238,6 +284,8 @@ const Home = () => {
       isCancel = true;
     };
   }, []);
+
+  console.log(dataProducts);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -295,10 +343,23 @@ const Home = () => {
             />
           </div>
         </div>
-        <h1 className="trans">Last Five Transactions</h1>
-        <div className="table">
-          <TableList dataTable={dataTable} />
-        </div>
+        <Tabs defaultActiveKey="1" style={{ marginTop: "20px" }}>
+          <TabPane tab="Last Five Transactions" key="1">
+            <div className="table">
+              <TableList dataTable={dataTable} />
+            </div>
+          </TabPane>
+          <TabPane tab="Product Sales Today" key="2">
+            <div className="table">
+              <TableProductSale dataTableSales={dataProducts} noPrice />
+            </div>
+          </TabPane>
+          <TabPane tab="Product is out of stock" key="3">
+            <div className="table">
+              <TableProductSale dataTableSales={productsOutOfStock} noAmount />
+            </div>
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

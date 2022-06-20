@@ -467,9 +467,44 @@ exports.getTopUser = async (req, res) => {
     const topUsers = data
       .filter((user, index) => user.orders.length > 0)
       .slice(0, 5);
-    return res
-      .status(200)
-      .json({ message: "get top users successfully", data: topUsers });
+    return res.status(200).json({
+      status: "200",
+      message: "get top users successfully",
+      data: topUsers,
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getProductsOutOfStock = async (req, res) => {
+  try {
+    const data = await productsDB.find().populate("image");
+    const productsOutOfStock = data.filter((product) => {
+      return (
+        product.details.reduce((acc, item) => {
+          return acc + item.quantity;
+        }, 0) === 0
+      );
+    });
+    return res.status(200).json({
+      status: "200",
+      message: "get products successfully",
+      data: productsOutOfStock.map((item) => {
+        return {
+          product_id: item._id,
+          product_code: item.product_code,
+          product_name: item.name,
+          product_price: item.price,
+          product_category: item.category,
+          product_brand: item.brand,
+          product_quantity: item.details.reduce((acc, item) => {
+            return acc + item.quantity;
+          }, 0),
+          product_image: item.image[0].imageUrl,
+        };
+      }),
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

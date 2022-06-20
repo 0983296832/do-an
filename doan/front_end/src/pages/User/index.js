@@ -10,6 +10,7 @@ import { Button } from "antd";
 import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
 import BasicPagination from "../../components/Pagination";
+import { AiOutlineFilter, AiOutlineSearch } from "react-icons/ai";
 
 const { Option } = Select;
 
@@ -17,11 +18,11 @@ const userColumns = [
   {
     field: "id",
     headerName: "ID",
-    width: 80,
+    width: 120,
     renderCell: (params) => {
       return (
         <Tooltip placement="topLeft" title={params.row.id}>
-          {params.row.id.slice(0, 7) + "..."}
+          {params.row.id.slice(0, 10) + "..."}
         </Tooltip>
       );
     },
@@ -49,6 +50,14 @@ const userColumns = [
     field: "phone",
     headerName: "Phone",
     width: 150,
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 150,
+    renderCell: (params) => {
+      return <span>{params.row.role === 1 ? "User" : "Admin"}</span>;
+    },
   },
   {
     field: "status",
@@ -82,6 +91,13 @@ const Datatable = () => {
           page: pageNum,
           limit: 10,
         };
+      } else if (searchBy === "role") {
+        const key = searchBy + "[eq]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey == "user" ? 1 : 2,
+        };
       } else {
         const key = searchBy + "[regex]";
         params = {
@@ -93,14 +109,15 @@ const Datatable = () => {
       const result = await UserService.getUsers(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(({ id, email, name, image, status, phone }) => {
+        result.result.map(({ id, email, name, image, status, phone, role }) => {
           return {
-            id: id,
-            email: email,
+            id,
+            email,
             user: name,
             img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-            status: status,
-            phone: phone,
+            status,
+            phone,
+            role,
           };
         })
       );
@@ -118,31 +135,43 @@ const Datatable = () => {
     };
   }, [page]);
 
-  const getDataBySearch = async () => {
+  const getDataBySearch = async (pageNum) => {
     if (searchBy === "all") {
       setSearchKey("");
       fetchData();
     }
 
     setLoading(true);
-    const key = searchBy + "[regex]";
     try {
-      const params = {
-        page: 1,
-        limit: 10,
-        [key]: searchKey,
-      };
+      let params;
+      if (searchBy === "role") {
+        const key = searchBy + "[eq]";
+        params = {
+          page: 1,
+          limit: 10,
+          [key]: searchKey == "user" ? 1 : 2,
+        };
+      } else {
+        const key = searchBy + "[regex]";
+        params = {
+          page: 1,
+          limit: 10,
+          [key]: searchKey,
+        };
+      }
+
       const result = await UserService.getUsers(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(({ id, email, name, image, status, phone }) => {
+        result.result.map(({ id, email, name, image, status, phone, role }) => {
           return {
-            id: id,
-            email: email,
+            id,
+            email,
             user: name,
             img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-            status: status,
-            phone: phone,
+            status,
+            phone,
+            role,
           };
         })
       );
@@ -200,44 +229,33 @@ const Datatable = () => {
           </Link>
         </div>
         <div className="datatable-feature">
-          <div className="feature-input">
-            <h3>What are you looking for?</h3>
-            <Input
-              placeholder="Search something..."
-              prefix={<SearchOutlined />}
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-              allowClear
-            />
-          </div>
-          <div className="feature-select">
-            <h3>Search By:</h3>
-            <Select
-              defaultValue={searchBy}
-              style={{
-                width: 200,
-              }}
-              onChange={(value) => setSearchBy(value)}
-            >
-              <Option value="all">All</Option>
-              <Option value="name">Name</Option>
-              <Option value="phone">Phone Number</Option>
-              <Option value="email">Email</Option>
-              <Option value="address">Address</Option>
-              <Option value="status">Status</Option>
-            </Select>
-          </div>
-          <div className="feature-btn">
-            <Button
-              type="primary"
-              icon={<SearchOutlined />}
-              size="middle"
-              onClick={getDataBySearch}
-            >
-              Search
-            </Button>
-          </div>
+          <SearchGroup
+            searchKey={searchKey}
+            setSearchKey={setSearchKey}
+            searchBy={searchBy}
+            setSearchBy={setSearchBy}
+            page={page}
+            getDataBySearch={getDataBySearch}
+          />
         </div>
+        {/* <div className="feature-options-group">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              marginBottom: "5px",
+            }}
+          >
+            <div className="feature-options-btn" onClick={() => setTabIndex(0)}>
+              <AiOutlineSearch />
+            </div>
+            <div className="feature-options-btn" onClick={() => setTabIndex(1)}>
+              <AiOutlineFilter />
+            </div>
+          </div>
+        </div> */}
         <DataGrid
           className="datagrid"
           style={{ height: "630.5px" }}
@@ -256,3 +274,90 @@ const Datatable = () => {
 };
 
 export default Datatable;
+
+const SearchGroup = ({
+  searchKey,
+  setSearchKey,
+  searchBy,
+  setSearchBy,
+  page,
+  getDataBySearch,
+}) => {
+  return (
+    <>
+      <div className="feature-input">
+        <h3>What are you looking for?</h3>
+        <Input
+          placeholder="Search something..."
+          prefix={<SearchOutlined />}
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+          allowClear
+        />
+      </div>
+      <div className="feature-select">
+        <h3>Search/Sort By:</h3>
+        <Select
+          defaultValue={searchBy}
+          style={{
+            width: 200,
+          }}
+          onChange={(value) => setSearchBy(value)}
+        >
+          <Option value="all">All</Option>
+          <Option value="name">Name</Option>
+          <Option value="phone">Phone Number</Option>
+          <Option value="email">Email</Option>
+          <Option value="address">Address</Option>
+          <Option value="status">Status</Option>
+          <Option value="role">Role</Option>
+        </Select>
+      </div>
+      <div className="feature-btn">
+        <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          size="middle"
+          onClick={() => getDataBySearch(page)}
+        >
+          Search
+        </Button>
+      </div>
+    </>
+  );
+};
+
+// const FilterGroup = ({ filterByRole, setFilterByRole }) => {
+//   return (
+//     <>
+//       <div className="feature-select">
+//         <h3>Filter by role:</h3>
+//         <Select
+//           defaultValue={filterByRole}
+//           style={{
+//             width: 200,
+//           }}
+//           onChange={(value) => setFilterByRole(value)}
+//         >
+//           <Option value="all">All</Option>
+//           <Option value={2}>Admin</Option>
+//           <Option value={1}>User</Option>
+//         </Select>
+//       </div>
+//       <div className="feature-select">
+//         <h3>Filter by status:</h3>
+//         <Select
+//           defaultValue={filterByRole}
+//           style={{
+//             width: 200,
+//           }}
+//           onChange={(value) => setFilterByRole(value)}
+//         >
+//           <Option value="all">All</Option>
+//           <Option value="online">online</Option>
+//           <Option value="offline">offline</Option>
+//         </Select>
+//       </div>
+//     </>
+//   );
+// };

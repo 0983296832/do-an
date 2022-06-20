@@ -28,6 +28,10 @@ const Products = {
     const url = "/product/get-earning";
     return axiosClient.get(url);
   },
+  getProductsOutOfStock: () => {
+    const url = "/product/get-products-out-of-stock";
+    return axiosClient.get(url);
+  },
 };
 
 export default Products;
