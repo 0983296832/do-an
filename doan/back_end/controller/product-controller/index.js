@@ -27,8 +27,7 @@ exports.getAll = async (req, res) => {
       productsDB
         .find()
         .populate({ path: "image" })
-        .populate({ path: "orders" })
-        .populate({ path: "carts" }),
+        .populate({ path: "supplier" }),
       req.query
     )
       .sorting()
@@ -438,14 +437,12 @@ exports.updateSupplier = async (req, res) => {
         .status(400)
         .json({ status: "400", message: "can not find supplier" });
     }
-    const result = await suppliersDB.updateOne(
-      { _id: id },
+    const result = await suppliersDB.findByIdAndUpdate(
+      id,
       {
-        $set: {
-          name: req.body.name,
-          address: req.body.address,
-          phone: req.body.phone,
-        },
+        supplier_name: req.body.supplier_name,
+        address: req.body.address,
+        phone: req.body.phone,
       },
       { new: true }
     );
@@ -469,6 +466,20 @@ exports.increaseViews = async (req, res) => {
       status: "200",
       message: "increase views successfully",
     });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getEarning = async (req, res) => {
+  try {
+    const data = await suppliersDB.find();
+    const revenue = data.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

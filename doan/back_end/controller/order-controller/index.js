@@ -2,9 +2,12 @@ const ordersDB = require("../../models/order/orderModels");
 const productsDB = require("../../models/product/product");
 const usersDB = require("../../models/user/userModel");
 const Features = require("../../lib/feature");
+const moment = require("moment");
+const ObjectId = require("mongodb").ObjectId;
 
 const _ = require("lodash");
 const cartsDB = require("../../models/user/cartModel");
+const sendEmail = require("../../untils/sendEmail");
 
 // tạo mới order
 exports.order = async (req, res) => {
@@ -81,10 +84,27 @@ exports.order = async (req, res) => {
       shipping_unit: req.body.shipping_unit,
       shipping_fee: req.body.shipping_fee,
       note: req.body.note,
+      user_id: req.body.details[0].user_id,
     });
     const savedOrder = await order.save();
     // sau khi lưu xong sẽ kiểm tra nếu có người dùng sẽ tìm và thêm order cho ng dùng đó
     // ngược lại thì chỉ tạo order trong dtb và không lưu cho ai cả
+    // HTML Message
+    const message = `
+     <h1>Thank you for your purchase from us.</h1>
+     <h1>Your order code: ${savedOrder._id}</h1> 
+     <a href=${
+       process.env.WEB_URL + "/order/" + savedOrder._id
+     }>Click to see your order: ${
+      process.env.WEB_URL + "/order/" + savedOrder._id
+    }</a> 
+   `;
+
+    await sendEmail({
+      to: req.body.email,
+      subject: "Password Reset Request",
+      text: message,
+    });
     if (req.params.id != "random") {
       usersDB.findById(req.params.id).then((result, err) => {
         if (err) {
@@ -171,6 +191,215 @@ exports.getByOrderById = async (req, res) => {
     return res
       .status(200)
       .json({ status: "200", message: "success", data: order });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getRevenue = async (req, res) => {
+  try {
+    const data = await ordersDB.find({
+      state: "giao hàng thành công",
+    });
+    const revenue = data
+      .map((item) => {
+        return item.details.reduce((acc, item) => {
+          return acc + item.product_price * item.product_quantity;
+        }, 25000);
+      })
+      .reduce((acc, item) => {
+        return acc + item;
+      }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+exports.getRevenueBy = async (req, res) => {
+  try {
+    const date = req.params.date;
+    let day;
+
+    if (date == "day") {
+      day = moment(new Date()).format("MM/DD/YYYY");
+    } else if (date == "week") {
+      day = moment(new Date()).startOf("week").format("MM/DD/YYYY");
+    } else if (date == "month") {
+      day = moment().startOf("month").format("MM/DD/YYYY");
+    } else if (date == "year") {
+      day = moment().startOf("year").format("MM/DD/YYYY");
+    }
+    const data = await ordersDB.find({
+      state: "giao hàng thành công",
+      receive_date: {
+        $gte: new Date(day),
+      },
+    });
+
+    const revenue = data
+      .map((item) => {
+        return item.details.reduce((acc, item) => {
+          return acc + item.product_price * item.product_quantity;
+        }, 25000);
+      })
+      .reduce((acc, item) => {
+        return acc + item;
+      }, 0);
+    return res
+      .status(200)
+      .json({ status: "200", message: "get revenue success", data: revenue });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+exports.getRevenueByHaflYear = async (req, res) => {
+  try {
+    const getRevenueByMonth = async (month) => {
+      try {
+        let data;
+        if (req.params.id == "all") {
+          data = await ordersDB.find({
+            state: "giao hàng thành công",
+            receive_date: {
+              $gte: new Date(
+                moment().month(month).startOf("month").format("MM/DD/YYYY")
+              ),
+              $lte: new Date(
+                moment().month(month).endOf("month").format("MM/DD/YYYY")
+              ),
+            },
+          });
+        } else {
+          data = await ordersDB.find({
+            user_id: req.params.id,
+            state: "giao hàng thành công",
+            receive_date: {
+              $gte: new Date(
+                moment().month(month).startOf("month").format("MM/DD/YYYY")
+              ),
+              $lte: new Date(
+                moment().month(month).endOf("month").format("MM/DD/YYYY")
+              ),
+            },
+          });
+        }
+
+        if (data.length == 0) return 0;
+        const revenue = data
+          .map((item) => {
+            return item.details.reduce((acc, item) => {
+              return acc + item.product_price * item.product_quantity;
+            }, 25000);
+          })
+          .reduce((acc, item) => {
+            return acc + item;
+          }, 0);
+        return revenue;
+      } catch (error) {
+        return res.status(400).json({ status: "400", message: error.message });
+      }
+    };
+
+    Promise.all(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) =>
+        getRevenueByMonth(month - 1)
+      )
+    )
+      .then((data) => {
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        return res.status(200).json({
+          status: "200",
+          message: "get revenue success",
+          data: data.map((item, index) => {
+            return { name: monthNames[index], Total: item };
+          }),
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({ status: "400", message: err.message })
+      );
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+exports.getRevenueProductByHaflYear = async (req, res) => {
+  try {
+    const getRevenueByMonth = async (month) => {
+      try {
+        const data = await ordersDB.find({
+          details: { $elemMatch: { product_id: req.params.id } },
+          state: "giao hàng thành công",
+          receive_date: {
+            $gte: new Date(
+              moment().month(month).startOf("month").format("MM/DD/YYYY")
+            ),
+            $lte: new Date(
+              moment().month(month).endOf("month").format("MM/DD/YYYY")
+            ),
+          },
+        });
+        if (data.length == 0) return 0;
+        const revenue = data
+          .map((item) => {
+            return item.details.reduce((acc, item) => {
+              return acc + item.product_price * item.product_quantity;
+            }, 25000);
+          })
+          .reduce((acc, item) => {
+            return acc + item;
+          }, 0);
+        return revenue;
+      } catch (error) {
+        return 0;
+      }
+    };
+
+    Promise.all(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) =>
+        getRevenueByMonth(month - 1)
+      )
+    )
+      .then((data) => {
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        return res.status(200).json({
+          status: "200",
+          message: "get revenue success",
+          data: data.map((item, index) => {
+            return { name: monthNames[index], Total: item };
+          }),
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({ status: "400", message: err.message })
+      );
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

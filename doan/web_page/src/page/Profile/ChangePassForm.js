@@ -32,7 +32,7 @@ const ChangePasswordForm = ({ id }) => {
       }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
-      autoComplete="off"
+      autoComplete={+false}
     >
       <Form.Item
         label="Old Password"

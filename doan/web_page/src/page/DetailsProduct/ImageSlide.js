@@ -39,7 +39,10 @@ const ProductImagesSlider = ({ images }) => {
         slidesPerView={images.length < 4 ? images.length : 4}
         modules={[Navigation, Thumbs]}
         className="product-images-slider-thumbs"
-        style={{ maxWidth: images.length >= 4 ? "100%" : 300 }}
+        style={{
+          maxWidth:
+            images.length >= 4 ? "100%" : images.length == 1 ? 100 : 300,
+        }}
       >
         {images.map((item, index) => (
           <SwiperSlide key={index}>

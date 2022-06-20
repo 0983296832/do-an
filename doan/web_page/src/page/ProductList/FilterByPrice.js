@@ -32,8 +32,9 @@ const FilterByPrice = ({ priceFilter, setPriceFilter }) => {
             value={price}
             onChange={handleChangePrice}
           />
-          <Typography>
-            Giá: {price[0]}000đ - {price[1]}000đ
+          <Typography sx={{ fontSize: 15 }}>
+            Giá: {price[0].toLocaleString()},000đ - {price[1].toLocaleString()}
+            ,000đ
           </Typography>
           <div
             style={{

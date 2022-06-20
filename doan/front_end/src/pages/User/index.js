@@ -281,6 +281,7 @@ const Datatable = () => {
           rowsPerPageOptions={[10]}
           checkboxSelection
           hideFooter
+          initialState={{ pinnedColumns: { left: ["id"], right: ["actions"] } }}
         />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>

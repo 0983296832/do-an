@@ -27,5 +27,6 @@ route.post("/comment/:id", controller.comment);
 route.put("/views/:id", controller.increaseViews);
 route.post("/import", checkAuth, checkRole, controller.importProduct);
 route.delete("/delete/:id", checkAuth, checkRole, controller.deleteProduct);
+route.get("/get-earning", checkAuth, checkRole, controller.getEarning);
 
 module.exports = route;

@@ -33,6 +33,14 @@ const cartSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  product_brand: {
+    type: String,
+    required: true,
+  },
+  product_category: {
+    type: String,
+    required: true,
+  },
 });
 const cartsDB = mongoose.model("carts", cartSchema);
 

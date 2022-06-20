@@ -53,7 +53,7 @@ const CartItem = ({ item, checkedList, totalCart }) => {
       </div>
 
       <div className="cart-number">
-        <h3>{item.product_price}đ</h3>
+        <h3>{Number(item.product_price).toLocaleString()}đ</h3>
         <div className="cart-number-list">
           <AiOutlineMinusCircle className="dec" onClick={decrease} />
           <div className="num">{checkNagativeNumber(number)}</div>

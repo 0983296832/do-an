@@ -14,3 +14,18 @@
     stroke: rgb(228, 225, 225);
 }
   
+.custom-tooltip{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
+    color: #5952e0;
+    font-size: 14px;
+    padding: 10px;
+    text-align: center;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+   
+}

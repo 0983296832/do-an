@@ -130,6 +130,7 @@ const ProductManagement = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "_id",
         };
       } else {
         const key = searchBy + "[regex]";
@@ -137,6 +138,7 @@ const ProductManagement = () => {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          sort: "_id",
         };
       }
       const result = await Products.getProducts(params);
@@ -306,6 +308,7 @@ const ProductManagement = () => {
           rowsPerPageOptions={[10]}
           checkboxSelection
           hideFooter
+          initialState={{ pinnedColumns: { left: ["id"], right: ["actions"] } }}
         />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>

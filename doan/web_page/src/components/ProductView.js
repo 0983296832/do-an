@@ -3,7 +3,15 @@ import Product from "./Product";
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 
-const ProductView = ({ data, title, btn, pagination, pageCount, setPage }) => {
+const ProductView = ({
+  data,
+  title,
+  btn,
+  pagination,
+  pageCount,
+  setPage,
+  page,
+}) => {
   return (
     <div>
       <div className="productView-title">
@@ -42,6 +50,7 @@ const ProductView = ({ data, title, btn, pagination, pageCount, setPage }) => {
           <Pagination
             count={pageCount}
             onChange={(e, value) => setPage(value)}
+            page={page}
           />
         </div>
       )}

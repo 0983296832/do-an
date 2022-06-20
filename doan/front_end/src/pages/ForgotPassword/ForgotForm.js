@@ -31,7 +31,7 @@ const ForgotForm = ({ setShowOtp, setEmail }) => {
           type="email"
           placeholder="Email"
           {...register("email", { required: true })}
-          autoComplete="off"
+          autoComplete={+false}
         />
       </div>
       {errors.email && <p style={{ color: "red" }}>This field is required</p>}

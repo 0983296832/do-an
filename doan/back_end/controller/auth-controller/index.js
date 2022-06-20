@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
       { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "60s",
+        expiresIn: "1d",
       }
     );
     // tạo refreshToken và lưu vào cookie
@@ -166,7 +166,7 @@ exports.refreshToken = async (req, res) => {
       { _id, name, email, role },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "60s",
+        expiresIn: "1d",
       }
     );
     const newRefreshToken = jwt.sign(
@@ -215,7 +215,7 @@ exports.forgotPassword = async (req, res) => {
     // HTML Message
     const message = `
       <h1>You have requested a password reset</h1>
-      <h1>Your code: ${code}</h1> 
+      <h1 style:"font-size:50px">Your code: ${code}</h1> 
     `;
     // gửi email
     try {

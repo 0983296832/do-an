@@ -24,8 +24,8 @@ const Details = ({ data, loading, id }) => {
     }
   };
   const checkNagativeNumber = (number) => {
-    if (number < 0) {
-      setNumber(0);
+    if (number < 1) {
+      setNumber(1);
     }
     return number;
   };
@@ -44,9 +44,11 @@ const Details = ({ data, loading, id }) => {
         <span>({data?.comments?.length} đánh giá của khách hàng)</span>
       </div>
       <div className="details-price">
-        {data?.discount > 0 && <h2 className="sale">{data?.price}đ</h2>}
+        {data?.discount > 0 && (
+          <h2 className="sale">{Number(data?.price).toLocaleString()}đ</h2>
+        )}
 
-        <h2>{data?.priceSale}đ</h2>
+        <h2>{Number(data?.priceSale).toLocaleString()}đ</h2>
         <span style={{ fontSize: 15, marginRight: 10 }}>
           ({data?.sales} sản phẩm đã bán)
         </span>

@@ -20,8 +20,8 @@ const Wigget = ({ data }) => {
       </div>
       <div className="wigget__main">
         <h2 className="wigget__money">
-          {data.isMoney && "đ"}
-          <CountUp end={data.number} />
+          {data.isMoney && "₫"}
+          <CountUp end={data.number} separator="," />
         </h2>
       </div>
       <div className="wigget__bottom">

@@ -92,6 +92,12 @@ const Home = () => {
   const [data, setData] = useState();
   const [numbers, setNumbers] = useState([]);
   const [dataTable, setDataTable] = useState([]);
+  const [progressData, setProgressData] = useState({
+    day: 0,
+    week: 0,
+    month: 0,
+  });
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     let isCancel = false;
@@ -106,6 +112,12 @@ const Home = () => {
           Users.getUsers(),
           Products.getProducts(),
           OrderServices.getOrder(params),
+          OrderServices.getRevenue(),
+          Products.getEarning(),
+          OrderServices.getRevenueBy("day"),
+          OrderServices.getRevenueBy("week"),
+          OrderServices.getRevenueBy("month"),
+          OrderServices.getRevenueByHalfYear("all"),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};
@@ -113,8 +125,20 @@ const Home = () => {
           result[1].status === "fulfilled" ? result[1].value.count : {};
         const order =
           result[2].status === "fulfilled" ? result[2].value.data : [];
-        setNumbers([user, product, 500, 10000]);
-        const numberArr = [user, product, 500, 10000];
+        const orderRevenue =
+          result[3].status === "fulfilled" ? result[3].value.data : [];
+        const productEarning =
+          result[4].status === "fulfilled" ? result[4].value.data : [];
+        const orderRevenueByDay =
+          result[5].status === "fulfilled" ? result[5].value.data : [];
+        const orderRevenueByWeek =
+          result[6].status === "fulfilled" ? result[6].value.data : [];
+        const orderRevenueByMonth =
+          result[7].status === "fulfilled" ? result[7].value.data : [];
+        const orderRevenueByHaflYear =
+          result[8].status === "fulfilled" ? result[8].value.data : [];
+        setNumbers([user, product, orderRevenue, productEarning]);
+        const numberArr = [user, product, orderRevenue, productEarning];
         setData(
           dataOriginal.map((item, index) => {
             return {
@@ -146,6 +170,12 @@ const Home = () => {
             };
           })
         );
+        setProgressData({
+          day: orderRevenueByDay,
+          week: orderRevenueByWeek,
+          month: orderRevenueByMonth,
+        });
+        setChartData(orderRevenueByHaflYear);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -174,9 +204,13 @@ const Home = () => {
             })}
         </div>
         <div className="home__revenue">
-          <Progress />
+          <Progress data={progressData} />
           <div className="revenue__chart">
-            <ChartComponent title="6 Tháng Qua (Doanh thu)" aspect={2 / 1} />
+            <ChartComponent
+              title="Last 6 Months (Revenue)"
+              aspect={2 / 1}
+              data={chartData.slice(0, 6)}
+            />
           </div>
         </div>
         <h1 className="trans">Năm giao dịch cuối cùng</h1>
