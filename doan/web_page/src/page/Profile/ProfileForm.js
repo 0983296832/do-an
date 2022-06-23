@@ -6,7 +6,7 @@ import moment from "moment";
 import User from "../../services/userServices";
 import Loading from "../../components/Loading";
 
-const EditUser = ({ data, loading }) => {
+const EditUser = ({ data, loading, setImageUrl }) => {
   const [file, setFile] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -39,7 +39,8 @@ const EditUser = ({ data, loading }) => {
       if (file !== "") {
         const formData = new FormData();
         formData.append("image", file);
-        await User.uploadImage(data._id, formData);
+        const newImage = await User.uploadImage(data._id, formData);
+        setImageUrl(newImage.result.imageUrl);
       }
       let newBirth = birth;
       if (typeof birth === "string") {
@@ -111,7 +112,9 @@ const EditUser = ({ data, loading }) => {
                 <input
                   type="file"
                   id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e) => {
+                    setFile(e.target.files[0]);
+                  }}
                   style={{ display: "none" }}
                   disabled={!isEditing}
                 />
@@ -146,7 +149,7 @@ const EditUser = ({ data, loading }) => {
                     placeholder="Email"
                     value={email}
                     onChange={onChangeEmail}
-                    disabled={!isEditing}
+                    disabled
                   />
                 </div>
                 <div className="formInput date-picker">

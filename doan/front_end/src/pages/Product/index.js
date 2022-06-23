@@ -3,13 +3,12 @@ import "../../assets/css/datatable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Input, Tooltip, Rate } from "antd";
+import { Input, Tooltip, Rate, Select, Button, Avatar } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Select } from "antd";
-import { Button } from "antd";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
+import { CSVLink } from "react-csv";
 
 const { Option } = Select;
 
@@ -69,12 +68,20 @@ const productColumns = [
   {
     field: "image",
     headerName: "Image",
-    width: 100,
+    width: 150,
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.image} alt="avatar" />
-        </div>
+        <Avatar.Group
+          maxCount={3}
+          maxStyle={{
+            color: "#f56a00",
+            backgroundColor: "#fde3cf",
+          }}
+        >
+          {params.row.image.map((img) => {
+            return <Avatar src={img} />;
+          })}
+        </Avatar.Group>
       );
     },
   },
@@ -124,6 +131,23 @@ const ProductManagement = () => {
   const [searchBy, setSearchBy] = useState("all");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [dataScv, setDataScv] = useState();
+  const [headers, setHeaders] = useState([
+    { label: "ID", key: "_id" },
+    { label: "Product Code", key: "product_code" },
+    { label: "Name", key: "name" },
+    { label: "Price", key: "price" },
+    { label: "Brand", key: "brand" },
+    { label: "Category", key: "category" },
+    { label: "Image", key: "image" },
+    { label: "Views", key: "views" },
+    { label: "Details", key: "details" },
+    { label: "Sales", key: "sales" },
+    { label: "Votes", key: "votes" },
+    { label: "Discount", key: "discount" },
+    { label: "Gender", key: "gender" },
+    { label: "Created", key: "createdAt" },
+  ]);
 
   const fetchData = async (pageNum) => {
     try {
@@ -133,6 +157,14 @@ const ProductManagement = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "_id",
+        };
+      } else if (searchBy === "price") {
+        const key = searchBy + "[gte]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
           sort: "_id",
         };
       } else {
@@ -145,17 +177,33 @@ const ProductManagement = () => {
         };
       }
       const result = await Products.getProducts(params);
+      const { data: dataScv } = await Products.getProducts({
+        page: 1,
+        limit: 100000,
+      });
+      setDataScv(
+        dataScv.map((item) => {
+          return {
+            ...item,
+            image: item.image.map((image) => image.imageUrl),
+            details: item.details.map((detail) => {
+              return Object.values(detail);
+            }),
+          };
+        })
+      );
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.data.map((item) => {
+        result.data.map((item, index) => {
           return {
+            key: index,
             id: item._id,
             product_code: item.product_code,
             name: item.name,
             category: item.category,
             brand: item.brand,
             price: item.price,
-            image: item.image[0]?.imageUrl || "",
+            image: item.image?.map((img) => img.imageUrl) || [],
             gender: item.gender,
             sales: item.sales,
             views: item.views,
@@ -189,27 +237,40 @@ const ProductManagement = () => {
       fetchData();
       return;
     }
-
     setLoading(true);
-    const key = searchBy + "[regex]";
+
     try {
-      const params = {
-        page: 1,
-        limit: 10,
-        [key]: searchKey,
-      };
+      let params;
+      if (searchBy === "price") {
+        const key = searchBy + "[gte]";
+        params = {
+          page: 1,
+          limit: 10,
+          [key]: searchKey,
+          sort: "_id",
+        };
+      } else {
+        const key = searchBy + "[regex]";
+        params = {
+          page: 1,
+          limit: 10,
+          [key]: searchKey,
+        };
+      }
+
       const result = await Products.getProducts(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.data.map((item) => {
+        result.data.map((item, index) => {
           return {
+            key: index,
             id: item._id,
             product_code: item.product_code,
             name: item.name,
             category: item.category,
             brand: item.brand,
             price: item.price,
-            image: item.image[0]?.imageUrl || "",
+            image: item.image?.map((img) => img.imageUrl) || [],
             gender: item.gender,
             sales: item.sales,
             views: item.views,
@@ -267,6 +328,9 @@ const ProductManagement = () => {
   }
   return (
     <div className="main-wrapper">
+      {/* <Button onClick={handlePrint} icon={<PrinterOutlined />}>
+        Print PDF
+      </Button> */}
       <div className="datatable" style={{ height: "700px" }}>
         <div className="datatableTitle">Product Management</div>
         <div className="datatable-feature">
@@ -310,6 +374,17 @@ const ProductManagement = () => {
             </Button>
           </div>
         </div>
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
         <DataGrid
           className="datagrid"
           rows={data}

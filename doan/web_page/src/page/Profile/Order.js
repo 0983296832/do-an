@@ -11,6 +11,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
   const [disabled, setDisabled] = useState(false);
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
+
   const handleCancel = async () => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });

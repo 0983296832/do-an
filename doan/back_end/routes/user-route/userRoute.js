@@ -6,7 +6,7 @@ const {
 const controller = require("../../controller/user-controller");
 
 route.get("/get-all", checkAuth, checkRole, controller.findAll);
-route.get("/:id", checkAuth, checkRole, controller.findById);
+route.get("/:id", checkAuth, controller.findById);
 route.post("/get-email", checkAuth, checkRole, controller.findByEmail);
 route.put("/update/:id", checkAuth, controller.updateById);
 route.put("/change-password/:id", checkAuth, controller.changePassword);
@@ -16,6 +16,5 @@ route.delete("/delete-image/:id", checkAuth, controller.deleteImage);
 route.post("/add-to-cart/:id", controller.addToCart);
 route.put("/update-cart/:id", controller.updateCart);
 route.put("/delete-cart/:id", controller.deleteCart);
-
 
 module.exports = route;

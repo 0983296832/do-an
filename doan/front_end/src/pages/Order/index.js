@@ -1,15 +1,13 @@
 import "../../assets/css/datatable.css";
 import { useState, useEffect } from "react";
 import Toast from "../../components/Toast";
-import { Input } from "antd";
+import { Input, Select, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Select } from "antd";
-import { Button } from "antd";
 import ListTable from "../../components/ListOrder";
 import Orders from "../../services/orderServices";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 import BasicPagination from "../../components/Pagination";
+import { CSVLink } from "react-csv";
 
 const { Option } = Select;
 
@@ -22,6 +20,22 @@ const Order = () => {
   const [searchBy, setSearchBy] = useState("all");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [dataScv, setDataScv] = useState();
+  const [headers, setHeaders] = useState([
+    { label: "ID", key: "_id" },
+    { label: "Name", key: "name" },
+    { label: "Phone", key: "phone" },
+    { label: "Address", key: "address" },
+    { label: "Email", key: "email" },
+    { label: "Order Date", key: "created" },
+    { label: "Note", key: "note" },
+    { label: "Details", key: "details" },
+    { label: "State", key: "state" },
+    { label: "Payment Type", key: "payment_type" },
+    { label: "Shipping Unit", key: "shipping_unit" },
+    { label: "Shipping Fee", key: "shipping_fee" },
+    { label: "Receive Date", key: "receive_date" },
+  ]);
 
   const fetchData = async (pageNum) => {
     setLoading(true);
@@ -42,8 +56,22 @@ const Order = () => {
         };
       }
       const result = await Orders.getOrder(params);
+      const { data: dataScv } = await Orders.getOrder({
+        page: 1,
+        limit: 100000,
+      });
+      setDataScv(
+        dataScv.map((item) => {
+          return {
+            ...item,
+            details: item.details.map((detail) => {
+              delete detail.product_image;
+              return Object.values(detail);
+            }),
+          };
+        })
+      );
       setPageCount(Math.ceil(result.count / 10));
-      console.log(result.data);
       setData(
         result.data.map((item, index) => {
           return {
@@ -179,6 +207,17 @@ const Order = () => {
             </Button>
           </div>
         </div>
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
         <ListTable data={data} XAxis={1700} noSup setData={setData} />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>

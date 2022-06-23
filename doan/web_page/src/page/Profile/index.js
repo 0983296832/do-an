@@ -27,6 +27,7 @@ const Profile = () => {
   ]);
   const [orders, setOrder] = useState([]);
   const [page, setPage] = useState(1);
+  const [imageUrl, setImageUrl] = useState();
   const getOrder = async (page) => {
     setLoading(true);
     try {
@@ -68,6 +69,7 @@ const Profile = () => {
       if (auth?.token) {
         const data = await User.getUserById(auth.data._id);
         setData(data.result);
+        setImageUrl(data?.result.image?.imageUrl);
       }
     } catch (error) {
       Toast("error", error.message);
@@ -79,6 +81,7 @@ const Profile = () => {
       getData();
     }
   }, []);
+  console.log(imageUrl);
 
   const onScroll = () => {
     if (orderListRef.current) {
@@ -104,9 +107,7 @@ const Profile = () => {
         <div className="profile">
           <div className="profile-left">
             <img
-              src={
-                data?.image?.imageUrl || "https://joeschmoe.io/api/v1/random"
-              }
+              src={imageUrl || "https://joeschmoe.io/api/v1/random"}
               alt=""
             />
             <h2>{data?.name || ""}</h2>
@@ -141,7 +142,7 @@ const Profile = () => {
             {tabIndex === 0 ? (
               <div className="profile-item">
                 <h2>Cài đặt thông tin</h2>
-                <ProfileForm data={data} />
+                <ProfileForm data={data} setImageUrl={setImageUrl} />
               </div>
             ) : tabIndex === 1 ? (
               <div className="profile-item" style={{ width: 800 }}>

@@ -1,4 +1,5 @@
 const usersDB = require("../../models/user/userModel");
+const ImageModel = require("../../models/user/imageModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const _ = require("lodash");
@@ -8,6 +9,11 @@ const {
 } = require("../../validate/validate");
 const sendEmail = require("../../untils/sendEmail");
 const { passwordValidation } = require("../../validate/validate");
+
+const { google } = require("googleapis");
+const { OAuth2 } = google.auth;
+const fetch = require("node-fetch");
+const client = new OAuth2(process.env.CLIENT_ID);
 
 let arrRefreshToken = [];
 let code = 600494;
@@ -284,5 +290,264 @@ exports.resetPassword = async (req, res) => {
     }
   } catch (err) {
     return res.status(500).json({ status: "500", message: err.message });
+  }
+};
+
+exports.googleLogin = async (req, res) => {
+  try {
+    const { tokenId, adminRole } = req.body;
+    const verify = await client.verifyIdToken({
+      idToken: tokenId,
+      requiredAudience: process.env.CLIENT_ID,
+    });
+
+    const {
+      email_verified,
+      email: emailGoggle,
+      name: nameGoogle,
+      picture,
+    } = verify.payload;
+    if (!email_verified)
+      return res
+        .status(400)
+        .json({ status: 400, message: "Email verification failed." });
+    const existUser = await usersDB
+      .findOne({ email: emailGoggle })
+      .populate({ path: "image" });
+    if (existUser) {
+      const { _id, name, email, role, image, ...rest } = existUser;
+
+      //create token
+      const token = jwt.sign(
+        { _id, name, email, role, image: image?.imageUrl },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { _id, name, email, role, image: image?.imageUrl },
+        process.env.TOKEN_REFRESH,
+        {
+          expiresIn: "365d",
+        }
+      );
+      arrRefreshToken.push(refreshToken);
+      res.header("auth-token", token);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "login success",
+        result: {
+          token,
+          refreshToken,
+          data: { _id, name, email, role, image: image?.imageUrl },
+        },
+      });
+    } else {
+      // hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(
+        emailGoggle + process.env.GOOGLE_PASSWORD,
+        salt
+      );
+      //create new user
+      const user = new usersDB({
+        name: nameGoogle,
+        email: emailGoggle,
+        password: hashedPassword,
+        role: adminRole,
+      });
+      const saveUser = await user.save();
+      const newImage = new ImageModel({
+        user_id: saveUser._id,
+        imageUrl: picture,
+      });
+      const imageSave = await newImage.save();
+
+      usersDB.findById(saveUser._id, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            success: "false",
+            message: "can not find product",
+          });
+        } else {
+          result.image = imageSave;
+          result.save();
+        }
+      });
+      const { _id, name, email, role, ...rest } = saveUser;
+      //create token
+      const token = jwt.sign(
+        { _id, name, email, role, image: imageSave.imageUrl },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { _id, name, email, role, image: imageSave.imageUrl },
+        process.env.TOKEN_REFRESH,
+        {
+          expiresIn: "365d",
+        }
+      );
+      arrRefreshToken.push(refreshToken);
+      res.header("auth-token", token);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "login success",
+        result: {
+          token,
+          refreshToken,
+          data: { _id, name, email, role, image: imageSave.imageUrl },
+        },
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ status: 400, message: error.message });
+  }
+};
+
+exports.facebookLogin = async (req, res) => {
+  try {
+    const { accessToken, userID, adminRole } = req.body;
+    const URLFaceBook = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
+    const data = await fetch(URLFaceBook)
+      .then((res) => res.json())
+      .then((res) => {
+        return res;
+      });
+    const { email: emailFacebook, name: nameFacebook, picture } = data;
+    if (!emailFacebook) {
+      return res
+        .status(400)
+        .json({
+          status: "400",
+          message: "You have connected email to a Facebook account",
+        });
+    }
+
+    const existUser = await usersDB
+      .findOne({ email: emailFacebook })
+      .populate({ path: "image" });
+    if (existUser) {
+      const { _id, name, email, role, image, ...rest } = existUser;
+
+      //create token
+      const token = jwt.sign(
+        { _id, name, email, role, image: image?.imageUrl },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { _id, name, email, role, image: image?.imageUrl },
+        process.env.TOKEN_REFRESH,
+        {
+          expiresIn: "365d",
+        }
+      );
+      arrRefreshToken.push(refreshToken);
+      res.header("auth-token", token);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "login success",
+        result: {
+          token,
+          refreshToken,
+          data: { _id, name, email, role, image: image?.imageUrl },
+        },
+      });
+    } else {
+      // hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(
+        emailFacebook + process.env.GOOGLE_PASSWORD,
+        salt
+      );
+      //create new user
+      const user = new usersDB({
+        name: nameFacebook,
+        email: emailFacebook,
+        password: hashedPassword,
+        role: adminRole,
+      });
+      const saveUser = await user.save();
+      const newImage = new ImageModel({
+        user_id: saveUser._id,
+        imageUrl: picture,
+      });
+      const imageSave = await newImage.save();
+
+      usersDB.findById(saveUser._id, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            success: "false",
+            message: "can not find product",
+          });
+        } else {
+          result.image = imageSave;
+          result.save();
+        }
+      });
+      const { _id, name, email, role, ...rest } = saveUser;
+      //create token
+      const token = jwt.sign(
+        { _id, name, email, role, image: imageSave.imageUrl },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { _id, name, email, role, image: imageSave.imageUrl },
+        process.env.TOKEN_REFRESH,
+        {
+          expiresIn: "365d",
+        }
+      );
+      arrRefreshToken.push(refreshToken);
+      res.header("auth-token", token);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "login success",
+        result: {
+          token,
+          refreshToken,
+          data: { _id, name, email, role, image: imageSave.imageUrl },
+        },
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ status: 400, message: error.message });
   }
 };

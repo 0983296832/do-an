@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="243328626753-gna4nf68r3pb6silhbvnnhbbnk80ao0c.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/api.js" async defer></script>
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
@@ -39,5 +42,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <iframe aria-hidden="true" id="ssIFrame_google" sandbox="allow-scripts allow-same-origin" src="https://accounts.google.com/o/oauth2/iframe#origin=http%3A%2F%2Flocalhost%3A4200&amp;rpcToken=902946799.4541115&amp;clearCache=1" style="position: absolute; width: 1px; height: 1px; left: -9999px; display: none;"></iframe>
   </body>
 </html>

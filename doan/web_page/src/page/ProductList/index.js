@@ -23,6 +23,9 @@ const ProductList = () => {
   const [priceFilter, setPriceFilter] = useState([10, 3000]);
   const [sizeFilter, setSizeFilter] = useState("");
   const [colorFilter, setColorFilter] = useState("");
+  const [expandedColor, setExpandedColor] = useState(false);
+  const [expandedSize, setExpandedSize] = useState(false);
+  const [expandedPrice, setExpandedPrice] = useState(false);
 
   const getData = async (pageNum) => {
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
@@ -140,17 +143,26 @@ const ProductList = () => {
           <FilterByPrice
             setPriceFilter={setPriceFilter}
             priceFilter={priceFilter}
+            expandedPrice={expandedPrice}
+            setExpandedPrice={setExpandedPrice}
           />
           <Divider orientation="left" plain>
             Bộ Lọc Theo Size
           </Divider>
-          <FilterBySize setSizeFilter={setSizeFilter} sizeFilter={sizeFilter} />
+          <FilterBySize
+            setSizeFilter={setSizeFilter}
+            sizeFilter={sizeFilter}
+            expandedSize={expandedSize}
+            setExpandedSize={setExpandedSize}
+          />
           <Divider orientation="left" plain>
             Bộ Lọc Theo Màu
           </Divider>
           <FilterByColor
             colorFilter={colorFilter}
             setColorFilter={setColorFilter}
+            expandedColor={expandedColor}
+            setExpandedColor={setExpandedColor}
           />
         </div>
         <div className="list-right">

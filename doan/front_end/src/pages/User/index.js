@@ -3,14 +3,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserService from "../../services/userServices";
-import { Input, Tooltip } from "antd";
+import { Input, Tooltip, Select, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Select } from "antd";
-import { Button } from "antd";
 import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
 import BasicPagination from "../../components/Pagination";
-import { AiOutlineFilter, AiOutlineSearch } from "react-icons/ai";
+import { CSVLink } from "react-csv";
 
 const { Option } = Select;
 
@@ -80,6 +78,18 @@ const Datatable = () => {
   const [searchBy, setSearchBy] = useState("all");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [dataScv, setDataScv] = useState();
+  const [headers, setHeaders] = useState([
+    { label: "ID", key: "id" },
+    { label: "Name", key: "name" },
+    { label: "Name SurName", key: "name_surname" },
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Birth", key: "birth" },
+    { label: "Address", key: "address" },
+    { label: "Gender", key: "sex" },
+    { label: "Role", key: "role" },
+  ]);
 
   const fetchData = async (pageNum) => {
     setLoading(true);
@@ -107,6 +117,11 @@ const Datatable = () => {
         };
       }
       const result = await UserService.getUsers(params);
+      const { result: dataScv } = await UserService.getUsers({
+        page: 1,
+        limit: 100000,
+      });
+      setDataScv(dataScv);
       setPageCount(Math.ceil(result.count / 10));
       setData(
         result.result.map(({ id, email, name, image, status, phone, role }) => {
@@ -238,24 +253,17 @@ const Datatable = () => {
             getDataBySearch={getDataBySearch}
           />
         </div>
-        {/* <div className="feature-options-group">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              marginBottom: "5px",
-            }}
-          >
-            <div className="feature-options-btn" onClick={() => setTabIndex(0)}>
-              <AiOutlineSearch />
-            </div>
-            <div className="feature-options-btn" onClick={() => setTabIndex(1)}>
-              <AiOutlineFilter />
-            </div>
-          </div>
-        </div> */}
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
         <DataGrid
           className="datagrid"
           style={{ height: "630.5px" }}
