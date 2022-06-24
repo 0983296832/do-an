@@ -2,11 +2,21 @@ import React, { useContext, useEffect, useState } from "react";
 import "../../assets/css/cart.css";
 import { Checkbox, Divider, Col, Row } from "antd";
 import CartItem from "./CartItem";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
+import Toast from "../../components/Toast";
 
 const Cart = () => {
+  let navigate = useNavigate();
   const { cartState, totalCart } = useContext(CartContext);
+  const handlePayment = () => {
+    if (cartState.totalCart == 0) {
+      Toast("error", "Giỏ hàng đang trống");
+      return;
+    }
+    navigate("/payment");
+  };
+
   return (
     <div className="cart-container">
       <div className="cart-left">
@@ -49,9 +59,9 @@ const Cart = () => {
           </div>
           <Divider />
           <div className="cart-payment">
-            <Link to="/payment" className="payment-btn">
+            <button className="payment-btn" onClick={handlePayment}>
               TIẾN HÀNH THANH TOÁN
-            </Link>
+            </button>
           </div>
         </div>
       </div>

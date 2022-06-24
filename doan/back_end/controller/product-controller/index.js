@@ -7,7 +7,6 @@ const commentDB = require("../../models/product/commentModel");
 const suppliersDB = require("../../models/product/supplierModel");
 const Features = require("../../lib/feature");
 const usersDB = require("../../models/user/userModel");
-const ObjectsToCsv = require("objects-to-csv");
 
 exports.getAll = async (req, res) => {
   try {
@@ -60,6 +59,7 @@ exports.getDetail = async (req, res) => {
       .populate({ path: "image" })
       .populate({ path: "supplier" })
       .populate({ path: "comments" });
+
     return res.status(200).json({
       status: "200",
       message: "get product successfully",
@@ -512,5 +512,3 @@ exports.getProductsOutOfStock = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
-
-

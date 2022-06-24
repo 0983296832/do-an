@@ -7,7 +7,13 @@ import {
   AiOutlineSetting,
   AiOutlineCreditCard,
 } from "react-icons/ai";
-import { BiMoon, BiMessageDots, BiStoreAlt, BiLogOut } from "react-icons/bi";
+import {
+  BiMoon,
+  BiMessageDots,
+  BiStoreAlt,
+  BiLogOut,
+  BiNews,
+} from "react-icons/bi";
 import { Avatar } from "antd";
 import { MdDashboard, MdLocalShipping } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
@@ -34,6 +40,7 @@ const Wrapper = ({ children }) => {
         { icon: <BiStoreAlt />, link: "Products", path: "/product" },
         { icon: <AiOutlineCreditCard />, link: "Orders", path: "/order" },
         { icon: <MdLocalShipping />, link: "Suppliers", path: "/supplier" },
+        { icon: <BiNews />, link: "Posts", path: "/post" },
       ],
     },
     {

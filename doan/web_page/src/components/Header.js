@@ -164,7 +164,7 @@ const Header = () => {
             allowClear
             defaultValue=""
             onClear={() => setOptions([])}
-            autoComplete
+            // autoComplete
           />
 
           <Select

@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
+import ReactHtmlParser from "react-html-parser";
 
 const { TabPane } = Tabs;
 
@@ -33,6 +34,7 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
+
   useEffect(() => {
     const getDetail = async () => {
       setLoading(true);
@@ -66,6 +68,7 @@ const DetailsProduct = () => {
                 stocks: item.details.reduce((acc, item) => {
                   return acc + item.quantity;
                 }, 0),
+                desc: item.desc,
               };
             })
             .filter((i) => i.id !== id)
@@ -106,6 +109,7 @@ const DetailsProduct = () => {
           stocks: data.data.data.product.details.reduce((acc, item) => {
             return acc + item.quantity;
           }, 0),
+          desc: data.data.data.product.desc,
         });
       } catch (error) {
         Toast("error", error.message);
@@ -130,32 +134,12 @@ const DetailsProduct = () => {
         <div className="details-desc">
           <Tabs defaultActiveKey="1">
             <TabPane tab="Mô tả sản phẩm" key="1">
-              <p>- Giày thể thao nam nữ thời trang, cá tính, năng động </p>
-              <p>
-                - Form: Chuẩn size, lên chân nhẹ nhàng êm ái, kiểu dáng thời
-                trang mới nhất Giày dễ phối đồ thích hợp cho các hoạt động, các
-                phong cách.{" "}
-              </p>
-              <p>
-                - Chất liệu đế:Cao su lưu hóa nguyên khối có tính đàn hồi, mặt
-                đế xẻ rãnh chống trơn trượt{" "}
-              </p>
-              <p>- Chất liệu mặt giày: tổng hợp nhiều chất liệu cao cấp. </p>
-              <p> - Chất liệu mặt trong : Vải khử mùi, kháng khuẩn. </p>
-              <p>
-                {" "}
-                - Lót giày eva êm ái, chốngbí hơi, thoát khí, không tạo mùi dù
-                bạn đi liên tục 24/24{" "}
-              </p>
-              <p> - Màu sắc: Trắng, Đen</p>
-              <p>- Size: 35-43.</p>
+              {ReactHtmlParser(detail.desc)}
             </TabPane>
             <TabPane tab="Đánh giá của khách hàng" key="2">
               <CommentInput id={id} setDetail={setDetail} detail={detail} />
             </TabPane>
           </Tabs>
-          {/* <h1>Mô tả sản phẩm</h1>
-        <Divider /> */}
         </div>
 
         <div className="more-product">

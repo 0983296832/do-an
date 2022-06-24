@@ -2,14 +2,16 @@ import React, { useState, useContext } from "react";
 import "../../assets/css/details.css";
 import { Divider, Rate } from "antd";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
 import Toast from "../../components/Toast";
+import { v4 as uuidv4 } from "uuid";
 
 const Details = ({ data, loading, id }) => {
-  const { addToCart } = useContext(CartContext);
+  let navigate = useNavigate();
+  const { addToCart, totalCart } = useContext(CartContext);
   const { auth } = useContext(AuthContext);
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
@@ -24,6 +26,23 @@ const Details = ({ data, loading, id }) => {
       return;
     } else {
       addToCart(data);
+    }
+  };
+  const handleBuyNow = async (data) => {
+    if (data?.stocks == 0) {
+      Toast("error", "Sản phẩm đã hết hàng");
+    }
+    if (!data.product_color || !data.product_size) {
+      Toast("error", "Chưa có màu sắc hoặc size");
+      return;
+    } else {
+      const id = await addToCart(data);
+      if (auth.data) {
+        totalCart([id]);
+      } else {
+        totalCart([data._id]);
+      }
+      navigate("/payment");
     }
   };
   const checkNagativeNumber = (number) => {
@@ -129,6 +148,7 @@ const Details = ({ data, loading, id }) => {
           onClick={() =>
             handleAddToCart({
               user_id: auth.data ? auth?.data._id : "",
+              _id: uuidv4(),
               product_id: id,
               product_code: data?.product_code,
               product_name: data?.title,
@@ -144,9 +164,27 @@ const Details = ({ data, loading, id }) => {
         >
           THÊM VÀO GIỎ HÀNG
         </button>
-        <Link to="/cart" className="buy-now">
+        <button
+          onClick={() =>
+            handleBuyNow({
+              user_id: auth.data ? auth?.data._id : "",
+              _id: uuidv4(),
+              product_id: id,
+              product_code: data?.product_code,
+              product_name: data?.title,
+              product_price: data?.priceSale,
+              product_image: data?.image,
+              product_quantity: number,
+              product_size: data?.size[activeSize],
+              product_color: data?.color[activeColor],
+              product_brand: data?.brand,
+              product_category: data?.category,
+            })
+          }
+          className="buy-now"
+        >
           MUA NGAY
-        </Link>
+        </button>
       </div>
     </div>
   );

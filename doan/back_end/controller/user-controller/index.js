@@ -283,6 +283,7 @@ exports.addToCart = async (req, res) => {
   try {
     const cartItemExist = await cartsDB.find({
       user_id: req.params.id,
+
       product_code: req.body.product_code,
       product_color: req.body.product_color,
       product_size: req.body.product_size,
@@ -291,6 +292,7 @@ exports.addToCart = async (req, res) => {
       cartsDB
         .find({
           user_id: req.params.id,
+
           product_code: req.body.product_code,
           product_color: req.body.product_color,
           product_size: req.body.product_size,
@@ -309,6 +311,7 @@ exports.addToCart = async (req, res) => {
     } else {
       const cart = new cartsDB({
         user_id: req.params.id,
+        product_id: req.body.product_id,
         product_code: req.body.product_code,
         product_name: req.body.product_name,
         product_price: req.body.product_price,

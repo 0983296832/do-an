@@ -4,7 +4,6 @@ import Users from "../services/userServices";
 import { AuthContext } from "../context/AuthContext";
 import Toast from "../components/Toast";
 import { LOCAL_STORAGE_CART_KEY } from "../constant/constant";
-import { v4 as uuidv4 } from "uuid";
 
 export const CartContext = createContext();
 
@@ -65,8 +64,10 @@ const CartProvider = ({ children }) => {
 
   const addToCart = async (item) => {
     try {
+      let id;
       if (auth.token) {
         const data = await Users.addToCart(auth.data._id, item);
+        id = data.data._id;
         if (data.data) {
           dispatch({
             type: "ADD_TO_CART_SUCCESS",
@@ -76,10 +77,11 @@ const CartProvider = ({ children }) => {
       } else {
         dispatch({
           type: "ADD_TO_CART_SUCCESS",
-          payload: { ...item, _id: uuidv4() },
+          payload: { ...item },
         });
       }
       Toast("success", "Thêm vào giỏ hàng thành công");
+      return id;
     } catch (error) {
       Toast("error", error.message);
     }

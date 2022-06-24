@@ -2,16 +2,16 @@
     display: flex;
 }
 .detail-left{
-    width: 700px;
+    width: 800px;
     padding: 10px;
-    max-width: 50%;
+    max-width: 60%;
 }
 .detail-right{
-    width: 50%;
+    width: 40%;
     padding: 10px;
 }
 .formInput-product{
-    max-width: 400px;
+    max-width: 600px;
     display:flex;
     flex-direction: column;
     gap:12px;
@@ -19,7 +19,7 @@
 }
 .table__details-product{
     height:300px;
-    max-width: 400px;
+    max-width: 600px;
     display:flex;
     flex-direction: column;
     gap:12px;
@@ -45,4 +45,7 @@
    margin-right:70px;
    padding:0 30px;
    width: 8rem;
+}
+.ck-editor__editable_inline{
+    min-height: 300px;
 }
