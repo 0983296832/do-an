@@ -16,6 +16,7 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import Profile from "../pages/Profile";
 import Post from "../pages/Post";
+import AddPost from "../pages/Post/AddPost";
 
 const RootRoute = () => {
   return (
@@ -48,6 +49,9 @@ const RootRoute = () => {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/post" element={<Post />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/add-post" element={<AddPost />} />
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/add-product" element={<AddProduct />} />

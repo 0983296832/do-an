@@ -120,7 +120,7 @@ const Product = ({ data }) => {
         <div className="product-infor" style={{ minHeight: 150 }}>
           <h4 style={{ minHeight: 44 }}>{ellipseString(data.title)}</h4>
 
-          <h3>{data.category}</h3>
+          <h3>{data.brand}</h3>
           <div className="product-rate">
             <Rate disabled defaultValue={data.rate} />
           </div>

@@ -135,7 +135,7 @@ const LoginForm = () => {
             </a>
           )}
         />
-        <FacebookLogin
+        {/* <FacebookLogin
           appId="747433689941319"
           autoLoad={true}
           fields="name,email,picture"
@@ -143,7 +143,7 @@ const LoginForm = () => {
           cssClass="my-facebook-button-class social-icon"
           icon={<FaFacebookF />}
           textButton=""
-        />
+        /> */}
       </div>
     </form>
   );

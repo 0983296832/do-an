@@ -140,7 +140,6 @@ const ProductDetail = () => {
     }
   };
 
-  console.log(desc);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -286,6 +285,7 @@ const ProductDetail = () => {
                 disable={disabled}
                 fileList={fileList}
                 setFileList={setFileList}
+                length={5}
               />
             </div>
             <div className="formInput-product ">

@@ -14,7 +14,7 @@
 
 .post-detail-container img{
     width: 360px;
-    height: auto;
+    height: 300px;
     object-fit: cover;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -62,4 +62,26 @@
 .post-detail-footer h5{
     margin-bottom:0 !important;
     color: #6e6b7b;
+}
+
+.add-post-wrapper{
+    padding:20px
+}
+.post-input{
+    max-width: 800px;
+}
+.add-post-info{
+    display: flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:20px;
+}
+.add-post-info h3,h5{
+    margin-bottom:0 !important;
+}
+.add-post-info h4{
+    color: #6e6b7b;
+}
+.post-input{
+    margin-top: 20px;
 }
