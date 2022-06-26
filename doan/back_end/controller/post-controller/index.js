@@ -29,12 +29,22 @@ exports.create = async (req, res) => {
 };
 exports.update = async (req, res) => {
   try {
+    const data = await postDB.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    return res
+      .status(200)
+      .json({ status: "200", message: "updated successfully", data });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
-exports.delete = async (req, res) => {
+exports.deletePostById = async (req, res) => {
   try {
+    await postDB.findByIdAndDelete(req.params.id);
+    return res
+      .status(200)
+      .json({ status: "200", message: "delete post successfully" });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
@@ -78,12 +88,20 @@ exports.getAll = async (req, res) => {
 };
 exports.getPostById = async (req, res) => {
   try {
+    const data = await postDB.findById(req.params.id);
+    return res
+      .status(200)
+      .json({ status: "200", message: "Get details successfully", data });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
-exports.increaseViews = async (req, res) => {
+exports.increaseView = async (req, res) => {
   try {
+    await postDB.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
+    return res
+      .status(200)
+      .json({ status: "200", message: "ince successfully" });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

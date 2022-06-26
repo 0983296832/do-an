@@ -3,7 +3,15 @@ import moment from "moment";
 import React from "react";
 import { AiOutlineEye } from "react-icons/ai";
 
-const PostDetail = ({ data, setShowAddPost }) => {
+const PostDetail = ({
+  data,
+  setShowAddPost,
+  setContent,
+  setTitle,
+  setFileList,
+  handleRemovePost,
+  setCurrentId,
+}) => {
   const checkLongContent = (content) => {
     if (content.length > 80) {
       return content.slice(3, 83) + "...";
@@ -15,6 +23,14 @@ const PostDetail = ({ data, setShowAddPost }) => {
       return content.slice(0, 50) + "...";
     }
     return content;
+  };
+
+  const handleEdit = () => {
+    setTitle(data.title);
+    setContent(data.content);
+    setFileList([{ url: data.thumbnail.imageUrl }]);
+    setShowAddPost(true);
+    setCurrentId(data._id);
   };
   return (
     <div className="post-detail-container">
@@ -36,8 +52,11 @@ const PostDetail = ({ data, setShowAddPost }) => {
             <AiOutlineEye />
             <h5>{data.views} views</h5>
           </div>
-          <Button type="primary" onClick={() => setShowAddPost(true)}>
+          <Button type="primary" onClick={handleEdit}>
             Edit Post
+          </Button>
+          <Button danger onClick={() => handleRemovePost(data._id)}>
+            Delete Post
           </Button>
         </div>
       </div>

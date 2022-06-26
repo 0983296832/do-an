@@ -14,6 +14,7 @@ import Register from "../page/Register";
 import ProtectRoute from "../guard/ProtectRoute";
 import Order from "../page/Order";
 import ForgotPassword from "../page/ForgotPassWord";
+import PostDetail from "../page/PostDetail";
 
 const RootRoute = () => {
   return (
@@ -31,6 +32,7 @@ const RootRoute = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/order/:id" element={<Order />} />
+        <Route path="/post-details/:id" element={<PostDetail />} />
         <Route element={<ProtectRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>

@@ -20,7 +20,7 @@ const FilterByPrice = ({
     setPrice(newValue);
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }} expanded={expandedPrice}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedPrice}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}

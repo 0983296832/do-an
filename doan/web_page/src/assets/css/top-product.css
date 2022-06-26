@@ -74,6 +74,7 @@
     font-weight: bold;
     color: #fff;
     background-color: #000;
+    z-index: 3
 }
 .product-img .product-soldOut{
     height:24px;

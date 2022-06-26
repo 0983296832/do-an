@@ -18,8 +18,9 @@ const Post = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [currentId, setCurrentId] = useState("");
 
-  const handleOk = async () => {
+  const handleOk = async (id) => {
     try {
       const body = {
         title: title,
@@ -27,13 +28,23 @@ const Post = () => {
         author_image: auth.data.image,
         content: content,
       };
-      const { data } = await Posts.createPosts(body);
-      if (fileList.length !== 0) {
-        const formData = new FormData();
-        formData.append("image", fileList[0].originFileObj);
-        await Posts.uploadImage(data._id, formData);
+      let dataReturn;
+      if (id) {
+        dataReturn = await Posts.updatePost(id, body);
+        Toast("success", "Update post successfully");
+      } else {
+        dataReturn = await Posts.createPosts(body);
+        Toast("success", "Add post successfully");
       }
-      Toast("success", "Add new post successfully");
+      let newUrl;
+      if (!fileList[0].url) {
+        if (fileList.length !== 0) {
+          const formData = new FormData();
+          formData.append("image", fileList[0].originFileObj);
+          newUrl = await Posts.uploadImage(dataReturn.data._id, formData);
+        }
+      }
+      window.location.reload();
     } catch (error) {
       Toast("error", error.message);
     }
@@ -54,6 +65,22 @@ const Post = () => {
     }
     setLoading(false);
   };
+  const handleAddNewPost = () => {
+    setShowAddPost(true);
+    setTitle("");
+    setContent("");
+    setFileList([]);
+    setCurrentId("");
+  };
+  const handleRemovePost = async (id) => {
+    try {
+      await Posts.deletePost(id);
+      setData(data.filter((item) => item._id !== id));
+      Toast("success", "Delete post successfully");
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
   useEffect(() => {
     getData();
   }, []);
@@ -65,12 +92,17 @@ const Post = () => {
     <div className="main-wrapper">
       <div className="datatableTitle">
         Posts Management
-        <Button onClick={() => setShowAddPost(true)}>Add New</Button>
+        <Button onClick={handleAddNewPost}>Add New</Button>
         <Modal
           title="Add new post"
           visible={showAddPost}
-          onOk={handleOk}
-          onCancel={() => setShowAddPost(false)}
+          footer={null}
+          onCancel={() => {
+            setShowAddPost(true);
+            setTitle("");
+            setContent("");
+            setShowAddPost(false);
+          }}
           style={{ minWidth: 1000 }}
         >
           <AddPost
@@ -80,6 +112,8 @@ const Post = () => {
             setFileList={setFileList}
             content={content}
             setContent={setContent}
+            handleOk={handleOk}
+            currentId={currentId}
           />
         </Modal>
       </div>
@@ -87,7 +121,18 @@ const Post = () => {
         {data.map((item, index) => {
           return (
             <div key={index}>
-              <PostDetail data={item} setShowAddPost={setShowAddPost} />
+              <PostDetail
+                data={item}
+                setShowAddPost={setShowAddPost}
+                title={title}
+                setTitle={setTitle}
+                fileList={fileList}
+                setFileList={setFileList}
+                content={content}
+                setContent={setContent}
+                handleRemovePost={handleRemovePost}
+                setCurrentId={setCurrentId}
+              />
             </div>
           );
         })}

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Input, Avatar } from "antd";
+import { Input, Avatar, Button } from "antd";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ImgUpload from "../../components/ImageUpload";
@@ -14,6 +14,8 @@ const AddPost = ({
   fileList,
   setFileList,
   data,
+  handleOk,
+  currentId,
 }) => {
   const { auth } = useContext(AuthContext);
 
@@ -38,7 +40,7 @@ const AddPost = ({
         <h2>Title</h2>
         <Input
           placeholder="Your post title"
-          defaultValue={title}
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
@@ -56,6 +58,23 @@ const AddPost = ({
             setContent(data);
           }}
         />
+      </div>
+      <div
+        style={{
+          marginTop: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          onClick={() => {
+            currentId ? handleOk(currentId) : handleOk();
+          }}
+          type="primary"
+        >
+          Save
+        </Button>
       </div>
     </div>
   );

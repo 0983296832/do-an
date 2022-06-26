@@ -27,7 +27,7 @@ const FilterBySize = ({
     }
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }} expanded={expandedSize}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedSize}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}

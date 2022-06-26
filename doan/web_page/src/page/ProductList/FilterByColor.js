@@ -39,7 +39,7 @@ const FilterByColor = ({
     }
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }} expanded={expandedColor}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedColor}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}

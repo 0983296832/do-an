@@ -54,7 +54,7 @@ const DetailsProduct = () => {
                 id: item._id,
                 title: item.name,
                 product_code: item.product_code,
-                image: item.image[0].imageUrl,
+                image: item.image,
                 price: item.price,
                 category: item.category,
                 rate: item.votes || 0,
