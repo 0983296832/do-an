@@ -8,7 +8,7 @@ const Sort = ({ setSort, sort }) => {
     setSort(event.target.value);
   };
   return (
-    <FormControl sx={{ minWidth: 250, marginBottom: 4 }}>
+    <FormControl sx={{ minWidth: 250, marginBottom: 3 }}>
       <InputLabel id="demo-simple-select-helper-label">Sắp xếp theo</InputLabel>
       <Select
         labelId="demo-simple-select-helper-label"

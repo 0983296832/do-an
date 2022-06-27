@@ -7,6 +7,9 @@ const commentDB = require("../../models/product/commentModel");
 const suppliersDB = require("../../models/product/supplierModel");
 const Features = require("../../lib/feature");
 const usersDB = require("../../models/user/userModel");
+const schedule = require("node-schedule");
+const moment = require("moment");
+const stockDB = require("../../models/product/stockModel");
 
 exports.getAll = async (req, res) => {
   try {
@@ -40,6 +43,7 @@ exports.getAll = async (req, res) => {
 
     const product = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
+    console.log(Number(moment(Date.now()).format("MM")) - 1);
 
     return res.status(200).json({
       status: "200",
@@ -507,6 +511,56 @@ exports.getProductsOutOfStock = async (req, res) => {
           product_image: item.image[0].imageUrl,
         };
       }),
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+const saveStockByMonth = async () => {
+  try {
+    const exitsData = await stockDB.findOne({
+      month: Number(moment(Date.now()).format("MM")) - 1,
+      year: Number(moment(Date.now()).format("YYYY")),
+    });
+    if (exitsData)
+      return res.status(200).json({
+        status: "200",
+        message: "save stock successfully",
+        data: exitsData,
+      });
+    const data = await productsDB.find().populate("image");
+    const lastMonth = Number(moment(Date.now()).format("MM")) - 1;
+    const thisYears = Number(moment(Date.now()).format("YYYY"));
+    const stocks = new stockDB({
+      month: lastMonth,
+      year: thisYears,
+      data: data,
+    });
+    const saveStock = await stocks.save();
+
+    return res.status(200).json({
+      status: "200",
+      message: "save stock successfully",
+      data: saveStock,
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+schedule.scheduleJob("* * 1 */1 *", saveStockByMonth);
+
+exports.getStocks = async (req, res) => {
+  try {
+    const product = await stockDB.findOne({
+      month: req.body.month,
+      year: req.body.year,
+    });
+
+    return res.status(200).json({
+      status: "200",
+      message: "get stock by month successfully",
+      data: { product },
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });

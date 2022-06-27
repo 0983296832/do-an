@@ -42,7 +42,7 @@ const Product = ({ data }) => {
             delay: 2500,
             disableOnInteraction: false,
           }}
-          modules={[Autoplay]}
+          // modules={[Autoplay]}
         >
           {data.image.map((item, index) => (
             <SwiperSlide key={index}>

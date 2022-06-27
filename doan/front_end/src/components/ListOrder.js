@@ -45,18 +45,21 @@ const ListTable = ({
     const inputNode =
       inputType === "select" ? (
         <Select>
+          <Select.Option value="đang chờ xác nhận">
+            đang chờ xác nhận
+          </Select.Option>
+          <Select.Option value="đã xác nhận">đã xác nhận</Select.Option>
           <Select.Option value="đang đợi gói hàng">
             đang đợi gói hàng
           </Select.Option>
           <Select.Option value="đang giao hàng">đang giao hàng</Select.Option>
-          <Select.Option value="đã xác nhận">đã xác nhận</Select.Option>
-          <Select.Option value="đang chờ xác nhận">
-            đang chờ xác nhận
-          </Select.Option>
           <Select.Option value="giao hàng thành công">
             giao hàng thành công
           </Select.Option>
           <Select.Option value="đã hủy">đã hủy</Select.Option>
+          <Select.Option value="giao hàng không thành công">
+            giao hàng không thành công
+          </Select.Option>
         </Select>
       ) : (
         <Input />

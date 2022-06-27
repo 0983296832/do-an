@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
@@ -77,10 +78,6 @@ const Order = ({ data, loading, setOrder, orders }) => {
               <div style={{ margin: "5px 0" }}>
                 <Link to="/" className="btn-cancel">
                   Mua lại
-                </Link>
-
-                <Link to="/" className="btn-cancel">
-                  Đánh giá
                 </Link>
               </div>
             )}

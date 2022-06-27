@@ -219,6 +219,8 @@
 .order-list{
     height: 800px;
     overflow-y: auto;
+    outline: 3px solid #cccccc;
+    border: 8px solid #fff;
 }
 .order-list::-webkit-scrollbar {
     width: 5px;
