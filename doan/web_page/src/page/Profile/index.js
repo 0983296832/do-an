@@ -2,7 +2,11 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import "../../assets/css/profile.css";
 import { Link } from "react-router-dom";
 import { BiUserCircle, BiLogOut } from "react-icons/bi";
-import { AiOutlineLock, AiOutlineShoppingCart } from "react-icons/ai";
+import {
+  AiOutlineLock,
+  AiOutlineShoppingCart,
+  AiOutlineCrown,
+} from "react-icons/ai";
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePassForm";
 import Order from "./Order";
@@ -13,6 +17,7 @@ import Auth from "../../services/authServices";
 import Orders from "../../services/orderServices";
 import Toast from "../../components/Toast";
 import { Empty, Select } from "antd";
+import Voucher from "./Voucher";
 
 const { Option } = Select;
 const Profile = () => {
@@ -25,6 +30,7 @@ const Profile = () => {
     { title: "Cài đặt thông tin", icon: <BiUserCircle /> },
     { title: "Đổi mật khẩu", icon: <AiOutlineLock /> },
     { title: "Lịch sử đơn hàng ", icon: <AiOutlineShoppingCart /> },
+    { title: "Voucher của bạn ", icon: <AiOutlineCrown /> },
     { title: "Đăng xuất", icon: <BiLogOut /> },
   ]);
   const [orders, setOrder] = useState([]);
@@ -158,7 +164,7 @@ const Profile = () => {
                 <h2>Đổi mật khẩu</h2>
                 <ChangePasswordForm id={data?._id} />
               </div>
-            ) : (
+            ) : tabIndex === 2 ? (
               <div className="profile-item">
                 <h2>Lịch sử đơn hàng của bạn</h2>
                 <div
@@ -218,6 +224,11 @@ const Profile = () => {
                     })}
                   </div>
                 )}
+              </div>
+            ) : (
+              <div className="profile-item" style={{ width: "100%" }}>
+                <h2>Voucher của bạn</h2>
+                <Voucher />
               </div>
             )}
           </div>

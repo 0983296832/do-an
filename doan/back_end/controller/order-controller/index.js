@@ -145,7 +145,6 @@ exports.getAll = async (req, res) => {
       features.query,
       counting.query, //count number of user.
     ]);
-
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
     return res
@@ -163,9 +162,38 @@ exports.update = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
+
     const order = await ordersDB.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    if (req.body.state === "giao hàng thành công") {
+      if (order.user_id != "") {
+        usersDB
+          .findById(order.user_id)
+          .then((result, err) => {
+            if (err) {
+              return res
+                .status(400)
+                .json({ status: "400", message: err.message });
+            } else {
+              result.points =
+                result.points +
+                Math.round(
+                  order.details.reduce((total, item) => {
+                    return total + item.product_quantity * item.product_price;
+                  }, 0) / 100000
+                );
+              result.save();
+            }
+          })
+          .catch((err) => {
+            return res
+              .status(400)
+              .json({ status: "400", message: err.message });
+          });
+      }
+    }
+
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
         product_code: item.product_code,
@@ -287,14 +315,12 @@ exports.getRevenueBy = async (req, res) => {
       .reduce((acc, item) => {
         return acc + item;
       }, 0);
-    return res
-      .status(200)
-      .json({
-        status: "200",
-        message: "get revenue success",
-        data: revenue,
-        details: data,
-      });
+    return res.status(200).json({
+      status: "200",
+      message: "get revenue success",
+      data: revenue,
+      details: data,
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
@@ -451,3 +477,5 @@ exports.getRevenueProductByHaflYear = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
+
+

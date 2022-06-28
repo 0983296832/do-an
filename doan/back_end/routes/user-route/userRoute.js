@@ -16,5 +16,6 @@ route.delete("/delete-image/:id", checkAuth, controller.deleteImage);
 route.post("/add-to-cart/:id", controller.addToCart);
 route.put("/update-cart/:id", controller.updateCart);
 route.put("/delete-cart/:id", controller.deleteCart);
+route.post("/change-rewards/:id", checkAuth, controller.changeRewards);
 
 module.exports = route;

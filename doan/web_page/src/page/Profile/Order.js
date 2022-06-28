@@ -47,7 +47,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
               </div>
               <div className="order-right">
                 <TagRender state={data?.state} />
-                <h4>{item.product_price}đ</h4>
+                <h4>{item.product_price.toLocaleString()}đ</h4>
                 <h5>x{item.product_quantity}</h5>
               </div>
             </div>
@@ -61,9 +61,11 @@ const Order = ({ data, loading, setOrder, orders }) => {
               return acc + cur.product_quantity;
             }, 0)}{" "}
             sản phẩm. Thành tiền:{" "}
-            {data?.details.reduce((acc, cur) => {
-              return acc + cur.product_quantity * cur.product_price;
-            }, 0) + 25000}
+            {(
+              data?.details.reduce((acc, cur) => {
+                return acc + cur.product_quantity * cur.product_price;
+              }, 0) + 25000
+            ).toLocaleString()}
             đ
           </h3>
         </div>

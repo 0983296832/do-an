@@ -20,6 +20,7 @@ const Payment = () => {
   const { auth } = useContext(AuthContext);
   const [value, setValue] = useState(1);
   const [formValue, setFormValue] = useState({});
+  const [voucher, setVoucher] = useState(0);
   let navigate = useNavigate();
   useEffect(() => {
     const sumQuery = queryString.parse(window.location.search);
@@ -56,6 +57,7 @@ const Payment = () => {
       shipping_unit: "GHN",
       shipping_fee: 25000,
       state: "đang chờ xác nhận",
+      voucher: voucher,
       cart: cartState.cartIdChecked,
     };
 
@@ -107,6 +109,7 @@ const Payment = () => {
           shipping_unit: "GHN",
           shipping_fee: 25000,
           state: "đang chờ xác nhận",
+          voucher: voucher,
         };
         if (body.details.length > 0) {
           if (auth.token) {
@@ -140,7 +143,11 @@ const Payment = () => {
       <div className="payment-bill">
         <h2>ĐƠN HÀNG CỦA BẠN</h2>
         <Divider />
-        <PaymentBill cartState={cartState} />
+        <PaymentBill
+          cartState={cartState}
+          voucher={voucher}
+          setVoucher={setVoucher}
+        />
         <Divider />
         <Radio.Group onChange={onChange} value={value}>
           <Space direction="vertical" size={20}>
@@ -152,7 +159,11 @@ const Payment = () => {
         <div className="cart-payment">
           {value === 2 ? (
             <VnPay
-              monney={cartState.totalCart + 25000}
+              monney={
+                cartState.totalCart -
+                (cartState.totalCart * voucher) / 100 +
+                25000
+              }
               storeOrder={storeOrder}
             />
           ) : (

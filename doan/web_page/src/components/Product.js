@@ -120,7 +120,7 @@ const Product = ({ data }) => {
                 product_code: data?.product_code,
                 product_name: data?.title,
                 product_price: data?.priceSale,
-                product_image: data?.image,
+                product_image: data?.image[0].imageUrl,
                 product_quantity: 1,
                 product_size: data?.size[activeSize],
                 product_color: data?.color[activeColor],
