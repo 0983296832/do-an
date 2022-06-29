@@ -224,7 +224,7 @@ const Home = () => {
               };
             })
             .sort((a, b) => b.number - a.number)
-            .filter((item, index) => index < 5),
+            .filter((_, index) => index < 5),
           ...TopUser.map((item) => {
             return {
               name: item.name,
@@ -250,14 +250,20 @@ const Home = () => {
             return {
               id: item._id,
               customer: item.name,
-              amount: item.details
-                .reduce((acc, i) => {
+              amount: (
+                item.details.reduce((acc, i) => {
                   return acc + i.product_price * i.product_quantity;
-                }, 0)
-                .toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "VND",
-                }),
+                }, 0) -
+                (item.details.reduce((acc, i) => {
+                  return acc + i.product_price * i.product_quantity;
+                }, 0) *
+                  item.voucher) /
+                  100 +
+                25000
+              ).toLocaleString("en-US", {
+                style: "currency",
+                currency: "VND",
+              }),
               date: `${moment(item.created)
                 .zone("+07:00")
                 .format("DD/MM/YYYY")}`,

@@ -34,9 +34,32 @@ const DetailUser = () => {
         setUser(result);
         setChartData(data);
         setData(
-          result.orders.map((item) => {
-            return { ...item, id: item._id, key: uuidv4() };
-          })
+          result.orders
+            .map((item) => {
+              return {
+                ...item,
+                id: item._id,
+                key: uuidv4(),
+                amount: (
+                  item.details.reduce((acc, i) => {
+                    return acc + i.product_price * i.product_quantity;
+                  }, 0) -
+                  (item.details.reduce((acc, i) => {
+                    return acc + i.product_price * i.product_quantity;
+                  }, 0) *
+                    item.voucher) /
+                    100 +
+                  25000
+                ).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "VND",
+                }),
+              };
+            })
+            .sort(
+              (a, b) =>
+                new Date(b.created).getTime() - new Date(a.created).getTime()
+            )
         );
       } catch (error) {
         Toast("error", error.message);
@@ -133,7 +156,7 @@ const DetailUser = () => {
           <ListTable
             data={data}
             noSup
-            XAxis={1700}
+            XAxis={1950}
             YAxis={400}
             setData={setData}
           />

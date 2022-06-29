@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
   carts: [{ type: mongoose.Schema.Types.ObjectId, ref: "carts" }],
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }],
   points: { type: Number, default: 0 },
-  vouchers: [{ type: Array }],
+  vouchers: { type: Array },
 });
 const usersDB = mongoose.model("users", userSchema);
 

@@ -11,6 +11,19 @@ import { useReactToPrint } from "react-to-print";
 const { Step } = Steps;
 
 const DetailOrder = ({ data, loading, orders, setOrder }) => {
+  console.log(
+    data.details.reduce(
+      (total, item) => total + item.product_quantity * item.product_price,
+      0
+    ) -
+      (data.details.reduce(
+        (total, item) => total + item.product_quantity * item.product_price,
+        0
+      ) *
+        data.voucher) /
+        100 +
+      25000
+  );
   const stepData = [
     "đặt hàng",
     "đang chờ xác nhận",
@@ -150,6 +163,14 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
             <h4> {data.shipping_fee.toLocaleString()}đ</h4>
           </div>
         </div>
+        <div className="detail-order-info">
+          <div>
+            <h4>Voucher: </h4>
+          </div>
+          <div>
+            <Tag color="red">-{data.voucher}%</Tag>
+          </div>
+        </div>
 
         <div className="detail-order-info">
           <div>
@@ -176,13 +197,21 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           <div>
             <h4 style={{ color: "#f00", fontSize: 20 }}>
               {" "}
-              {data.details
-                .reduce(
+              {(
+                data.details.reduce(
                   (total, item) =>
                     total + item.product_quantity * item.product_price,
-                  25000
-                )
-                .toLocaleString()}
+                  0
+                ) -
+                (data.details.reduce(
+                  (total, item) =>
+                    total + item.product_quantity * item.product_price,
+                  0
+                ) *
+                  data.voucher) /
+                  100 +
+                25000
+              ).toLocaleString()}
               đ
             </h4>
           </div>

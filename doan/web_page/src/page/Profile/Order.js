@@ -64,7 +64,13 @@ const Order = ({ data, loading, setOrder, orders }) => {
             {(
               data?.details.reduce((acc, cur) => {
                 return acc + cur.product_quantity * cur.product_price;
-              }, 0) + 25000
+              }, 0) -
+              (data?.details.reduce((acc, cur) => {
+                return acc + cur.product_quantity * cur.product_price;
+              }, 0) *
+                data.voucher) /
+                100 +
+              25000
             ).toLocaleString()}
             đ
           </h3>

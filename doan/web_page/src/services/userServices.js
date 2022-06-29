@@ -30,6 +30,10 @@ const Users = {
     const url = `user/update-cart/${id}`;
     return axiosClient.put(url, body);
   },
+  changeRewards: (id, body) => {
+    const url = `user/change-rewards/${id}`;
+    return axiosClient.post(url, body);
+  },
 };
 
 export default Users;

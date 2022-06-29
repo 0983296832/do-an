@@ -28,6 +28,8 @@ const ListTable = ({
   noImg,
   noOrder,
   setData,
+  noVoucher,
+  noShippingFee,
 }) => {
   const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
@@ -275,12 +277,34 @@ const ListTable = ({
       editable: false,
     },
     {
+      title: "Voucher",
+      dataIndex: "voucher",
+      key: "voucher",
+      width: 100,
+      hidden: noVoucher,
+      editable: false,
+      render: (voucher) => <Tag color="red">-{voucher}%</Tag>,
+    },
+    {
       title: "Payment Type",
       dataIndex: "payment_type",
       key: "payment_type",
       editable: false,
       hidden: noPay,
       width: 150,
+    },
+    {
+      title: "Shipping Fee",
+      dataIndex: "shipping_fee",
+      key: "shipping_fee",
+      editable: false,
+      hidden: noShippingFee,
+      width: 150,
+      render: (shipping_fee) =>
+        Number(shipping_fee).toLocaleString("en-US", {
+          style: "currency",
+          currency: "VND",
+        }),
     },
     {
       title: "Recive Date",

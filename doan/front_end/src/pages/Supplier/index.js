@@ -256,6 +256,8 @@ const Supplier = () => {
           noImg
           noOrder
           setData={setData}
+          noVoucher
+          noShippingFee
         />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>

@@ -14,6 +14,7 @@ exports.order = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
+
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
         product_code: item.product_code,
@@ -78,6 +79,7 @@ exports.order = async (req, res) => {
       shipping_fee: req.body.shipping_fee,
       note: req.body.note,
       user_id: req.body.details[0].user_id,
+      voucher: req.body.voucher,
     });
     const savedOrder = await order.save();
     // HTML Message
@@ -102,6 +104,15 @@ exports.order = async (req, res) => {
           return res.status(400).json({ status: "400", message: err.message });
         } else {
           result.orders.push(savedOrder);
+          function singleArrayRemove(array, value) {
+            var index = array.indexOf(value);
+            if (index > -1) array.splice(index, 1);
+            return array;
+          }
+          result.vouchers = singleArrayRemove(
+            result.vouchers,
+            req.body.voucher
+          );
           result.save();
           return res.status(200).json({
             status: "200",
@@ -271,9 +282,17 @@ exports.getRevenue = async (req, res) => {
     });
     const revenue = data
       .map((item) => {
-        return item.details.reduce((acc, item) => {
-          return acc + item.product_price * item.product_quantity;
-        }, 25000);
+        return (
+          item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) -
+          (item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) *
+            item.voucher) /
+            100 +
+          25000
+        );
       })
       .reduce((acc, item) => {
         return acc + item;
@@ -308,9 +327,17 @@ exports.getRevenueBy = async (req, res) => {
 
     const revenue = data
       .map((item) => {
-        return item.details.reduce((acc, item) => {
-          return acc + item.product_price * item.product_quantity;
-        }, 25000);
+        return (
+          item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) -
+          (item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) *
+            item.voucher) /
+            100 +
+          25000
+        );
       })
       .reduce((acc, item) => {
         return acc + item;
@@ -360,9 +387,17 @@ exports.getRevenueByHaflYear = async (req, res) => {
         if (data.length == 0) return 0;
         const revenue = data
           .map((item) => {
-            return item.details.reduce((acc, item) => {
-              return acc + item.product_price * item.product_quantity;
-            }, 25000);
+            return (
+              item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) -
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                item.voucher) /
+                100 +
+              25000
+            );
           })
           .reduce((acc, item) => {
             return acc + item;
@@ -477,5 +512,3 @@ exports.getRevenueProductByHaflYear = async (req, res) => {
     return res.status(400).json({ status: "400", message: error.message });
   }
 };
-
-

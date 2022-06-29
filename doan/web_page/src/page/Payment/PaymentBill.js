@@ -1,36 +1,68 @@
 import { Divider, Modal, Radio, Space, Tag } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RightOutlined } from "@ant-design/icons";
 import dis5 from "../../assets/image/dis5.png";
 import dis10 from "../../assets/image/dis10.png";
 import dis15 from "../../assets/image/dis15.png";
 import dis20 from "../../assets/image/dis20.png";
+import { AuthContext } from "../../context/AuthContext";
+import Users from "../../services/userServices";
 
 const PaymentBill = ({ cartState, voucher, setVoucher }) => {
+  const { auth } = useContext(AuthContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [value, setValue] = useState(1);
-  const data = [
+  const [value, setValue] = useState(0);
+  const [data, setData] = useState([
     {
       img: dis5,
       value: 5,
+      number: 0,
     },
     {
       img: dis10,
       value: 10,
+      number: 0,
     },
     {
       img: dis15,
       value: 15,
-    }, 
+      number: 0,
+    },
     {
       img: dis20,
       value: 20,
+      number: 0,
     },
-  ];
-
+  ]);
+  useEffect(() => {
+    if (!auth.data) {
+      setVoucher(0);
+    }
+    const getUser = async () => {
+      if (auth.data) {
+        const user = await Users.getUserById(auth.data._id);
+        if (user.result.vouchers) {
+          const arrVouchers = [...new Set(user.result.vouchers)].sort(
+            (a, b) => a - b
+          );
+          setData(
+            data
+              .map((item) => {
+                if (arrVouchers.includes(item.value)) {
+                  return { ...item, number: 1 };
+                } else return item;
+              })
+              .filter((item) => item.number === 1)
+          );
+        }
+      }
+    };
+    getUser();
+  }, []);
+  console.log(data);
   const onChange = (e) => {
-    console.log("radio checked", e.target.value);
     setValue(e.target.value);
+    setVoucher(e.target.value);
   };
 
   const showModal = () => {
@@ -43,6 +75,15 @@ const PaymentBill = ({ cartState, voucher, setVoucher }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleUnchecked = (checkVl) => {
+    if (checkVl === value) {
+      setValue(0);
+      setVoucher(0);
+    } else {
+      return;
+    }
   };
   return (
     <div className="payment-bill-bg">
@@ -76,14 +117,33 @@ const PaymentBill = ({ cartState, voucher, setVoucher }) => {
           đ
         </h5>
       </div>
-      <Divider />
-      <div className="space-between">
-        <h4>Voucher</h4>
-        <h4>
-          Chọn voucher
-          <RightOutlined onClick={showModal} style={{ cursor: "pointer" }} />
-        </h4>
-      </div>
+
+      {auth.data && (
+        <>
+          <Divider />
+          <div className="space-between">
+            <h4>Voucher</h4>
+            <h4>
+              {value == 5 ? (
+                <Tag color="red">-5%</Tag>
+              ) : value == 10 ? (
+                <Tag color="red">-10%</Tag>
+              ) : value == 15 ? (
+                <Tag color="red">-15%</Tag>
+              ) : value == 20 ? (
+                <Tag color="red">-20%</Tag>
+              ) : (
+                "Chọn voucher"
+              )}
+              <RightOutlined
+                onClick={showModal}
+                style={{ cursor: "pointer" }}
+              />
+            </h4>
+          </div>
+        </>
+      )}
+
       <Divider />
       <div className="space-between">
         <h4></h4>
@@ -108,8 +168,9 @@ const PaymentBill = ({ cartState, voucher, setVoucher }) => {
           đ
         </h3>
       </div>
+
       <Modal
-        title="Basic Modal"
+        title="Voucher giảm giá"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -118,7 +179,11 @@ const PaymentBill = ({ cartState, voucher, setVoucher }) => {
           <Space direction="vertical">
             {data.map((item, index) => {
               return (
-                <Radio value={item.value} key={index}>
+                <Radio
+                  value={item.value}
+                  key={index}
+                  onClick={() => handleUnchecked(item.value)}
+                >
                   <img
                     src={item.img}
                     alt=""

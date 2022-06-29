@@ -1,6 +1,6 @@
 import { Divider, Radio, Space } from "antd";
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Toast from "../../components/Toast";
 import "../../assets/css/payment.css";

@@ -31,6 +31,7 @@ const Order = () => {
     { label: "Note", key: "note" },
     { label: "Details", key: "details" },
     { label: "State", key: "state" },
+    { label: "Voucher", key: "voucher" },
     { label: "Payment Type", key: "payment_type" },
     { label: "Shipping Unit", key: "shipping_unit" },
     { label: "Shipping Fee", key: "shipping_fee" },
@@ -86,14 +87,20 @@ const Order = () => {
                 key: idx + 100000,
               };
             }),
-            amount: item.details
-              .reduce((acc, i) => {
+            amount: (
+              item.details.reduce((acc, i) => {
                 return acc + i.product_price * i.product_quantity;
-              }, 0)
-              .toLocaleString("en-US", {
-                style: "currency",
-                currency: "VND",
-              }),
+              }, 0) -
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                item.voucher) /
+                100 +
+              25000
+            ).toLocaleString("en-US", {
+              style: "currency",
+              currency: "VND",
+            }),
           };
         })
       );
@@ -142,14 +149,20 @@ const Order = () => {
                 key: idx + 100000,
               };
             }),
-            amount: item.details
-              .reduce((acc, i) => {
+            amount: (
+              item.details.reduce((acc, i) => {
                 return acc + i.product_price * i.product_quantity;
-              }, 0)
-              .toLocaleString("en-US", {
-                style: "currency",
-                currency: "VND",
-              }),
+              }, 0) -
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                item.voucher) /
+                100 +
+              25000
+            ).toLocaleString("en-US", {
+              style: "currency",
+              currency: "VND",
+            }),
           };
         })
       );
@@ -218,7 +231,7 @@ const Order = () => {
             </CSVLink>
           </Button>
         )}
-        <ListTable data={data} XAxis={1700} noSup setData={setData} />
+        <ListTable data={data} XAxis={1950} noSup setData={setData} />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>

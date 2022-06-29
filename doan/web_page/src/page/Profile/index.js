@@ -37,6 +37,7 @@ const Profile = () => {
   const [page, setPage] = useState(1);
   const [imageUrl, setImageUrl] = useState();
   const [state, setState] = useState("đang chờ xác nhận");
+
   const getOrder = async (page) => {
     setLoading(true);
     try {
@@ -113,7 +114,6 @@ const Profile = () => {
   const handleChange = (value) => {
     setState(value);
   };
-
   if (loading) {
     return <Loading />;
   } else
@@ -228,7 +228,7 @@ const Profile = () => {
             ) : (
               <div className="profile-item" style={{ width: "100%" }}>
                 <h2>Voucher của bạn</h2>
-                <Voucher />
+                <Voucher user={data} setUser={setData} />
               </div>
             )}
           </div>
