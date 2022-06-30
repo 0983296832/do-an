@@ -5,8 +5,7 @@ const productImage = require("../../models/product/productImage");
 const commentDB = require("../../models/product/commentModel");
 const suppliersDB = require("../../models/product/supplierModel");
 const Features = require("../../lib/feature");
-
-// tìm tất cả sản phẩm
+const usersDB = require("../../models/user/userModel");
 exports.getAll = async (req, res) => {
   try {
     //tìm sản phẩm
@@ -480,6 +479,55 @@ exports.getEarning = async (req, res) => {
     return res
       .status(200)
       .json({ status: "200", message: "get revenue success", data: revenue });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getTopUser = async (req, res) => {
+  try {
+    const data = await usersDB.find().populate("image");
+    const topUsers = data
+      .filter((user, index) => user.orders.length > 0)
+      .slice(0, 5);
+    return res.status(200).json({
+      status: "200",
+      message: "get top users successfully",
+      data: topUsers,
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getProductsOutOfStock = async (req, res) => {
+  try {
+    const data = await productsDB.find().populate("image");
+    const productsOutOfStock = data.filter((product) => {
+      return (
+        product.details.reduce((acc, item) => {
+          return acc + item.quantity;
+        }, 0) === 0
+      );
+    });
+    return res.status(200).json({
+      status: "200",
+      message: "get products successfully",
+      data: productsOutOfStock.map((item) => {
+        return {
+          product_id: item._id,
+          product_code: item.product_code,
+          product_name: item.name,
+          product_price: item.price,
+          product_category: item.category,
+          product_brand: item.brand,
+          product_quantity: item.details.reduce((acc, item) => {
+            return acc + item.quantity;
+          }, 0),
+          product_image: item.image[0].imageUrl,
+        };
+      }),
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

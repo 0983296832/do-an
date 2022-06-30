@@ -140,7 +140,11 @@ const Header = () => {
   const handleChange = (value) => {
     setSearchBy(value);
   };
-  if (location.pathname === "/login" || location.pathname === "/register") {
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/forgot"
+  ) {
     return null;
   }
   return (

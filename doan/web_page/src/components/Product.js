@@ -40,7 +40,7 @@ const Product = ({ data }) => {
           </div>
         </Link>
         {data.sale && <div className="product-sale">SALE</div>}
-        {data.soldOut && <div className="product-soldOut">Cháy Hàng</div>}
+        {data.stocks == 0 && <div className="product-soldOut">Cháy Hàng</div>}
         <div
           className="product-addToCart"
           onClick={() => {

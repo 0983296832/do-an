@@ -10,6 +10,7 @@ import { Button } from "antd";
 import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
 import BasicPagination from "../../components/Pagination";
+import { AiOutlineFilter, AiOutlineSearch } from "react-icons/ai";
 
 const { Option } = Select;
 
@@ -17,11 +18,11 @@ const userColumns = [
   {
     field: "id",
     headerName: "ID",
-    width: 80,
+    width: 120,
     renderCell: (params) => {
       return (
         <Tooltip placement="topLeft" title={params.row.id}>
-          {params.row.id.slice(0, 7) + "..."}
+          {params.row.id.slice(0, 10) + "..."}
         </Tooltip>
       );
     },
@@ -55,7 +56,14 @@ const userColumns = [
     headerName: "Dia chi",
     width: 150,
   },
-
+  {
+    field: "role",
+    headerName: "Role",
+    width: 150,
+    renderCell: (params) => {
+      return <span>{params.row.role === 1 ? "User" : "Admin"}</span>;
+    },
+  },
   {
     field: "status",
     headerName: "Status",
@@ -95,6 +103,13 @@ const Datatable = () => {
           limit: 10,
           [key]: Number(searchKey),
         };
+      } else if (searchBy === "role") {
+        const key = searchBy + "[eq]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey == "user" ? 1 : 2,
+        };
       } else {
         const key = searchBy + "[regex]";
         params = {
@@ -107,19 +122,17 @@ const Datatable = () => {
       console.log(result);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(
-          ({ id, email, name, image, status, phone, address }) => {
-            return {
-              id: id,
-              email: email,
-              user: name,
-              img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-              status: status,
-              phone: phone,
-              address,
-            };
-          }
-        )
+        result.result.map(({ id, email, name, image, status, phone, role }) => {
+          return {
+            id,
+            email,
+            user: name,
+            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+            status,
+            phone,
+            role,
+          };
+        })
       );
     } catch (error) {
       Toast("error", error.message);
@@ -135,7 +148,7 @@ const Datatable = () => {
     };
   }, [page]);
 
-  const getDataBySearch = async () => {
+  const getDataBySearch = async (pageNum) => {
     if (searchBy === "all") {
       setSearchKey("");
       fetchData();
@@ -148,37 +161,46 @@ const Datatable = () => {
       if (searchBy === "all") {
         setSearchKey("");
         params = {
+          page: 1,
           limit: 10,
         };
       } else if (searchBy === "age" || searchBy === "height") {
         const key = searchBy + "[eq]";
         params = {
+          page: 1,
           limit: 10,
           [key]: Number(searchKey),
+        };
+      } else if (searchBy === "role") {
+        const key = searchBy + "[eq]";
+        params = {
+          page: 1,
+          limit: 10,
+          [key]: searchKey == "user" ? 1 : 2,
         };
       } else {
         const key = searchBy + "[regex]";
         params = {
+          page: 1,
           limit: 10,
           [key]: searchKey,
         };
       }
+
       const result = await UserService.getUsers(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
-        result.result.map(
-          ({ id, email, name, image, status, phone, address }) => {
-            return {
-              id: id,
-              email: email,
-              user: name,
-              img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
-              status: status,
-              phone: phone,
-              address,
-            };
-          }
-        )
+        result.result.map(({ id, email, name, image, status, phone, role }) => {
+          return {
+            id,
+            email,
+            user: name,
+            img: image?.imageUrl || "https://joeschmoe.io/api/v1/random",
+            status,
+            phone,
+            role,
+          };
+        })
       );
     } catch (error) {
       Toast("error", error.message);
@@ -234,43 +256,14 @@ const Datatable = () => {
           </Link>
         </div>
         <div className="datatable-feature">
-          <div className="feature-input">
-            <h3>Bạn đang tìm kiếm cái gì?</h3>
-            <Input
-              placeholder="Tìm kiếm cái gì đó..."
-              prefix={<SearchOutlined />}
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-              allowClear
-            />
-          </div>
-          <div className="feature-select">
-            <h3>Tìm kiếm bởi:</h3>
-            <Select
-              defaultValue={searchBy}
-              style={{
-                width: 200,
-              }}
-              onChange={(value) => setSearchBy(value)}
-            >
-              <Option value="all">Tất Cả</Option>
-              <Option value="name">Name</Option>
-              <Option value="phone">Phone Number</Option>
-              <Option value="email">Email</Option>
-              <Option value="address">Address</Option>
-              <Option value="status">Status</Option>
-            </Select>
-          </div>
-          <div className="feature-btn">
-            <Button
-              type="primary"
-              icon={<SearchOutlined />}
-              size="middle"
-              onClick={getDataBySearch}
-            >
-              Tìm Kiếm
-            </Button>
-          </div>
+          <SearchGroup
+            searchKey={searchKey}
+            setSearchKey={setSearchKey}
+            searchBy={searchBy}
+            setSearchBy={setSearchBy}
+            page={page}
+            getDataBySearch={getDataBySearch}
+          />
         </div>
         <DataGrid
           className="datagrid"
@@ -290,3 +283,55 @@ const Datatable = () => {
 };
 
 export default Datatable;
+
+const SearchGroup = ({
+  searchKey,
+  setSearchKey,
+  searchBy,
+  setSearchBy,
+  page,
+  getDataBySearch,
+}) => {
+  return (
+    <>
+      <div className="feature-input">
+        <h3>What are you looking for?</h3>
+        <Input
+          placeholder="Search something..."
+          prefix={<SearchOutlined />}
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+          allowClear
+        />
+      </div>
+      <div className="feature-select">
+        <h3>Search By:</h3>
+        <Select
+          defaultValue={searchBy}
+          style={{
+            width: 200,
+          }}
+          onChange={(value) => setSearchBy(value)}
+        >
+          <Option value="all">All</Option>
+          <Option value="name">Name</Option>
+          <Option value="phone">Phone Number</Option>
+          <Option value="email">Email</Option>
+          <Option value="address">Address</Option>
+          <Option value="status">Status</Option>
+          <Option value="role">Role</Option>
+        </Select>
+      </div>
+      <div className="feature-btn">
+        <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          size="middle"
+          onClick={() => getDataBySearch(page)}
+        >
+          Search
+        </Button>
+      </div>
+    </>
+  );
+};

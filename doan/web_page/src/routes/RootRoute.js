@@ -13,6 +13,7 @@ import Profile from "../page/Profile";
 import Register from "../page/Register";
 import ProtectRoute from "../guard/ProtectRoute";
 import Order from "../page/Order";
+import ForgotPassword from "../page/ForgotPassWord";
 
 const RootRoute = () => {
   return (
@@ -28,6 +29,7 @@ const RootRoute = () => {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/order/:id" element={<Order />} />
         <Route element={<ProtectRoute />}>
           <Route path="/profile" element={<Profile />} />

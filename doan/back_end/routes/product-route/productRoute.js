@@ -28,5 +28,12 @@ route.put("/views/:id", controller.increaseViews);
 route.post("/import", checkAuth, checkRole, controller.importProduct);
 route.delete("/delete/:id", checkAuth, checkRole, controller.deleteProduct);
 route.get("/get-earning", checkAuth, checkRole, controller.getEarning);
+route.get("/get-top-users", checkAuth, checkRole, controller.getTopUser);
+route.get(
+  "/get-products-out-of-stock",
+  checkAuth,
+  checkRole,
+  controller.getProductsOutOfStock
+);
 
 module.exports = route;

@@ -53,7 +53,7 @@ const Login = () => {
             Đăng ký
           </Link>
         </h4>
-        <Link to="/login" style={{ marginLeft: 7 }} className="login-forgot">
+        <Link to="/forgot" style={{ marginLeft: 7 }} className="login-forgot">
           Quên mật khẩu?
         </Link>
       </div>

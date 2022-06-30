@@ -46,7 +46,7 @@ const productColumns = [
   {
     field: "category",
     headerName: "Category",
-    width: 100,
+    width: 150,
   },
 
   {
@@ -87,6 +87,11 @@ const productColumns = [
   {
     field: "sales",
     headerName: "Sales",
+    width: 100,
+  },
+  {
+    field: "stocks",
+    headerName: "Stocks",
     width: 100,
   },
   {
@@ -157,6 +162,9 @@ const ProductManagement = () => {
             sales: item.sales,
             views: item.views,
             votes: item.votes,
+            stocks: item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0),
           };
         })
       );
@@ -208,6 +216,9 @@ const ProductManagement = () => {
             sales: item.sales,
             views: item.views,
             votes: item.votes,
+            stocks: item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0),
           };
         })
       );
@@ -287,6 +298,7 @@ const ProductManagement = () => {
               <Option value="brand">Brand</Option>
               <Option value="price">Price</Option>
               <Option value="gender">Gender</Option>
+              <Option value="state">State</Option>
             </Select>
           </div>
           <div className="feature-btn">

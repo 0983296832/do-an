@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "../../assets/css/home.css";
 import Wigget from "../../components/Wigget";
 import { FaRegUser } from "react-icons/fa";
+import { Card, Dropdown, Menu, Tabs, Badge } from "antd";
+import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsCoin } from "react-icons/bs";
 import { MdAttachMoney } from "react-icons/md";
@@ -12,9 +14,12 @@ import TableList from "./Table";
 import Users from "../../services/userServices";
 import Products from "../../services/productServices";
 import OrderServices from "../../services/orderServices";
-
 import Toast from "../../components/Toast";
 import moment from "moment";
+import TopProductSales from "./TopProductSales";
+import TableProductSale from "./TableProductSale";
+
+const { TabPane } = Tabs;
 
 const Home = () => {
   const dataOriginal = [
@@ -90,7 +95,6 @@ const Home = () => {
   ];
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
-  const [numbers, setNumbers] = useState([]);
   const [dataTable, setDataTable] = useState([]);
   const [progressData, setProgressData] = useState({
     day: 0,
@@ -98,26 +102,52 @@ const Home = () => {
     month: 0,
   });
   const [chartData, setChartData] = useState([]);
+  const [topData, setTopData] = useState([]);
+  const [indexTop, setIndexTop] = useState(0);
+  const [dataProducts, setDataProducts] = useState([]);
+  const [productsOutOfStock, setProductsOutOfStock] = useState([]);
+  const menu = (
+    <Menu
+      items={[
+        {
+          label: <span onClick={() => setIndexTop(0)}>Doanh Thu</span>,
+          key: "0",
+        },
+        {
+          label: <span onClick={() => setIndexTop(1)}>Sản phẩm bán chạy</span>,
+          key: "1",
+        },
+      ]}
+    />
+  );
 
   useEffect(() => {
     let isCancel = false;
     const fetchData = async () => {
       setLoading(true);
       try {
-        const params = {
+        const ordersParams = {
           page: 1,
           limit: 5,
+        };
+        const topProductsParams = {
+          page: 1,
+          limit: 5,
+          sort: "-sales",
         };
         let result = await Promise.allSettled([
           Users.getUsers(),
           Products.getProducts(),
-          OrderServices.getOrder(params),
+          OrderServices.getOrder(ordersParams),
           OrderServices.getRevenue(),
           Products.getEarning(),
           OrderServices.getRevenueBy("day"),
           OrderServices.getRevenueBy("week"),
           OrderServices.getRevenueBy("month"),
           OrderServices.getRevenueByHalfYear("all"),
+          Products.getProducts(topProductsParams),
+          Users.getTopUser(),
+          Products.getProductsOutOfStock(),
         ]);
         const user =
           result[0].status === "fulfilled" ? result[0].value.count : {};
@@ -131,13 +161,41 @@ const Home = () => {
           result[4].status === "fulfilled" ? result[4].value.data : [];
         const orderRevenueByDay =
           result[5].status === "fulfilled" ? result[5].value.data : [];
+        const dataProducts =
+          result[5].status === "fulfilled" ? result[5].value.details : [];
         const orderRevenueByWeek =
           result[6].status === "fulfilled" ? result[6].value.data : [];
         const orderRevenueByMonth =
           result[7].status === "fulfilled" ? result[7].value.data : [];
         const orderRevenueByHaflYear =
           result[8].status === "fulfilled" ? result[8].value.data : [];
-        setNumbers([user, product, orderRevenue, productEarning]);
+        const TopProductSales =
+          result[9].status === "fulfilled" ? result[9].value.data : [];
+        const TopUser =
+          result[10].status === "fulfilled" ? result[10].value.data : [];
+        const productsOutOfStock =
+          result[11].status === "fulfilled" ? result[11].value.data : [];
+        if (productsOutOfStock.length > 0)
+          Toast("warn", "Có sản phẩm hết hàng");
+        setTopData([
+          ...TopProductSales.map((item) => {
+            return {
+              name: item.name,
+              number: item.sales,
+              image:
+                item.image[0].imageUrl || "https://via.placeholder.com/150",
+            };
+          }),
+          ...TopUser.map((item) => {
+            return {
+              name: item.name,
+              number: item.orders.length,
+              image:
+                item.image.imageUrl || "https://joeschmoe.io/api/v1/random",
+            };
+          }),
+        ]);
+
         const numberArr = [user, product, orderRevenue, productEarning];
         setData(
           dataOriginal.map((item, index) => {
@@ -176,6 +234,41 @@ const Home = () => {
           month: orderRevenueByMonth,
         });
         setChartData(orderRevenueByHaflYear);
+        setDataProducts(
+          dataProducts
+            .map((product) => product.details)
+            .flat(Infinity)
+            .reduce((acc, cur) => {
+              if (acc.find((i) => i.product_id === cur.product_id)) {
+                return acc.map((i) => {
+                  if (i.product_id === cur.product_id) {
+                    return {
+                      ...i,
+                      product_quantity:
+                        i.product_quantity + cur.product_quantity,
+                    };
+                  } else return i;
+                });
+              } else {
+                acc.push({
+                  product_id: cur.product_id,
+                  product_quantity: cur.product_quantity,
+                  product_image: cur.product_image,
+                  product_name: cur.product_name,
+                  product_price: cur.product_price,
+                  product_code: cur.product_code,
+                });
+                return acc;
+              }
+            }, [])
+            .map((item) => {
+              return {
+                ...item,
+                product_amount: item.product_quantity * item.product_price,
+              };
+            })
+        );
+        setProductsOutOfStock(productsOutOfStock);
       } catch (error) {
         Toast("error", error.message);
       }
@@ -187,6 +280,8 @@ const Home = () => {
       isCancel = true;
     };
   }, []);
+
+  console.log(dataProducts);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -204,19 +299,59 @@ const Home = () => {
             })}
         </div>
         <div className="home__revenue">
-          <Progress data={progressData} />
+          <Card
+            size="small"
+            title={`${
+              indexTop === 0
+                ? "Tổng doanh thu"
+                : indexTop === 1
+                ? "Top Products With Sales"
+                : "Top Users With Orders"
+            }`}
+            extra={
+              <Dropdown overlay={menu}>
+                <FiMoreVertical className="progress-icon" />
+              </Dropdown>
+            }
+            headStyle={{ color: "gray" }}
+            style={{
+              width: 370,
+              boxShadow: "2px 4px 10px 1px rgba(201, 201, 201, 0.47)",
+              borderRadius: "8px",
+            }}
+            bordered={false}
+          >
+            {indexTop === 0 ? (
+              <Progress data={progressData} />
+            ) : (
+              <TopProductSales data={topData.slice(0, 5)} />
+            )}
+          </Card>
           <div className="revenue__chart">
             <ChartComponent
-              title="Last 6 Months (Revenue)"
+              title="6 Tháng qua(Doanh Thu)"
               aspect={2 / 1}
               data={chartData.slice(0, 6)}
             />
           </div>
         </div>
-        <h1 className="trans">Năm giao dịch cuối cùng</h1>
-        <div className="table">
-          <TableList dataTable={dataTable} />
-        </div>
+        <Tabs defaultActiveKey="1" style={{ marginTop: "20px" }}>
+          <TabPane tab="Năm giao dịch cuối cùng" key="1">
+            <div className="table">
+              <TableList dataTable={dataTable} />
+            </div>
+          </TabPane>
+          <TabPane tab="Sản phẩm bán được trong ngày" key="2">
+            <div className="table">
+              <TableProductSale dataTableSales={dataProducts} noPrice />
+            </div>
+          </TabPane>
+          <TabPane tab="Sản phẩm hết hàng" key="3">
+            <div className="table">
+              <TableProductSale dataTableSales={productsOutOfStock} noAmount />
+            </div>
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

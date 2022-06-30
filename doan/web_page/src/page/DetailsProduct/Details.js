@@ -16,6 +16,9 @@ const Details = ({ data, loading, id }) => {
   const [number, setNumber] = useState(1);
 
   const handleAddToCart = (data) => {
+    if (data?.stocks == 0) {
+      Toast("error", "Sản phẩm đã hết hàng");
+    }
     if (!data.product_color || !data.product_size) {
       Toast("error", "Chưa có màu sắc hoặc size");
       return;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, Steps, Tag, Tooltip } from "antd";
-
+import moment from "moment";
 import Loading from "../../components/Loading";
 import Orders from "../../services/orderServices";
 import Toast from "../../components/Toast";
@@ -96,6 +96,26 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
         </div>
         <Divider />
 
+        <div className="detail-order-info">
+          <div>
+            <h4>Ngày đặt hàng: </h4>
+          </div>
+          <div>
+            <h4>{moment(data.created).zone("+07:00").format("DD/MM/YYYY")}</h4>
+          </div>
+        </div>
+        <div className="detail-order-info">
+          <div>
+            <h4>Ngày nhận hàng: </h4>
+          </div>
+          <div>
+            <h4>
+              {data?.receive_date
+                ? moment(data?.receive_date).zone("+07:00").format("DD/MM/YYYY")
+                : "Chưa nhận"}
+            </h4>
+          </div>
+        </div>
         <div className="detail-order-info">
           <div>
             <h4>Tổng tiền hàng: </h4>

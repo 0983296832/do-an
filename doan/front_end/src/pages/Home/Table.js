@@ -7,7 +7,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import OrderServices from "../../services/orderServices";
 import moment from "moment";
 import { Tag } from "antd";
 
@@ -16,6 +15,9 @@ const TableList = ({ dataTable: rows }) => {
     {
       let colorTag;
       switch (row.status) {
+        case "đang chờ xác nhận":
+          colorTag = "orange";
+          break;
         case "đang đợi gói hàng":
           colorTag = "yellow";
           break;
@@ -27,6 +29,9 @@ const TableList = ({ dataTable: rows }) => {
           break;
         case "giao hàng thành công":
           colorTag = "green";
+          break;
+        case "giao hàng không thành công":
+          colorTag = "purple";
           break;
         case "đã hủy":
           colorTag = "red";
@@ -41,13 +46,13 @@ const TableList = ({ dataTable: rows }) => {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell className="tableCell">Tracking ID</TableCell>
-            <TableCell className="tableCell">Customer</TableCell>
-            <TableCell className="tableCell">Date</TableCell>
-            <TableCell className="tableCell">Amount</TableCell>
-            <TableCell className="tableCell">Payment Method</TableCell>
-            <TableCell className="tableCell">Recive Date</TableCell>
-            <TableCell className="tableCell">Status</TableCell>
+            <TableCell className="tableCell"> ID sản phẩm</TableCell>
+            <TableCell className="tableCell">Tên khách hàng</TableCell>
+            <TableCell className="tableCell">Ngày</TableCell>
+            <TableCell className="tableCell">Tổng giá</TableCell>
+            <TableCell className="tableCell">Phương thức thanh toán</TableCell>
+            <TableCell className="tableCell">Ngày đặt</TableCell>
+            <TableCell className="tableCell">Tình trạng</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
