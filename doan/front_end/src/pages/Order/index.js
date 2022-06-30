@@ -231,7 +231,7 @@ const Order = () => {
             </CSVLink>
           </Button>
         )}
-        <ListTable data={data} XAxis={1950} noSup setData={setData} />
+        <ListTable data={data} XAxis={2000} noSup setData={setData} />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>

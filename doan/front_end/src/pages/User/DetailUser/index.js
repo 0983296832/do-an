@@ -156,7 +156,7 @@ const DetailUser = () => {
           <ListTable
             data={data}
             noSup
-            XAxis={1950}
+            XAxis={2000}
             YAxis={400}
             setData={setData}
           />
