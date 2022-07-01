@@ -377,7 +377,7 @@ exports.deleteCart = async (req, res) => {
 exports.changeRewards = async (req, res) => {
   try {
     const user = await usersDB.findById(req.params.id);
-    if(user.points - req.body.points<0){
+    if (user.points - req.body.points < 0) {
       return res.status(400).json({
         status: "400",
         message: "not enough points",
@@ -402,6 +402,31 @@ exports.changeRewards = async (req, res) => {
         });
       }
     });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.AddToFavorite = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const existFavor = user.favorite_product.find(
+      (item) => item.id == req.body.id
+    );
+    if (existFavor) {
+      const newFavor = user.favorite_product.map((item) => {
+        if (item.id == req.body.id) {
+          return { ...item, views: item.views + 1 };
+        }
+      });
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        favorite_product: newFavor,
+      });
+    } else {
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $push: { favorite_product: { id: req.body.id, views: 1 } },
+      });
+    }
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

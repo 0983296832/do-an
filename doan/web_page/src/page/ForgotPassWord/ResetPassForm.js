@@ -16,7 +16,7 @@ const ResetPassForm = ({ email }) => {
     formState: { errors },
   } = useForm();
   const watchFields = watch(["password", "confirm_password"]);
-  console.log(email);
+
 
   const onResetPassword = async (data) => {
     try {

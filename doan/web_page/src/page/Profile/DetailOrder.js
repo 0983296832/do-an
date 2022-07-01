@@ -11,19 +11,6 @@ import { useReactToPrint } from "react-to-print";
 const { Step } = Steps;
 
 const DetailOrder = ({ data, loading, orders, setOrder }) => {
-  console.log(
-    data.details.reduce(
-      (total, item) => total + item.product_quantity * item.product_price,
-      0
-    ) -
-      (data.details.reduce(
-        (total, item) => total + item.product_quantity * item.product_price,
-        0
-      ) *
-        data.voucher) /
-        100 +
-      25000
-  );
   const stepData = [
     "đặt hàng",
     "đang chờ xác nhận",

@@ -132,7 +132,7 @@ const Header = () => {
       Toast("error", error.message);
     }
   };
-  // console.log(options);
+
   const onSelect = (data) => {
     // console.log(object);
   };

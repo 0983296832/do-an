@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../../assets/css/product-list.css";
 import ProductView from "../../components/ProductView";
 import Sort from "./Sort";
@@ -12,7 +12,9 @@ import queryString from "query-string";
 import { Divider } from "antd";
 import Loading from "../../components/Loading";
 
+
 const ProductList = () => {
+  
   const sumQuery = queryString.parse(window.location.search);
   const { type } = useParams();
   const [data, setData] = useState([]);
@@ -129,6 +131,9 @@ const ProductList = () => {
   useEffect(() => {
     getData(page);
   }, [page, type, sort, priceFilter, sizeFilter, colorFilter]);
+
+  
+
   if (loading) {
     return <Loading />;
   }

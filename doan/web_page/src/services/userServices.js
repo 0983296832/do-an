@@ -23,7 +23,6 @@ const Users = {
   },
   removeFromCart: (id, body) => {
     const url = `user/delete-cart/${id}`;
-    console.log(body);
     return axiosClient.put(url, body);
   },
   updateCart: (id, body) => {
@@ -32,6 +31,10 @@ const Users = {
   },
   changeRewards: (id, body) => {
     const url = `user/change-rewards/${id}`;
+    return axiosClient.post(url, body);
+  },
+  AddToFavorite: (id, body) => {
+    const url = `user/add-to-favorite/${id}`;
     return axiosClient.post(url, body);
   },
 };

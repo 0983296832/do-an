@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema({
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }],
   points: { type: Number, default: 0 },
   vouchers: { type: Array },
+  favorite_product: { type: Array },
 });
 const usersDB = mongoose.model("users", userSchema);
 

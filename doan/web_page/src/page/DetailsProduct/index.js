@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Divider } from "antd";
 import giay from "../../assets/image/giay.jpg";
 import giay01 from "../../assets/image/giay01.jpg";
@@ -18,10 +18,13 @@ import Loading from "../../components/Loading";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import ReactHtmlParser from "react-html-parser";
+import { AuthContext } from "../../context/AuthContext";
+import Users from "../../services/userServices";
 
 const { TabPane } = Tabs;
 
 const DetailsProduct = () => {
+  const { auth } = useContext(AuthContext);
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,11 @@ const DetailsProduct = () => {
     giay05,
     giay06,
   ]);
-
+  useEffect(() => {
+    if (auth.data) {
+      Users.AddToFavorite(auth.data._id, { id: id });
+    }
+  }, []);
   useEffect(() => {
     const getDetail = async () => {
       setLoading(true);
