@@ -20,6 +20,7 @@ import moment from "moment";
 import TopProductSales from "./TopProductSales";
 import TableProductSale from "./TableProductSale";
 import { PrinterOutlined } from "@ant-design/icons";
+import Stats from "../Stats";
 
 const { TabPane } = Tabs;
 
@@ -384,7 +385,7 @@ const Home = () => {
             <ChartComponent
               title="Last 6 Months (Revenue)"
               aspect={2 / 1}
-              data={chartData.slice(0, 6)}
+              data={chartData.slice(1, 7)}
             />
           </div>
         </div>
@@ -405,6 +406,7 @@ const Home = () => {
             </div>
           </TabPane>
         </Tabs>
+        <Stats />
       </div>
     );
   }

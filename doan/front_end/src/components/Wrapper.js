@@ -15,7 +15,11 @@ import {
   BiNews,
 } from "react-icons/bi";
 import { Avatar } from "antd";
-import { MdDashboard, MdLocalShipping } from "react-icons/md";
+import {
+  MdDashboard,
+  MdLocalShipping,
+  MdOutlineInventory2,
+} from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { ImStatsDots, ImProfile } from "react-icons/im";
 import { Link, useNavigate } from "react-router-dom";
@@ -41,12 +45,13 @@ const Wrapper = ({ children }) => {
         { icon: <AiOutlineCreditCard />, link: "Orders", path: "/order" },
         { icon: <MdLocalShipping />, link: "Suppliers", path: "/supplier" },
         { icon: <BiNews />, link: "Posts", path: "/post" },
+        { icon: <MdOutlineInventory2 />, link: "Stocks", path: "/" },
       ],
     },
     {
       title: "Useful",
       children: [
-        { icon: <ImStatsDots />, link: "Stats", path: "/" },
+        { icon: <ImStatsDots />, link: "Stats", path: "/stats" },
         { icon: <AiOutlineBell />, link: "Notifications", path: "/" },
       ],
     },

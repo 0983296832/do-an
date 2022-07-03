@@ -35,6 +35,6 @@ route.get(
   checkRole,
   controller.getProductsOutOfStock
 );
-route.get("/get-stock-by-month", checkAuth, checkRole, controller.getStocks);
+route.post("/get-stock-by-month", checkAuth, checkRole, controller.getStocks);
 
 module.exports = route;

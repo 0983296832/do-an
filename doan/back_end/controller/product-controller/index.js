@@ -541,16 +541,96 @@ const saveStockByMonth = async (req, res) => {
 schedule.scheduleJob("* * 1 */1 *", saveStockByMonth);
 
 exports.getStocks = async (req, res) => {
+  console.log(req.body);
   try {
     const product = await stockDB.findOne({
-      month: req.body.month,
-      year: req.body.year,
+      month: { $eq: req.body.month },
+      year: { $eq: req.body.year },
+    });
+    const order = await ordersDB.find({
+      state: "giao hàng thành công",
+      receive_date: {
+        $gte: new Date(
+          moment()
+            .month(Number(req.body.month) - 1)
+            .startOf("month")
+            .format("MM/DD/YYYY")
+        ),
+        $lte: new Date(
+          moment()
+            .month(Number(req.body.month) - 1)
+            .endOf("month")
+            .format("MM/DD/YYYY")
+        ),
+      },
+    });
+    const supplier = await suppliersDB.find({
+      created: {
+        $gte: new Date(
+          moment().month(req.body.month).startOf("month").format("MM/DD/YYYY")
+        ),
+        $lte: new Date(
+          moment().month(req.body.month).endOf("month").format("MM/DD/YYYY")
+        ),
+      },
     });
 
     return res.status(200).json({
       status: "200",
       message: "get stock by month successfully",
-      data: { product },
+      product: {
+        money:
+          product?.data.reduce((acc, item) => {
+            return (
+              acc +
+              item.details.reduce((a, i) => {
+                return a + i.quantity;
+              }, 0) *
+                item.price
+            );
+          }, 0) || 0,
+        quantity:
+          product?.data.reduce((acc, item) => {
+            return (
+              acc +
+              item.details.reduce((a, i) => {
+                return a + i.quantity;
+              }, 0)
+            );
+          }, 0) || 0,
+      },
+      order: {
+        money: order
+          .map((item) => {
+            return (
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                (100 - item.voucher)) /
+                100 +
+              25000
+            );
+          })
+          .reduce((acc, item) => {
+            return acc + item;
+          }, 0),
+        quantity: order.reduce((acc, cur) => {
+          return (
+            acc +
+            cur.details.reduce((a, c) => {
+              return a + c.product_quantity;
+            }, 0)
+          );
+        }, 0),
+      },
+      supplier: {
+        money: supplier.reduce((acc, cur) => {
+          return acc + cur.price * cur.quantity;
+        }, 0),
+        quantity: supplier.reduce((acc, cur) => {
+          return acc + cur.quantity;
+        }, 0),
+      },
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
