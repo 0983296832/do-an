@@ -541,12 +541,17 @@ const saveStockByMonth = async (req, res) => {
 schedule.scheduleJob("* * 1 */1 *", saveStockByMonth);
 
 exports.getStocks = async (req, res) => {
-  console.log(req.body);
   try {
-    const product = await stockDB.findOne({
-      month: { $eq: req.body.month },
-      year: { $eq: req.body.year },
-    });
+    let product = {};
+    if (req.body.month == moment(new Date()).format("M")) {
+      product.data = await productsDB.find();
+    } else {
+      product = await stockDB.findOne({
+        month: { $eq: req.body.month },
+        year: { $eq: req.body.year },
+      });
+    }
+
     const order = await ordersDB.find({
       state: "giao hàng thành công",
       receive_date: {
@@ -578,6 +583,7 @@ exports.getStocks = async (req, res) => {
     return res.status(200).json({
       status: "200",
       message: "get stock by month successfully",
+
       product: {
         money:
           product?.data.reduce((acc, item) => {

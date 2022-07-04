@@ -106,6 +106,7 @@ const Home = () => {
   });
   const [chartData, setChartData] = useState([]);
   const [topData, setTopData] = useState([]);
+  const [topUser, setTopUser] = useState([]);
   const [indexTop, setIndexTop] = useState(0);
   const [dataProducts, setDataProducts] = useState([]);
   const [productsOutOfStock, setProductsOutOfStock] = useState([]);
@@ -189,8 +190,8 @@ const Home = () => {
         if (productsOutOfStock.length > 0)
           Toast("warn", "There are some products out of stock");
 
-        setTopData([
-          ...TopProductSales.map((product) => product.details)
+        setTopData(
+          TopProductSales.map((product) => product.details)
             .flat(Infinity)
             .reduce((acc, cur) => {
               if (acc.find((i) => i.product_id === cur.product_id)) {
@@ -225,16 +226,18 @@ const Home = () => {
               };
             })
             .sort((a, b) => b.number - a.number)
-            .filter((_, index) => index < 5),
-          ...TopUser.map((item) => {
+            .filter((_, index) => index < 5)
+        );
+        setTopUser(
+          TopUser.map((item) => {
             return {
               name: item.name,
               number: item.orders.length,
               image:
                 item.image.imageUrl || "https://joeschmoe.io/api/v1/random",
             };
-          }),
-        ]);
+          })
+        );
 
         const numberArr = [user, product, orderRevenue, productEarning];
         setData(
@@ -374,11 +377,7 @@ const Home = () => {
             {indexTop === 0 ? (
               <Progress data={progressData} />
             ) : (
-              <TopProductSales
-                data={
-                  indexTop === 1 ? topData.slice(0, 5) : topData.slice(5, 10)
-                }
-              />
+              <TopProductSales data={indexTop === 1 ? topData : topUser} />
             )}
           </Card>
           <div className="revenue__chart">
@@ -406,7 +405,6 @@ const Home = () => {
             </div>
           </TabPane>
         </Tabs>
-        <Stats />
       </div>
     );
   }

@@ -1,45 +1,40 @@
 import { Card, DatePicker } from "antd";
 import React, { useEffect, useState } from "react";
-import PieChart from "./PieChart";
 import moment from "moment";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 
 const Stats = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [selectDate, setSelectDate] = useState({
     month: moment(new Date()).format("M"),
     year: moment(new Date()).format("Y"),
   });
   const [loading, setLoading] = useState(false);
-  const [pieData, setPieData] = useState([
-    {
-      id: "c",
-      label: "c",
-      value: 243,
-    },
-    {
-      id: "css",
-      label: "css",
-      value: 108,
-    },
-    {
-      id: "rust",
-      label: "rust",
-      value: 401,
-    },
-  ]);
-  console.log(selectDate);
+  const [barData, setBarData] = useState([]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const data = await Products.getStockByMonth(selectDate);
-        setPieData([
-          { id: 1, label: "product", value: data.product.quantity },
-          { id: 2, label: "order", value: data.order.quantity },
-          { id: 3, label: "supplier", value: data.supplier.quantity },
+        const stock = await Products.getStockByMonth(selectDate);
+        console.log(stock);
+        setData([
+          {
+            name: "product",
+            number: stock.product.quantity,
+            money: stock.product.money,
+          },
+          {
+            name: "order",
+            number: stock.order.quantity,
+            money: stock.order.money,
+          },
+          {
+            name: "supplier",
+            number: stock.supplier.quantity,
+            money: stock.supplier.money,
+          },
         ]);
       } catch (error) {
         Toast("error", error.message);
@@ -80,10 +75,7 @@ const Stats = () => {
         }}
         bordered={false}
       >
-        <div style={{ height: 400, display: "flex" }}>
-          <PieChart data={pieData} />
-          <PieChart data={pieData} />
-        </div>
+        <div className="overviews"></div>
       </Card>
     </div>
   );
