@@ -580,10 +580,44 @@ exports.getStocks = async (req, res) => {
       },
     });
 
+    const dataTable =
+      product?.data.map(
+        ({ _id, product_code, name, image, price, details }) => {
+          return {
+            _id,
+            product_code,
+            name,
+            image,
+            price,
+            quantity: details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0),
+            order: order
+              .filter((i) =>
+                i.details.find((vl) => vl.product_code == product_code)
+              )
+              .reduce((acc, item) => {
+                return (
+                  acc +
+                  item.details.reduce((ac, it) => {
+                    if (it.product_code == product_code)
+                      return ac + it.product_quantity;
+                  }, 0)
+                );
+              }, 0),
+            supplier: supplier
+              .filter((item) => item.product_code == product_code)
+              .reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+          };
+        }
+      ) || [];
+
     return res.status(200).json({
       status: "200",
       message: "get stock by month successfully",
-
+      dataTable,
       product: {
         money:
           product?.data.reduce((acc, item) => {

@@ -49,3 +49,35 @@
 .ck-editor__editable_inline{
     min-height: 300px;
 }
+
+.wigget-stock{
+    height: 150px;
+    width: 100%;
+    padding: 20px 40px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+}
+.wigget-stock-infor{
+    display: flex;
+    align-items: center;
+    justify-content:flex-start;
+    width: 110px;
+    gap:10px
+    
+   
+}
+.wigget-stock-infor h4,h3{
+    margin-bottom: 0 !important;
+}
+.wigget-stock-infor h4{
+  color:#a7a7a7
+}
+.wigget-stock-infor h3{
+  color:#232323;
+  font-weight: 900;
+}
+.wigget-stock-icon{
+   font-size:40px;
+}
