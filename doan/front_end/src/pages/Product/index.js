@@ -10,20 +10,14 @@ import {
   Select,
   Button,
   Avatar,
-  Tabs,
-  DatePicker,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
-import { MdOutlineInventory2, MdLocalShipping } from "react-icons/md";
-import { AiOutlineCreditCard } from "react-icons/ai";
-import moment from "moment";
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const productColumns = [
   {
@@ -161,12 +155,6 @@ const ProductManagement = () => {
     { label: "Gender", key: "gender" },
     { label: "Created", key: "createdAt" },
   ]);
-  const [dataStock, setDataStock] = useState([]);
-  const [selectDate, setSelectDate] = useState({
-    month: moment(new Date()).format("M"),
-    year: moment(new Date()).format("Y"),
-  });
-  const [activeTab, setActiveTab] = useState("1");
 
   const fetchData = async (pageNum) => {
     try {
@@ -250,110 +238,6 @@ const ProductManagement = () => {
     };
   }, [page]);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const stock = await Products.getStockByMonth(selectDate);
-        setDataStock([
-          {
-            title: "Quantity Overviews",
-            children: [
-              {
-                name: "product",
-                number: stock.product.quantity,
-                icon: (
-                  <MdOutlineInventory2
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(218, 165, 32, 0.2)",
-                      color: "goldenrod",
-                    }}
-                  />
-                ),
-              },
-              {
-                name: "order",
-                number: stock.order.quantity,
-                icon: (
-                  <AiOutlineCreditCard
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(128, 0, 128, 0.2)",
-                      color: "purple",
-                    }}
-                  />
-                ),
-              },
-              {
-                name: "supplier",
-                number: stock.supplier.quantity,
-                icon: (
-                  <MdLocalShipping
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(0, 128, 0, 0.2)",
-                      color: "green",
-                    }}
-                  />
-                ),
-              },
-            ],
-          },
-          {
-            title: "Money Overviews",
-            children: [
-              {
-                name: "product",
-                number: stock.product.money,
-                isMoney: true,
-                icon: (
-                  <MdOutlineInventory2
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(218, 165, 32, 0.2)",
-                      color: "goldenrod",
-                    }}
-                  />
-                ),
-              },
-              {
-                name: "order",
-                number: stock.order.money,
-                isMoney: true,
-                icon: (
-                  <AiOutlineCreditCard
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(128, 0, 128, 0.2)",
-                      color: "purple",
-                    }}
-                  />
-                ),
-              },
-              {
-                name: "supplier",
-                number: stock.supplier.money,
-                isMoney: true,
-                icon: (
-                  <MdLocalShipping
-                    className="wigget__icon wigget-stock-icon"
-                    style={{
-                      backgroundColor: "rgba(0, 128, 0, 0.2)",
-                      color: "green",
-                    }}
-                  />
-                ),
-              },
-            ],
-          },
-        ]);
-      } catch (error) {
-        Toast("error", error.message);
-      }
-      setLoading(false);
-    })();
-  }, [selectDate]);
   const getDataBySearch = async () => {
     if (searchBy === "all") {
       setSearchKey("");
@@ -445,153 +329,87 @@ const ProductManagement = () => {
       },
     },
   ];
-  const onChange = (data) => {
-    setSelectDate({
-      month: moment(data).format("M"),
-      year: moment(data).format("Y"),
-    });
-  };
-  const changeTab = (key) => {
-    setActiveTab(key);
-  };
 
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
-    <Tabs type="card" defaultActiveKey={activeTab} onChange={changeTab}>
-      <TabPane tab="Product Management" key="1">
-        <div className="main-wrapper">
-          {/* <Button onClick={handlePrint} icon={<PrinterOutlined />}>
+    <div className="main-wrapper">
+      {/* <Button onClick={handlePrint} icon={<PrinterOutlined />}>
         Print PDF
       </Button> */}
-          <div className="datatable" style={{ height: "700px" }}>
-            <div className="datatable-feature">
-              <div className="feature-input">
-                <h3>What are you looking for?</h3>
-                <Input
-                  placeholder="Search something..."
-                  prefix={<SearchOutlined />}
-                  value={searchKey}
-                  onChange={(e) => setSearchKey(e.target.value)}
-                  allowClear
-                />
-              </div>
-              <div className="feature-select">
-                <h3>Search By:</h3>
-                <Select
-                  defaultValue={searchBy}
-                  style={{
-                    width: 200,
-                  }}
-                  onChange={(value) => setSearchBy(value)}
-                >
-                  <Option value="all">All</Option>
-                  <Option value="product_code">Product Code</Option>
-                  <Option value="name">Name</Option>
-                  <Option value="category">Category</Option>
-                  <Option value="brand">Brand</Option>
-                  <Option value="price">Price</Option>
-                  <Option value="gender">Gender</Option>
-                  <Option value="state">State</Option>
-                </Select>
-              </div>
-              <div className="feature-btn">
-                <Button
-                  type="primary"
-                  icon={<SearchOutlined />}
-                  size="middle"
-                  onClick={getDataBySearch}
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
-            {!loading && (
-              <Button type="primary">
-                <CSVLink
-                  data={dataScv || []}
-                  headers={headers}
-                  style={{ color: "white" }}
-                >
-                  Export to CSV
-                </CSVLink>
-              </Button>
-            )}
-            <DataGrid
-              className="datagrid"
-              rows={data}
-              columns={productColumns.concat(actionColumn)}
-              pageSize={10}
-              rowsPerPageOptions={[10]}
-              checkboxSelection
-              hideFooter
-              initialState={{
-                pinnedColumns: { left: ["id"], right: ["actions"] },
-              }}
+      <div className="datatable" style={{ height: "700px" }}>
+        <div className="datatableTitle">Products Management</div>
+        <div className="datatable-feature">
+          <div className="feature-input">
+            <h3>What are you looking for?</h3>
+            <Input
+              placeholder="Search something..."
+              prefix={<SearchOutlined />}
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
+              allowClear
             />
-            <BasicPagination page={page} setPage={setPage} count={pageCount} />
+          </div>
+          <div className="feature-select">
+            <h3>Search By:</h3>
+            <Select
+              defaultValue={searchBy}
+              style={{
+                width: 200,
+              }}
+              onChange={(value) => setSearchBy(value)}
+            >
+              <Option value="all">All</Option>
+              <Option value="product_code">Product Code</Option>
+              <Option value="name">Name</Option>
+              <Option value="category">Category</Option>
+              <Option value="brand">Brand</Option>
+              <Option value="price">Price</Option>
+              <Option value="gender">Gender</Option>
+              <Option value="state">State</Option>
+            </Select>
+          </div>
+          <div className="feature-btn">
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="middle"
+              onClick={getDataBySearch}
+            >
+              Search
+            </Button>
           </div>
         </div>
-      </TabPane>
-      <TabPane tab="Stock Management" key="2">
-        <div className="main-wrapper" style={{ padding: 20 }}>
-          <DatePicker
-            onChange={onChange}
-            picker="month"
-            defaultValue={moment(`${selectDate.year}/${selectDate.month}/1`)}
-            style={{ marginBottom: 10 }}
-          />
-          <div>
-            <WiggetStock data={dataStock} />
-          </div>
-        </div>
-      </TabPane>
-    </Tabs>
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
+        <DataGrid
+          className="datagrid"
+          rows={data}
+          columns={productColumns.concat(actionColumn)}
+          pageSize={10}
+          rowsPerPageOptions={[10]}
+          checkboxSelection
+          hideFooter
+          initialState={{
+            pinnedColumns: { left: ["id"], right: ["actions"] },
+          }}
+        />
+        <BasicPagination page={page} setPage={setPage} count={pageCount} />
+      </div>
+    </div>
   );
 };
 
 export default ProductManagement;
 
-const WiggetStock = ({ data }) => {
-  return (
-    <div className="wigget-stock">
-      {data.map((item) => {
-        return (
-          <div>
-            <h3>{item.title}</h3>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 50,
-                marginTop: 15,
-              }}
-            >
-              {item.children.map((i) => {
-                return (
-                  <div className="wigget-stock-infor">
-                    {i.icon}
-                    <div>
-                      <h4>{i.name}</h4>
-                      <h3>
-                        {i?.isMoney
-                          ? i.number > 1000000 && i.number < 1000000000
-                            ? (i.number / 1000000).toFixed(1) + "m"
-                            : i.number > 1000000000
-                            ? (i.number / 1000000000).toFixed(1) + "b"
-                            : i.number + "đ"
-                          : i.number.toLocaleString()}
-                      </h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+

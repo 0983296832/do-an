@@ -45,7 +45,7 @@ const Wrapper = ({ children }) => {
         { icon: <AiOutlineCreditCard />, link: "Orders", path: "/order" },
         { icon: <MdLocalShipping />, link: "Suppliers", path: "/supplier" },
         { icon: <BiNews />, link: "Posts", path: "/post" },
-        { icon: <MdOutlineInventory2 />, link: "Stocks", path: "/" },
+        { icon: <MdOutlineInventory2 />, link: "Stocks", path: "/stock" },
       ],
     },
     {

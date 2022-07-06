@@ -18,6 +18,7 @@ import Profile from "../pages/Profile";
 import Post from "../pages/Post";
 import AddPost from "../pages/Post/AddPost";
 import Stats from "../pages/Stats";
+import Stocks from "../pages/Stock";
 
 const RootRoute = () => {
   return (
@@ -62,6 +63,9 @@ const RootRoute = () => {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/stats" element={<Stats />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/stock" element={<Stocks />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot" element={<ForgotPassword />} />

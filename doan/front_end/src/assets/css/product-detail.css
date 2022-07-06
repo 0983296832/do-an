@@ -81,3 +81,10 @@
 .wigget-stock-icon{
    font-size:40px;
 }
+.filter-month{
+    display: flex;
+    align-items: center;
+    justify-content:flex-end;
+    gap:15px;
+    width: 100%;
+}

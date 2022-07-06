@@ -542,14 +542,23 @@ schedule.scheduleJob("* * 1 */1 *", saveStockByMonth);
 
 exports.getStocks = async (req, res) => {
   try {
-    let product = {};
+    let product = { data: [] };
     if (req.body.month == moment(new Date()).format("M")) {
-      product.data = await productsDB.find();
+      product.data = await productsDB.find().populate("image");
     } else {
       product = await stockDB.findOne({
         month: { $eq: req.body.month },
         year: { $eq: req.body.year },
       });
+      const tempProduct = await productsDB.find().populate("image");
+      if (product)
+        product.data = product.data.map((item) => {
+          return {
+            ...item,
+            image: tempProduct.find((i) => i.product_code == item.product_code)
+              .image,
+          };
+        });
     }
 
     const order = await ordersDB.find({
@@ -582,29 +591,41 @@ exports.getStocks = async (req, res) => {
 
     const dataTable =
       product?.data.map(
-        ({ _id, product_code, name, image, price, details }) => {
+        ({
+          _id,
+          product_code,
+          name,
+          image,
+          price,
+          details,
+          brand,
+          category,
+        }) => {
           return {
             _id,
             product_code,
             name,
             image,
+            brand,
+            category,
             price,
             quantity: details.reduce((acc, item) => {
               return acc + item.quantity;
             }, 0),
-            order: order
-              .filter((i) =>
-                i.details.find((vl) => vl.product_code == product_code)
-              )
-              .reduce((acc, item) => {
-                return (
-                  acc +
-                  item.details.reduce((ac, it) => {
-                    if (it.product_code == product_code)
-                      return ac + it.product_quantity;
-                  }, 0)
-                );
-              }, 0),
+            order:
+              order
+                .filter((i) =>
+                  i.details.find((vl) => vl.product_code == product_code)
+                )
+                .reduce((acc, item) => {
+                  return (
+                    acc +
+                    item.details.reduce((ac, it) => {
+                      if (it.product_code == product_code)
+                        return ac + it.product_quantity;
+                    }, 0)
+                  );
+                }, 0) || 0,
             supplier: supplier
               .filter((item) => item.product_code == product_code)
               .reduce((acc, item) => {
