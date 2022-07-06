@@ -1,10 +1,12 @@
 const usersDB = require("../../models/user/userModel");
+const productsDB = require("../../models/product/product");
 const cartsDB = require("../../models/user/cartModel");
 const bcrypt = require("bcryptjs");
 const { passwordValidation } = require("../../validate/validate");
 const cloudinary = require("../../helper/cloudinaryConfig");
 const ImageModel = require("../../models/user/imageModel");
 const Features = require("../../lib/feature");
+const ObjectId = require("mongodb").ObjectID;
 
 exports.findAll = async (req, res) => {
   try {
@@ -417,7 +419,7 @@ exports.AddToFavorite = async (req, res) => {
       const newFavor = user.favorite_product.map((item) => {
         if (item.id == req.body.id) {
           return { ...item, views: item.views + 1 };
-        }
+        } else return item;
       });
       await usersDB.findByIdAndUpdate(req.params.id, {
         favorite_product: newFavor,
@@ -427,6 +429,38 @@ exports.AddToFavorite = async (req, res) => {
         $push: { favorite_product: { id: req.body.id, views: 1 } },
       });
     }
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getFavorite = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const favorite_product = user.favorite_product
+      .sort((a, b) => b.views - a.views)
+      .map((item) => {
+        return item.id;
+      });
+    var oids = [];
+    favorite_product.forEach(function (item) {
+      oids.push(new ObjectId(item));
+    });
+
+    const product = await productsDB
+      .find({ _id: { $in: oids } })
+      .populate("image");
+    var sortProduct = [];
+    favorite_product.forEach(function (item) {
+      const findItem = product.find((i) => i._id == item);
+      if (findItem) sortProduct.push(findItem);
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "get favorite product successfully",
+      data: sortProduct,
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }

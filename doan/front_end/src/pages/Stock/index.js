@@ -1,4 +1,4 @@
-import { Avatar, DatePicker, Tooltip } from "antd";
+import { Avatar, Button, DatePicker, Tooltip } from "antd";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { MdOutlineInventory2, MdLocalShipping } from "react-icons/md";
@@ -6,6 +6,7 @@ import { AiOutlineCreditCard } from "react-icons/ai";
 import moment from "moment";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
+import { CSVLink } from "react-csv";
 
 const stockColumns = [
   {
@@ -100,6 +101,19 @@ const Stocks = () => {
     month: moment(new Date()).format("M"),
     year: moment(new Date()).format("Y"),
   });
+  const [dataScv, setDataScv] = useState();
+  const [headers, setHeaders] = useState([
+    { label: "ID", key: "_id" },
+    { label: "Product Code", key: "product_code" },
+    { label: "Name", key: "name" },
+    { label: "Price", key: "price" },
+    { label: "Brand", key: "brand" },
+    { label: "Image", key: "image" },
+    { label: "Quantity", key: "quantity" },
+    { label: "Order", key: "order" },
+    { label: "Supplier", key: "supplier" },
+    { label: "Created", key: "createdAt" },
+  ]);
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -214,6 +228,15 @@ const Stocks = () => {
             };
           })
         );
+        setDataScv(
+          stock.dataTable.map((item) => {
+            return {
+              ...item,
+              image: item.image.map((image) => image.imageUrl),
+              createdAt: `${selectDate.month}/${selectDate.year}`,
+            };
+          })
+        );
       } catch (error) {
         Toast("error", error.message);
       }
@@ -245,7 +268,18 @@ const Stocks = () => {
       <div>
         <WiggetStock data={dataStock} />
       </div>
-      <div style={{ height: 633 }}>
+      <div style={{ height: 633, marginTop: 30 }}>
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
         <DataGrid
           className="datagrid"
           rows={dataTable}
