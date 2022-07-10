@@ -56,7 +56,12 @@ const Favorite = () => {
     <div>
       <div
         className="top-product"
-        style={{ height: "100vh", overflowY: "auto", padding: 10 }}
+        style={{
+          height: "100vh",
+          overflowY: "auto",
+          padding: 10,
+          justifyContent: "flex-start",
+        }}
       >
         {data.map((item, index) => {
           return (
