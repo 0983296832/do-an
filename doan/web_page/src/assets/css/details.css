@@ -218,5 +218,17 @@
   .more-product  .swiper-button-prev::after {
     display: none;
   }
-
+.icon-details{
+    display: flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:35px;
+    font-size:30px
+}
+.icon-detail{
+    cursor: pointer;
+}
+.icon-detail.mess{
+    color:#006AFF 
+}
  

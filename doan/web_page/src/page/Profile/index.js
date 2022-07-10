@@ -21,6 +21,7 @@ import Toast from "../../components/Toast";
 import { Empty, Select } from "antd";
 import Voucher from "./Voucher";
 import History from "./History";
+import Favorite from "./Favorite";
 
 const { Option } = Select;
 const Profile = () => {
@@ -233,7 +234,9 @@ const Profile = () => {
             ) : tabIndex === 1 ? (
               <div className="profile-item-container">
                 <h2 style={{ textAlign: "center" }}>Sản phẩm đã thích</h2>
-                <div className="profile-item"></div>
+                <div className="profile-item">
+                  <Favorite />
+                </div>
               </div>
             ) : tabIndex === 2 ? (
               <div className="profile-item-container">

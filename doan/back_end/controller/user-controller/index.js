@@ -447,11 +447,15 @@ exports.getFavorite = async (req, res) => {
     const product = await productsDB
       .find({ _id: { $in: oids } })
       .populate("image");
+    function mapOrder(a, order, key) {
+      const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
+      return a.sort((a, b) => map[a[key]] - map[b[key]]);
+    }
 
     return res.status(200).json({
       status: 200,
       message: "get favorite product successfully",
-      data: product,
+      data: mapOrder(product, favorite_product, `_id`),
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
@@ -476,7 +480,12 @@ exports.AddToHistory = async (req, res) => {
       });
     } else {
       await usersDB.findByIdAndUpdate(req.params.id, {
-        $push: { history: req.body.id },
+        $push: {
+          history: {
+            $each: [req.body.id],
+            $position: 0,
+          },
+        },
       });
     }
     return res

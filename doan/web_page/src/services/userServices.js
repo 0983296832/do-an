@@ -41,6 +41,14 @@ const Users = {
     const url = `user/get-history/${id}`;
     return axiosClient.get(url);
   },
+  addToFavorite: (id, body) => {
+    const url = `user/add-to-favorite/${id}`;
+    return axiosClient.post(url, body);
+  },
+  getFavorite: (id) => {
+    const url = `user/get-favorite/${id}`;
+    return axiosClient.get(url);
+  },
 };
 
 export default Users;

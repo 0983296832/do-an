@@ -9,8 +9,9 @@ import Toast from "./Toast";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
+import { AiFillHeart } from "react-icons/ai";
 
-const Product = ({ data }) => {
+const Product = ({ data, like }) => {
   const { addToCart } = useContext(CartContext);
   const { auth } = useContext(AuthContext);
   const [disabled, setDisabled] = useState(false);
@@ -18,7 +19,6 @@ const Product = ({ data }) => {
   const [activeColor, setActiveColor] = useState();
 
   const handleAddToCart = (data) => {
-
     if (!data.product_size || !data.product_color) {
       Toast("error", "Chưa có màu sắc hoặc size");
       return;
@@ -147,6 +147,12 @@ const Product = ({ data }) => {
             )}
             <h4>{data.priceSale.toLocaleString()}đ</h4>
           </div>
+          {like && (
+            <AiFillHeart
+              className="icon-product-like"
+              style={{ color: "red", fontSize: 20 }}
+            />
+          )}
         </div>
       </Link>
     </div>
