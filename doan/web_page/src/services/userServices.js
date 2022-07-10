@@ -33,9 +33,13 @@ const Users = {
     const url = `user/change-rewards/${id}`;
     return axiosClient.post(url, body);
   },
-  AddToFavorite: (id, body) => {
-    const url = `user/add-to-favorite/${id}`;
+  addToHistory: (id, body) => {
+    const url = `user/add-to-history/${id}`;
     return axiosClient.post(url, body);
+  },
+  getHistory: (id) => {
+    const url = `user/get-history/${id}`;
+    return axiosClient.get(url);
   },
 };
 

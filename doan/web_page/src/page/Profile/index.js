@@ -20,6 +20,7 @@ import Orders from "../../services/orderServices";
 import Toast from "../../components/Toast";
 import { Empty, Select } from "antd";
 import Voucher from "./Voucher";
+import History from "./History";
 
 const { Option } = Select;
 const Profile = () => {
@@ -237,7 +238,9 @@ const Profile = () => {
             ) : tabIndex === 2 ? (
               <div className="profile-item-container">
                 <h2 style={{ textAlign: "center" }}>Lịch sử xem hàng</h2>
-                <div className="profile-item"></div>
+                <div className="profile-item">
+                  <History />
+                </div>
               </div>
             ) : (
               <div className="profile-item-container">

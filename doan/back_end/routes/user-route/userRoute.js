@@ -19,5 +19,7 @@ route.put("/delete-cart/:id", controller.deleteCart);
 route.post("/change-rewards/:id", checkAuth, controller.changeRewards);
 route.post("/add-to-favorite/:id", checkAuth, controller.AddToFavorite);
 route.get("/get-favorite/:id", checkAuth, controller.getFavorite);
+route.post("/add-to-history/:id", checkAuth, controller.AddToHistory);
+route.get("/get-history/:id", checkAuth, controller.getHistory);
 
 module.exports = route;

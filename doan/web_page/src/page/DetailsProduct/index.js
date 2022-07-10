@@ -39,7 +39,7 @@ const DetailsProduct = () => {
   ]);
   useEffect(() => {
     if (auth.data) {
-      Users.AddToFavorite(auth.data._id, { id: id });
+      Users.addToHistory(auth.data._id, { id: id });
     }
   }, []);
   useEffect(() => {
