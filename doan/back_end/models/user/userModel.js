@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema({
   points: { type: Number, default: 0 },
   vouchers: { type: Array },
   favorite_product: { type: Array },
+  history: { type: Array },
 });
 const usersDB = mongoose.model("users", userSchema);
 

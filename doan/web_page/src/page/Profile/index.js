@@ -6,6 +6,8 @@ import {
   AiOutlineLock,
   AiOutlineShoppingCart,
   AiOutlineCrown,
+  AiOutlineHeart,
+  AiOutlineClockCircle,
 } from "react-icons/ai";
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePassForm";
@@ -28,9 +30,11 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [tabData, setTabData] = useState([
     { title: "Cài đặt thông tin", icon: <BiUserCircle /> },
-    { title: "Đổi mật khẩu", icon: <AiOutlineLock /> },
+    { title: "Đã thich ", icon: <AiOutlineHeart /> },
+    { title: "Lịch xem hàng ", icon: <AiOutlineClockCircle /> },
     { title: "Lịch sử đơn hàng ", icon: <AiOutlineShoppingCart /> },
     { title: "Voucher của bạn ", icon: <AiOutlineCrown /> },
+    { title: "Đổi mật khẩu", icon: <AiOutlineLock /> },
     { title: "Đăng xuất", icon: <BiLogOut /> },
   ]);
   const [orders, setOrder] = useState([]);
@@ -159,12 +163,12 @@ const Profile = () => {
                 <h2>Cài đặt thông tin</h2>
                 <ProfileForm data={data} setImageUrl={setImageUrl} />
               </div>
-            ) : tabIndex === 1 ? (
+            ) : tabIndex === 5 ? (
               <div className="profile-item" style={{ width: 800 }}>
                 <h2>Đổi mật khẩu</h2>
                 <ChangePasswordForm id={data?._id} />
               </div>
-            ) : tabIndex === 2 ? (
+            ) : tabIndex === 3 ? (
               <div className="profile-item">
                 <h2>Lịch sử đơn hàng của bạn</h2>
                 <div
@@ -225,10 +229,22 @@ const Profile = () => {
                   </div>
                 )}
               </div>
+            ) : tabIndex === 1 ? (
+              <div className="profile-item-container">
+                <h2 style={{ textAlign: "center" }}>Sản phẩm đã thích</h2>
+                <div className="profile-item"></div>
+              </div>
+            ) : tabIndex === 2 ? (
+              <div className="profile-item-container">
+                <h2 style={{ textAlign: "center" }}>Lịch sử xem hàng</h2>
+                <div className="profile-item"></div>
+              </div>
             ) : (
-              <div className="profile-item" style={{ width: "100%" }}>
-                <h2>Voucher của bạn</h2>
-                <Voucher user={data} setUser={setData} />
+              <div className="profile-item-container">
+                <h2 style={{ textAlign: "center" }}>Voucher của bạn</h2>
+                <div className="profile-item">
+                  <Voucher user={data} setUser={setData} />
+                </div>
               </div>
             )}
           </div>
