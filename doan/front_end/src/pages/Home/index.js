@@ -21,6 +21,7 @@ import TopProductSales from "./TopProductSales";
 import TableProductSale from "./TableProductSale";
 import { PrinterOutlined } from "@ant-design/icons";
 import Stats from "../Stats";
+import Loading from "../../components/Loading";
 
 const { TabPane } = Tabs;
 
@@ -330,7 +331,7 @@ const Home = () => {
     };
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     return (
       <div className="home__wrapper" ref={componentRef}>

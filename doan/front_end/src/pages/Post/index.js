@@ -7,6 +7,7 @@ import AuthContext from "../../context/AuthContext";
 import Posts from "../../services/postServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
+import Loading from "../../components/Loading";
 
 const Post = () => {
   const { auth } = useContext(AuthContext);
@@ -86,7 +87,7 @@ const Post = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">

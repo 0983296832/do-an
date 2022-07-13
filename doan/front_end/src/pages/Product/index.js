@@ -3,19 +3,13 @@ import "../../assets/css/datatable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  Input,
-  Tooltip,
-  Rate,
-  Select,
-  Button,
-  Avatar,
-} from "antd";
+import { Input, Tooltip, Rate, Select, Button, Avatar } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -331,7 +325,7 @@ const ProductManagement = () => {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">
@@ -411,5 +405,3 @@ const ProductManagement = () => {
 };
 
 export default ProductManagement;
-
-

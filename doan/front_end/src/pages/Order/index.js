@@ -8,6 +8,7 @@ import Orders from "../../services/orderServices";
 import { v4 as uuidv4 } from "uuid";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -172,7 +173,7 @@ const Order = () => {
     setLoading(false);
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">

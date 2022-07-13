@@ -9,6 +9,7 @@ import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -232,7 +233,7 @@ const Datatable = () => {
     },
   ];
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">
