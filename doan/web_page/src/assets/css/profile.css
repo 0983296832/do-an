@@ -381,3 +381,6 @@
     gap:20px;
     align-items:center;
 }
+.ant-popover-placement-topRight .ant-popover-arrow{
+    bottom: 14px !important;
+}

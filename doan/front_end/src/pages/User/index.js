@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserService from "../../services/userServices";
-import { Input, Tooltip, Select, Button } from "antd";
+import { Input, Tooltip, Select, Button, Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Toast from "../../components/Toast";
 import Users from "../../services/userServices";
@@ -197,7 +197,7 @@ const Datatable = () => {
     setLoading(false);
   };
 
-  const handleDelete = async (id) => {
+  const confirm = async (e, id) => {
     try {
       await Users.deleteUser(id);
       setData(data.filter((item) => item.id !== id));
@@ -205,6 +205,10 @@ const Datatable = () => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
 
   const actionColumn = [
@@ -221,12 +225,16 @@ const Datatable = () => {
             >
               <div className="viewButton">View Detail</div>
             </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+            <Popconfirm
+              title="Are you sure to delete this user?"
+              onConfirm={(e) => confirm(e, params.row.id)}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+              placement="topRight"
             >
-              Delete
-            </div>
+              <div className="deleteButton">Delete</div>
+            </Popconfirm>
           </div>
         );
       },

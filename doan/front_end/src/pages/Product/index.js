@@ -3,7 +3,7 @@ import "../../assets/css/datatable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Input, Tooltip, Rate, Select, Button, Avatar } from "antd";
+import { Input, Tooltip, Rate, Select, Button, Avatar, Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
@@ -288,7 +288,7 @@ const ProductManagement = () => {
     setLoading(false);
   };
 
-  const handleDelete = async (id) => {
+  const confirm = async (e, id) => {
     try {
       await Products.deleteProduct(id);
       setData(data.filter((item) => item.id !== id));
@@ -296,6 +296,10 @@ const ProductManagement = () => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
 
   const actionColumn = [
@@ -312,12 +316,16 @@ const ProductManagement = () => {
             >
               <div className="viewButton">View Detail</div>
             </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+            <Popconfirm
+              title="Are you sure to delete this product?"
+              onConfirm={(e) => confirm(e, params.row.id)}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+              placement="topRight"
             >
-              Delete
-            </div>
+              <div className="deleteButton">Delete</div>
+            </Popconfirm>
           </div>
         );
       },

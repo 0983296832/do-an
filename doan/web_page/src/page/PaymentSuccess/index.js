@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/css/payment-success.css";
 import { Button, Result } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import queryString from "query-string";
+import { Link, useParams } from "react-router-dom";
 import Toast from "../../components/Toast";
 import { LOCAL_STORAGE_ORDER_KEY } from "../../constant/constant";
 import Order from "../../services/orderServices";
@@ -11,20 +10,17 @@ import Loading from "../../components/Loading";
 const PaymentSuccess = () => {
   const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { id } = useParams();
   useEffect(() => {
     const getOrderId = async () => {
       setLoading(true);
       try {
-        const params = {
-          page: 1,
-          limit: 1,
-          sort: "-created",
-        };
-        const data = await Order.getAllOrderById(params);
-        setOrderId(data[0]._id);
+        const data = await Order.getOrderById(id);
+        setOrderId(data._id);
       } catch (error) {
         Toast("error", "Có lỗi xảy ra");
       }
+
       setLoading(false);
     };
     localStorage.removeItem(LOCAL_STORAGE_ORDER_KEY);

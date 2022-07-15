@@ -385,7 +385,10 @@ const Home = () => {
             <ChartComponent
               title="Last 6 Months (Revenue)"
               aspect={2 / 1}
-              data={chartData.slice(1, 7)}
+              data={chartData.slice(
+                new Date().getMonth() + 1 - 6,
+                new Date().getMonth() + 1
+              )}
             />
           </div>
         </div>

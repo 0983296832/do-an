@@ -59,7 +59,6 @@ const PaymentBill = ({ cartState, voucher, setVoucher }) => {
     };
     getUser();
   }, []);
-  console.log(data);
   const onChange = (e) => {
     setValue(e.target.value);
     setVoucher(e.target.value);

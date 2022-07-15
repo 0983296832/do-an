@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Divider, Steps, Tag, Tooltip, Button } from "antd";
+import { Divider, Steps, Tag, Tooltip, Button, Popconfirm } from "antd";
 import moment from "moment";
 import Loading from "../../components/Loading";
 import Orders from "../../services/orderServices";
@@ -24,7 +24,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     content: () => componentRef.current,
   });
 
-  const handleCancel = async () => {
+  const confirm = async (e) => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });
       setOrder(
@@ -38,6 +38,10 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
   if (loading) {
     return <Loading />;
@@ -209,9 +213,16 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
               Print PDF
             </Button>
             {data?.state === "đang chờ xác nhận" ? (
-              <button className="btn-cancel" onClick={handleCancel}>
-                Hủy
-              </button>
+              <Popconfirm
+                title="Bạn chắc chắn muốn hủy đơn?"
+                onConfirm={confirm}
+                onCancel={cancel}
+                okText="Có"
+                cancelText="Không"
+                placement="topRight"
+              >
+                <button className="btn-cancel">Hủy</button>
+              </Popconfirm>
             ) : (
               <div style={{ margin: "5px 0" }}>
                 <Link to="/" className="btn-cancel">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Tag, Tooltip } from "antd";
+import { Tag, Tooltip, Popconfirm } from "antd";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
 import Toast from "../../components/Toast";
@@ -13,7 +13,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
 
-  const handleCancel = async () => {
+  const confirm = async (e) => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });
       setOrder(
@@ -27,6 +27,10 @@ const Order = ({ data, loading, setOrder, orders }) => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
   if (loading) {
     return <Loading />;
@@ -79,9 +83,16 @@ const Order = ({ data, loading, setOrder, orders }) => {
         <div className="order-item-btn-group">
           <div className="order-item-btn">
             {data?.state === "đang chờ xác nhận" ? (
-              <button className="btn-cancel" onClick={handleCancel}>
-                Hủy
-              </button>
+              <Popconfirm
+                title="Bạn chắc chắn muốn hủy đơn?"
+                onConfirm={confirm}
+                onCancel={cancel}
+                okText="Có"
+                cancelText="Không"
+                placement="topRight"
+              >
+                <button className="btn-cancel">Hủy</button>
+              </Popconfirm>
             ) : (
               <div style={{ margin: "5px 0" }}>
                 <Link to="/" className="btn-cancel">
