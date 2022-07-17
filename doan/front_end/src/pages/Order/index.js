@@ -51,10 +51,12 @@ const Order = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
       const result = await Orders.getOrder(params);
@@ -128,11 +130,13 @@ const Order = () => {
 
     setLoading(true);
     const key = searchBy + "[regex]";
+    const options = searchBy + "[options]";
     try {
       const params = {
         page: 1,
         limit: 10,
         [key]: searchKey,
+        [options]: "i",
       };
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));

@@ -92,12 +92,14 @@ const Header = () => {
   const onSearch = async (searchText) => {
     try {
       const search = searchText;
+
       let params;
       if (searchBy === "tất cả") {
         params = {
           page: 1,
           limit: 0,
           "name[regex]": search,
+          "name[options]": "i",
         };
       } else {
         params = {
@@ -105,6 +107,7 @@ const Header = () => {
           limit: 0,
           "name[regex]": search,
           "brand[regex]": searchBy,
+          "name[options]": "i",
         };
       }
 

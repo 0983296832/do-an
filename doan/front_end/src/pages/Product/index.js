@@ -170,11 +170,14 @@ const ProductManagement = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
+
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
           sort: "_id",
+          [options]: "i",
         };
       }
       const result = await Products.getProducts(params);
@@ -252,10 +255,12 @@ const ProductManagement = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: 1,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
 

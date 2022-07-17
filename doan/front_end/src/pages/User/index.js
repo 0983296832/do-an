@@ -111,10 +111,12 @@ const Datatable = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
       const result = await UserService.getUsers(params);
@@ -169,10 +171,12 @@ const Datatable = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: 1,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
 
