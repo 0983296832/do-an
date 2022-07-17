@@ -135,15 +135,15 @@ const LoginForm = () => {
       </form>
       <Divider style={{ color: "#aaaaaa" }}>hoặc đăng nhập bằng</Divider>
       <div className="login-social">
-        {/* <FacebookLogin
+        <FacebookLogin
           appId="747433689941319"
-          autoLoad={true}
+          autoLoad={false}
           fields="name,email,picture"
           callback={responseFacebook}
           cssClass="my-facebook-button-class social-icon"
           icon={<FaFacebook />}
           textButton=""
-        /> */}
+        />
         <GoogleLogin
           clientId="243328626753-gna4nf68r3pb6silhbvnnhbbnk80ao0c.apps.googleusercontent.com"
           buttonText="Login"
