@@ -48,6 +48,7 @@ const Order = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "-created",
         };
       } else {
         const key = searchBy + "[regex]";
@@ -57,6 +58,7 @@ const Order = () => {
           limit: 10,
           [key]: searchKey,
           [options]: "i",
+          sort: "-created",
         };
       }
       const result = await Orders.getOrder(params);
@@ -106,6 +108,10 @@ const Order = () => {
             }),
           };
         })
+        // .sort(
+        //   (a, b) =>
+        //     new Date(b.created).getTime() - new Date(a.created).getTime()
+        // )
       );
     } catch (error) {
       Toast("error", error.message);

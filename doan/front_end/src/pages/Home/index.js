@@ -142,6 +142,7 @@ const Home = () => {
         const ordersParams = {
           page: 1,
           limit: 5,
+          sort: "-created",
         };
         const topProductsParams = {
           page: 1,
