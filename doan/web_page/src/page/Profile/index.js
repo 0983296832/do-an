@@ -103,11 +103,13 @@ const Profile = () => {
   const onScroll = () => {
     if (orderListRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = orderListRef.current;
-      if (scrollTop + clientHeight === scrollHeight) {
+      console.log(scrollTop, scrollHeight, clientHeight);
+      if (scrollTop + 0.5 + clientHeight > scrollHeight) {
         setPage((prev) => prev + 1);
       }
     }
   };
+
   const LogOut = async () => {
     try {
       await Auth.logout();

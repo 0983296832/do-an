@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "../assets/css/wrapper.css";
 import SearchInput from "./SearchInput";
 import {
@@ -30,6 +30,7 @@ import Toast from "./Toast";
 
 const Wrapper = ({ children }) => {
   const { auth } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState({ title: "Main", activeId: 0 });
 
   let location = useLocation();
   const data = [
@@ -88,7 +89,11 @@ const Wrapper = ({ children }) => {
               {data.map((item, index) => {
                 return (
                   <div key={index}>
-                    <Sidebar data={item} />
+                    <Sidebar
+                      data={item}
+                      setActiveTab={setActiveTab}
+                      activeTab={activeTab}
+                    />
                   </div>
                 );
               })}
@@ -143,7 +148,7 @@ const Wrapper = ({ children }) => {
 
 export default Wrapper;
 
-const Sidebar = ({ data }) => {
+const Sidebar = ({ data, setActiveTab, activeTab }) => {
   let navigate = useNavigate();
   const logout = async () => {
     try {
@@ -160,14 +165,30 @@ const Sidebar = ({ data }) => {
       {data.children.map((item, index) => {
         if (item.path === "/login") {
           return (
-            <Link to={""} className="part__nav" key={index} onClick={logout}>
+            <Link
+              to={""}
+              className={`part__nav ${activeTab == index && "active"}`}
+              key={index}
+              onClick={logout}
+            >
               {item.icon}
               <span>{item.link}</span>
             </Link>
           );
         } else
           return (
-            <Link to={item.path} className="part__nav" key={index}>
+            <Link
+              to={item.path}
+              className={`part__nav ${
+                activeTab.title == data.title && activeTab.activeId == index
+                  ? "active"
+                  : ""
+              }`}
+              key={index}
+              onClick={() =>
+                setActiveTab({ title: data.title, activeId: index })
+              }
+            >
               {item.icon}
               <span>{item.link}</span>
             </Link>

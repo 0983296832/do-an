@@ -113,7 +113,7 @@ const Footer = () => {
 
           <p>
             <BsPhone />
-            Phone: ( 08 ) 250 420 93
+            Phone: 0983296832
           </p>
         </div>
         {dataInfo.map((item, index) => {

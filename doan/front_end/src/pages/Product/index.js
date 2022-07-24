@@ -3,19 +3,13 @@ import "../../assets/css/datatable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  Input,
-  Tooltip,
-  Rate,
-  Select,
-  Button,
-  Avatar,
-} from "antd";
+import { Input, Tooltip, Rate, Select, Button, Avatar, Popconfirm } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -176,11 +170,14 @@ const ProductManagement = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
+
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
           sort: "_id",
+          [options]: "i",
         };
       }
       const result = await Products.getProducts(params);
@@ -258,10 +255,12 @@ const ProductManagement = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: 1,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
 
@@ -294,7 +293,7 @@ const ProductManagement = () => {
     setLoading(false);
   };
 
-  const handleDelete = async (id) => {
+  const confirm = async (e, id) => {
     try {
       await Products.deleteProduct(id);
       setData(data.filter((item) => item.id !== id));
@@ -302,6 +301,10 @@ const ProductManagement = () => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
 
   const actionColumn = [
@@ -318,12 +321,16 @@ const ProductManagement = () => {
             >
               <div className="viewButton">View Detail</div>
             </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+            <Popconfirm
+              title="Are you sure to delete this product?"
+              onConfirm={(e) => confirm(e, params.row.id)}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+              placement="topRight"
             >
-              Delete
-            </div>
+              <div className="deleteButton">Delete</div>
+            </Popconfirm>
           </div>
         );
       },
@@ -331,7 +338,7 @@ const ProductManagement = () => {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">
@@ -411,5 +418,3 @@ const ProductManagement = () => {
 };
 
 export default ProductManagement;
-
-

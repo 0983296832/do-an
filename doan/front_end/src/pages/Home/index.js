@@ -21,6 +21,7 @@ import TopProductSales from "./TopProductSales";
 import TableProductSale from "./TableProductSale";
 import { PrinterOutlined } from "@ant-design/icons";
 import Stats from "../Stats";
+import Loading from "../../components/Loading";
 
 const { TabPane } = Tabs;
 
@@ -330,7 +331,7 @@ const Home = () => {
     };
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     return (
       <div className="home__wrapper" ref={componentRef}>
@@ -384,7 +385,10 @@ const Home = () => {
             <ChartComponent
               title="Last 6 Months (Revenue)"
               aspect={2 / 1}
-              data={chartData.slice(1, 7)}
+              data={chartData.slice(
+                new Date().getMonth() + 1 - 6,
+                new Date().getMonth() + 1
+              )}
             />
           </div>
         </div>

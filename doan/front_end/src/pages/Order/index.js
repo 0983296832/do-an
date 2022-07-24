@@ -8,6 +8,7 @@ import Orders from "../../services/orderServices";
 import { v4 as uuidv4 } from "uuid";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -50,10 +51,12 @@ const Order = () => {
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
         };
       }
       const result = await Orders.getOrder(params);
@@ -127,11 +130,13 @@ const Order = () => {
 
     setLoading(true);
     const key = searchBy + "[regex]";
+    const options = searchBy + "[options]";
     try {
       const params = {
         page: 1,
         limit: 10,
         [key]: searchKey,
+        [options]: "i",
       };
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));
@@ -172,7 +177,7 @@ const Order = () => {
     setLoading(false);
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">

@@ -20,11 +20,13 @@ const SearchInput = () => {
         page: 1,
         limit: 1000,
         "name[regex]": searchText,
+        "name[options]": "i",
       };
       const paramsProducts = {
         page: 1,
         limit: 1000,
         "name[regex]": searchText,
+        "name[options]": "i",
       };
       const users = await Users.getUsers(paramsUsers);
       const products = await Products.getProducts(paramsProducts);

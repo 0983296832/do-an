@@ -6,6 +6,7 @@ import Toast from "../../../components/Toast";
 import Users from "../../../services/userServices";
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import Loading from "../../../components/Loading";
 
 const EditUser = ({ data, loading }) => {
   const { id } = useParams();
@@ -88,7 +89,7 @@ const EditUser = ({ data, loading }) => {
     setAddress(e.target.value);
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="new">

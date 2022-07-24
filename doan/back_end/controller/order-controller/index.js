@@ -95,7 +95,7 @@ exports.order = async (req, res) => {
 
     await sendEmail({
       to: req.body.email,
-      subject: "Password Reset Request",
+      subject: "Order Success",
       text: message,
     });
     if (req.params.id != "random") {

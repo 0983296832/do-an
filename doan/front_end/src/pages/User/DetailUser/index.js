@@ -12,6 +12,7 @@ import moment from "moment";
 import EditUser from "../EditUser";
 import { v4 as uuidv4 } from "uuid";
 import Orders from "../../../services/orderServices";
+import Loading from "../../../components/Loading";
 
 const DetailUser = () => {
   const [user, setUser] = useState();
@@ -73,7 +74,7 @@ const DetailUser = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else
     return (
       <div>

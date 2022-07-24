@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
+import Loading from "../../components/Loading";
 
 const Stats = () => {
   const [data, setData] = useState();
@@ -51,7 +52,7 @@ const Stats = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div>

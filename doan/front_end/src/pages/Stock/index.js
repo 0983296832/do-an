@@ -7,6 +7,7 @@ import moment from "moment";
 import Products from "../../services/productServices";
 import Toast from "../../components/Toast";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const stockColumns = [
   {
@@ -251,7 +252,7 @@ const Stocks = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper" style={{ padding: 20 }}>
