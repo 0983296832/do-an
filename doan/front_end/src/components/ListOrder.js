@@ -29,6 +29,8 @@ const ListTable = ({
   noOrder,
   setData,
   noAmount,
+  noVoucher,
+  noShippingFee,
 }) => {
   const [editingKey, setEditingKey] = useState("");
   const [form] = Form.useForm();
@@ -46,14 +48,14 @@ const ListTable = ({
     const inputNode =
       inputType === "select" ? (
         <Select>
+          <Select.Option value="đang chờ xác nhận">
+            đang chờ xác nhận
+          </Select.Option>
+          <Select.Option value="đã xác nhận">đã xác nhận</Select.Option>
           <Select.Option value="đang đợi gói hàng">
             đang đợi gói hàng
           </Select.Option>
           <Select.Option value="đang giao hàng">đang giao hàng</Select.Option>
-          <Select.Option value="đã xác nhận">đã xác nhận</Select.Option>
-          <Select.Option value="đang chờ xác nhận">
-            đang chờ xác nhận
-          </Select.Option>
           <Select.Option value="giao hàng thành công">
             giao hàng thành công
           </Select.Option>
@@ -61,6 +63,9 @@ const ListTable = ({
             giao hàng không thành công
           </Select.Option>
           <Select.Option value="đã hủy">đã hủy</Select.Option>
+          <Select.Option value="giao hàng không thành công">
+            giao hàng không thành công
+          </Select.Option>
         </Select>
       ) : (
         <Input />
@@ -277,12 +282,34 @@ const ListTable = ({
       hidden: noAmount,
     },
     {
+      title: "Voucher",
+      dataIndex: "voucher",
+      key: "voucher",
+      width: 100,
+      hidden: noVoucher,
+      editable: false,
+      render: (voucher) => <Tag color="red">-{voucher}%</Tag>,
+    },
+    {
       title: "Payment Type",
       dataIndex: "payment_type",
       key: "payment_type",
       editable: false,
       hidden: noPay,
       width: 150,
+    },
+    {
+      title: "Shipping Fee",
+      dataIndex: "shipping_fee",
+      key: "shipping_fee",
+      editable: false,
+      hidden: noShippingFee,
+      width: 150,
+      render: (shipping_fee) =>
+        Number(shipping_fee).toLocaleString("en-US", {
+          style: "currency",
+          currency: "VND",
+        }),
     },
     {
       title: "Recive Date",

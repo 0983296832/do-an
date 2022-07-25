@@ -23,6 +23,7 @@ const orderSchema = new mongoose.Schema({
   receive_date: { type: Date },
   shipping_unit: { type: String, required: true },
   shipping_fee: { type: Number, required: true },
+  voucher: { type: Number },
 });
 const ordersDB = mongoose.model("orders", orderSchema);
 

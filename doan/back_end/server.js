@@ -23,6 +23,7 @@ app.use("/auth", require("./routes/auth-route/authRoute"));
 app.use("/user", require("./routes/user-route/userRoute"));
 app.use("/product", require("./routes/product-route/productRoute"));
 app.use("/order", require("./routes/order-route/orderRoute"));
+app.use("/post", require("./routes/post-route/postRoute"));
 
 app.listen(PORT, () => {
   console.log(`server run on http://localhost:${PORT}`);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
@@ -11,6 +12,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
   const [disabled, setDisabled] = useState(false);
   const handleOpen = () => setDisabled(true);
   const handleClose = () => setDisabled(false);
+
   const handleCancel = async () => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });
@@ -45,7 +47,7 @@ const Order = ({ data, loading, setOrder, orders }) => {
               </div>
               <div className="order-right">
                 <TagRender state={data?.state} />
-                <h4>{item.product_price}đ</h4>
+                <h4>{item.product_price.toLocaleString()}đ</h4>
                 <h5>x{item.product_quantity}</h5>
               </div>
             </div>
@@ -59,9 +61,17 @@ const Order = ({ data, loading, setOrder, orders }) => {
               return acc + cur.product_quantity;
             }, 0)}{" "}
             sản phẩm. Thành tiền:{" "}
-            {data?.details.reduce((acc, cur) => {
-              return acc + cur.product_quantity * cur.product_price;
-            }, 0) + 25000}
+            {(
+              data?.details.reduce((acc, cur) => {
+                return acc + cur.product_quantity * cur.product_price;
+              }, 0) -
+              (data?.details.reduce((acc, cur) => {
+                return acc + cur.product_quantity * cur.product_price;
+              }, 0) *
+                data.voucher) /
+                100 +
+              25000
+            ).toLocaleString()}
             đ
           </h3>
         </div>
@@ -76,10 +86,6 @@ const Order = ({ data, loading, setOrder, orders }) => {
               <div style={{ margin: "5px 0" }}>
                 <Link to="/" className="btn-cancel">
                   Mua lại
-                </Link>
-
-                <Link to="/" className="btn-cancel">
-                  Đánh giá
                 </Link>
               </div>
             )}

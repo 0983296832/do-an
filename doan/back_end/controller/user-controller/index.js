@@ -299,6 +299,7 @@ exports.addToCart = async (req, res) => {
     // tìm sản phẩm đã có trong giỏ hàng
     const cartItemExist = await cartsDB.find({
       user_id: req.params.id,
+
       product_code: req.body.product_code,
       product_color: req.body.product_color,
       product_size: req.body.product_size,
@@ -308,6 +309,7 @@ exports.addToCart = async (req, res) => {
       cartsDB
         .find({
           user_id: req.params.id,
+
           product_code: req.body.product_code,
           product_color: req.body.product_color,
           product_size: req.body.product_size,
@@ -327,6 +329,7 @@ exports.addToCart = async (req, res) => {
       // nếu không thì sẽ tạo 1 giỏ hàng mới
       const cart = new cartsDB({
         user_id: req.params.id,
+        product_id: req.body.product_id,
         product_code: req.body.product_code,
         product_name: req.body.product_name,
         product_price: req.body.product_price,
@@ -394,4 +397,35 @@ exports.deleteCart = async (req, res) => {
   }
 };
 
-
+exports.changeRewards = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    if(user.points - req.body.points<0){
+      return res.status(400).json({
+        status: "400",
+        message: "not enough points",
+      });
+    }
+    await usersDB.findByIdAndUpdate(req.params.id, {
+      points: user.points - req.body.points,
+    });
+    usersDB.findById(req.params.id).then((result, err) => {
+      if (result) {
+        result.vouchers.push(req.body.value);
+        result.save();
+        return res.status(200).json({
+          status: "200",
+          message: "change rewards success",
+          data: result,
+        });
+      } else {
+        return res.status(500).json({
+          status: "500",
+          message: "can not find user",
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};

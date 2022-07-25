@@ -10,10 +10,11 @@
 
 .feedback{
     margin:45px 0;
-    text-align:center;
+   
 }
 .feedback h1{
     margin-bottom:45px !important;
+    text-align:center;
 }
 .feedback-part{
     max-width:400px;

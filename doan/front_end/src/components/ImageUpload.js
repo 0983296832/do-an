@@ -2,7 +2,7 @@ import { Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import _ from "lodash";
 
-const ImgUpload = ({ disable, fileList, setFileList }) => {
+const ImgUpload = ({ disable, fileList, setFileList, length }) => {
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
@@ -36,7 +36,7 @@ const ImgUpload = ({ disable, fileList, setFileList }) => {
           onPreview={onPreview}
           disabled={disable}
         >
-          {fileList.length < 5 && "+ Upload"}
+          {fileList.length < length && "+ Upload"}
         </Upload>
       </ImgCrop>
     </div>

@@ -1,85 +1,105 @@
-import React from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import React, { useState, useEffect } from "react";
+import "../../assets/css/post.css";
+import { Avatar, Divider } from "antd";
+import Posts from "../../services/postServices";
+import Toast from "../../components/Toast";
+import { AiOutlineEye } from "react-icons/ai";
+import moment from "moment";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const Post = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const getData = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        limit: 100,
+        page: 1,
+      };
+      const data = await Posts.getPosts(params);
+      setData(data.data);
+    } catch (error) {
+      Toast("error", error.message);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="feedback" style={{ marginBottom: 0 }}>
       <div className="productView-title">
         <h1>Blog Tin Tức</h1>
       </div>
-      <div className="feedback-container">
-        {[1, 2, 3].map((item, index) => {
+      <Swiper
+        navigation={true}
+        slidesPerView={3}
+        spaceBetween={25}
+        loop={true}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        loopFillGroupWithBlank={false}
+        modules={[Autoplay, Navigation]}
+        className="mySwiper"
+      >
+        {data.map((item, index) => {
           return (
-            <div key={index}>
-              <PostItem />
-            </div>
+            <SwiperSlide key={index}>
+              <PostItem data={item} />
+            </SwiperSlide>
           );
         })}
-      </div>
+      </Swiper>
     </div>
   );
 };
 
 export default Post;
 
-const PostItem = () => {
+const PostItem = ({ data }) => {
   const checkLongContent = (content) => {
-    if (content.length > 200) {
-      return content.slice(0, 170) + "...";
-    } else return content;
+    if (content.length > 80) {
+      return content.slice(3, 83) + "...";
+    }
+    return content;
   };
+  const checkLongTitle = (content) => {
+    if (content.length > 50) {
+      return content.slice(0, 50) + "...";
+    }
+    return content;
+  };
+
   return (
-    <Card sx={{ maxWidth: 345, boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      />
-      <CardMedia
-        component="img"
-        height="194"
-        image="https://gamek.mediacdn.vn/133514250583805952/2022/5/4/dragon-ball-super-broly-1651656822745916569546.jpg"
-        alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {checkLongContent(
-            " This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like"
-          )}
-          <Link to="" style={{ marginLeft: 7 }}>
-            Xem thêm
-          </Link>
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
+    <div className="post-detail-container">
+      <img src={data.thumbnail.imageUrl} alt="" />
+      <div className="post-detail-body">
+        <h2 className="post-detail-title">{checkLongTitle(data?.title)}</h2>
+        <div className="post-detail-info">
+          <Avatar src={data.author_image} size={24} />
+          <span>by</span>
+          <h4>{data.author}</h4>
+          <span>
+            | {moment(data.created).utc("+07:00").format("MMM DD, yyyy")}
+          </span>
+        </div>
+        <p>{checkLongContent(data.content)}</p>
+        <Divider />
+        <div className="post-detail-footer">
+          <div>
+            <AiOutlineEye />
+            <h5>{data.views} views</h5>
+          </div>
+          <Link to={`/post-details/${data._id}`}>Xem thêm</Link>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import "../../assets/css/home.css";
 import Wigget from "../../components/Wigget";
 import { FaRegUser } from "react-icons/fa";
-import { Card, Dropdown, Menu, Tabs, Badge } from "antd";
+import { Card, Dropdown, Menu, Tabs, Button } from "antd";
 import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsCoin } from "react-icons/bs";
@@ -18,6 +19,7 @@ import Toast from "../../components/Toast";
 import moment from "moment";
 import TopProductSales from "./TopProductSales";
 import TableProductSale from "./TableProductSale";
+import { PrinterOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
@@ -120,6 +122,10 @@ const Home = () => {
       ]}
     />
   );
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   useEffect(() => {
     let isCancel = false;
@@ -145,7 +151,7 @@ const Home = () => {
           OrderServices.getRevenueBy("week"),
           OrderServices.getRevenueBy("month"),
           OrderServices.getRevenueByHalfYear("all"),
-          Products.getProducts(topProductsParams),
+          OrderServices.getRevenueBy("month"),
           Users.getTopUser(),
           Products.getProductsOutOfStock(),
         ]);
@@ -170,7 +176,7 @@ const Home = () => {
         const orderRevenueByHaflYear =
           result[8].status === "fulfilled" ? result[8].value.data : [];
         const TopProductSales =
-          result[9].status === "fulfilled" ? result[9].value.data : [];
+          result[9].status === "fulfilled" ? result[9].value.details : [];
         const TopUser =
           result[10].status === "fulfilled" ? result[10].value.data : [];
         const productsOutOfStock =
@@ -178,14 +184,42 @@ const Home = () => {
         if (productsOutOfStock.length > 0)
           Toast("warn", "Có sản phẩm hết hàng");
         setTopData([
-          ...TopProductSales.map((item) => {
-            return {
-              name: item.name,
-              number: item.sales,
-              image:
-                item.image[0].imageUrl || "https://via.placeholder.com/150",
-            };
-          }),
+          ...TopProductSales.map((product) => product.details)
+            .flat(Infinity)
+            .reduce((acc, cur) => {
+              if (acc.find((i) => i.product_id === cur.product_id)) {
+                return acc.map((i) => {
+                  if (i.product_id === cur.product_id) {
+                    return {
+                      ...i,
+                      product_quantity:
+                        i.product_quantity + cur.product_quantity,
+                    };
+                  } else return i;
+                });
+              } else {
+                acc.push({
+                  product_id: cur.product_id,
+                  product_quantity: cur.product_quantity,
+                  product_image: cur.product_image,
+                  product_name: cur.product_name,
+                  product_price: cur.product_price,
+                  product_code: cur.product_code,
+                });
+                return acc;
+              }
+            }, [])
+            .map((item) => {
+              return {
+                ...item,
+                product_amount: item.product_quantity * item.product_price,
+                name: item.product_name,
+                number: item.product_quantity,
+                image: item.product_image || "https://via.placeholder.com/150",
+              };
+            })
+            .sort((a, b) => b.number - a.number)
+            .filter((_, index) => index < 5),
           ...TopUser.map((item) => {
             return {
               name: item.name,
@@ -211,14 +245,20 @@ const Home = () => {
             return {
               id: item._id,
               customer: item.name,
-              amount: item.details
-                .reduce((acc, i) => {
+              amount: (
+                item.details.reduce((acc, i) => {
                   return acc + i.product_price * i.product_quantity;
-                }, 0)
-                .toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "VND",
-                }),
+                }, 0) -
+                (item.details.reduce((acc, i) => {
+                  return acc + i.product_price * i.product_quantity;
+                }, 0) *
+                  item.voucher) /
+                  100 +
+                25000
+              ).toLocaleString("en-US", {
+                style: "currency",
+                currency: "VND",
+              }),
               date: `${moment(item.created)
                 .zone("+07:00")
                 .format("DD/MM/YYYY")}`,
@@ -280,14 +320,18 @@ const Home = () => {
       isCancel = true;
     };
   }, []);
-
-  console.log(dataProducts);
-
   if (loading) {
     return <div>Loading...</div>;
   } else {
     return (
-      <div className="home__wrapper">
+      <div className="home__wrapper" ref={componentRef}>
+        <Button
+          onClick={handlePrint}
+          icon={<PrinterOutlined />}
+          style={{ marginBottom: 10 }}
+        >
+          Print PDF
+        </Button>
         <div className="home__wigget">
           {data &&
             data.map((item, index) => {
@@ -305,7 +349,7 @@ const Home = () => {
               indexTop === 0
                 ? "Tổng doanh thu"
                 : indexTop === 1
-                ? "Top Products With Sales"
+                ? "Top Sold Products In This Month"
                 : "Top Users With Orders"
             }`}
             extra={

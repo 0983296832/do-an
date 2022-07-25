@@ -1,13 +1,29 @@
-import React from "react";
-import { Divider, Steps, Tag, Tooltip } from "antd";
+import React, { useRef } from "react";
+import { Divider, Steps, Tag, Tooltip, Button } from "antd";
 import moment from "moment";
 import Loading from "../../components/Loading";
 import Orders from "../../services/orderServices";
 import Toast from "../../components/Toast";
 import { Link } from "react-router-dom";
+import { PrinterOutlined } from "@ant-design/icons";
+import { useReactToPrint } from "react-to-print";
+
 const { Step } = Steps;
 
 const DetailOrder = ({ data, loading, orders, setOrder }) => {
+  console.log(
+    data.details.reduce(
+      (total, item) => total + item.product_quantity * item.product_price,
+      0
+    ) -
+      (data.details.reduce(
+        (total, item) => total + item.product_quantity * item.product_price,
+        0
+      ) *
+        data.voucher) /
+        100 +
+      25000
+  );
   const stepData = [
     "đặt hàng",
     "đang chờ xác nhận",
@@ -16,6 +32,11 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     "đang giao hàng",
     "giao hàng thành công",
   ];
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   const handleCancel = async () => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });
@@ -35,7 +56,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     return <Loading />;
   } else
     return (
-      <div>
+      <div ref={componentRef}>
         {data.state === "đã hủy" ? (
           <Steps size="small" current={2} status="error">
             <Step title="Đăt hàng" />
@@ -142,6 +163,14 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
             <h4> {data.shipping_fee.toLocaleString()}đ</h4>
           </div>
         </div>
+        <div className="detail-order-info">
+          <div>
+            <h4>Voucher: </h4>
+          </div>
+          <div>
+            <Tag color="red">-{data.voucher}%</Tag>
+          </div>
+        </div>
 
         <div className="detail-order-info">
           <div>
@@ -168,19 +197,30 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           <div>
             <h4 style={{ color: "#f00", fontSize: 20 }}>
               {" "}
-              {data.details
-                .reduce(
+              {(
+                data.details.reduce(
                   (total, item) =>
                     total + item.product_quantity * item.product_price,
-                  25000
-                )
-                .toLocaleString()}
+                  0
+                ) -
+                (data.details.reduce(
+                  (total, item) =>
+                    total + item.product_quantity * item.product_price,
+                  0
+                ) *
+                  data.voucher) /
+                  100 +
+                25000
+              ).toLocaleString()}
               đ
             </h4>
           </div>
         </div>
         <div className="order-item-btn-group" style={{ marginTop: 17 }}>
           <div className="order-item-btn">
+            <Button onClick={handlePrint} icon={<PrinterOutlined />}>
+              Print PDF
+            </Button>
             {data?.state === "đang chờ xác nhận" ? (
               <button className="btn-cancel" onClick={handleCancel}>
                 Hủy

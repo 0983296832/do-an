@@ -1,15 +1,13 @@
 import "../../assets/css/datatable.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import UserService from "../../services/userServices";
-import { Input } from "antd";
+import { Input, Select, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Select } from "antd";
-import { Button } from "antd";
 import ListTable from "../../components/ListOrder";
 import Suppliers from "../../services/supplierServices";
 import Toast from "../../components/Toast";
 import BasicPagination from "../../components/Pagination";
+import { CSVLink } from "react-csv";
 
 const { Option } = Select;
 
@@ -22,6 +20,23 @@ const Supplier = () => {
   const [searchBy, setSearchBy] = useState("all");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
+  const [dataScv, setDataScv] = useState();
+  const [headers, setHeaders] = useState([
+    { label: "ID", key: "_id" },
+    { label: "Name", key: "name" },
+    { label: "Suplier Name", key: "supplier_name" },
+    { label: "Phone", key: "phone" },
+    { label: "Address", key: "address" },
+    { label: "Product Code", key: "product_code" },
+    { label: "Price", key: "price" },
+    { label: "Gender", key: "gender" },
+    { label: "Color", key: "color" },
+    { label: "Brand", key: "brand" },
+    { label: "Category", key: "category" },
+    { label: "Size", key: "size" },
+    { label: "Quantity", key: "quantity" },
+    { label: "Created", key: "created" },
+  ]);
 
   const fetchData = async (pageNum) => {
     setLoading(true);
@@ -42,6 +57,11 @@ const Supplier = () => {
         };
       }
       const result = await Suppliers.getSupplier(params);
+      const { data: dataScv } = await Suppliers.getSupplier({
+        page: 1,
+        limit: 100000,
+      });
+      setDataScv(dataScv);
       setPageCount(Math.ceil(result.count / 10));
       setData(
         result.data.map((item, index) => {
@@ -214,6 +234,17 @@ const Supplier = () => {
             </Button>
           </div>
         </div>
+        {!loading && (
+          <Button type="primary">
+            <CSVLink
+              data={dataScv || []}
+              headers={headers}
+              style={{ color: "white" }}
+            >
+              Export to CSV
+            </CSVLink>
+          </Button>
+        )}
         <ListTable
           data={data}
           noName
@@ -225,6 +256,8 @@ const Supplier = () => {
           noImg
           noOrder
           setData={setData}
+          noVoucher
+          noShippingFee
         />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>

@@ -1,4 +1,5 @@
 const usersDB = require("../../models/user/userModel");
+const ImageModel = require("../../models/user/imageModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const _ = require("lodash");
@@ -101,7 +102,7 @@ exports.login = async (req, res) => {
       { _id, name, email, role, image: image?.imageUrl },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "365d",
       }
     );
     // tạo refreshToken và lưu vào cookie

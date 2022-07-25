@@ -15,6 +15,9 @@
     align-items: center;
     justify-content: space-between;
 }    
+.ant-popover-arrow{
+    transform: translate(-50%, -50%) rotate(45deg) !important;
+}    
     
 ._link{
     text-decoration: none;

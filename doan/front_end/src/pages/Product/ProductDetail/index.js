@@ -9,6 +9,9 @@ import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import Toast from "../../../components/Toast";
 import Products from "../../../services/productServices";
 import Orders from "../../../services/orderServices";
+import moment from "moment";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 
 const { TextArea } = Input;
 const ProductDetail = () => {
@@ -21,7 +24,7 @@ const ProductDetail = () => {
   const [discount, setDiscount] = useState();
   const [views, setViews] = useState();
   const [sales, setSales] = useState();
-  const [desc, setDesc] = useState();
+  const [desc, setDesc] = useState("");
   const [votes, setVotes] = useState();
   const [price, setPrice] = useState();
   const [category, setCategory] = useState();
@@ -68,12 +71,14 @@ const ProductDetail = () => {
         const result = await Orders.getRevenueProductByHalfYear(id);
         setChartData(result.data);
         setDataTable(
-          data.product.details.map((item, index) => {
-            return {
-              ...item,
-              key: index,
-            };
-          })
+          data.product.details
+            .map((item, index) => {
+              return {
+                ...item,
+                key: index,
+              };
+            })
+            .sort((a, b) => a.color.localeCompare(b.color))
         );
         setProduct({
           ...data.product,
@@ -135,6 +140,7 @@ const ProductDetail = () => {
     }
   };
 
+
   if (loading) {
     return <div>Loading...</div>;
   } else {
@@ -181,7 +187,7 @@ const ProductDetail = () => {
               /> */}
               <Select
                 style={{
-                  width: 120,
+                  width: 220,
                 }}
                 allowClear
                 defaultValue={category}
@@ -196,20 +202,7 @@ const ProductDetail = () => {
                 </Select.Option>
               </Select>
             </div>
-            <div className="formInput-product">
-              <label>Description</label>
-              <TextArea
-                maxLength={100}
-                style={{
-                  height: 100,
-                }}
-                placeholder="Description of product"
-                allowClear
-                disabled={disabled}
-                defaultValue={desc || ""}
-                onChange={(e) => setDesc(e.target.value)}
-              />
-            </div>
+
             <div className="formInput-product">
               <label>Views</label>
               <InputNumber
@@ -259,6 +252,31 @@ const ProductDetail = () => {
                 style={{ width: "40%" }}
               />
             </div>
+            <div
+              className="formInput-product"
+              style={{ width: "600px", maxWidth: "600px" }}
+            >
+              <label>Description</label>
+              {/* <TextArea
+                maxLength={100}
+                style={{
+                  height: 100,
+                }}
+                placeholder="Description of product"
+                allowClear
+                disabled={disabled}
+                defaultValue={desc || ""}
+                onChange={(e) => setDesc(e.target.value)}
+              /> */}
+              <CKEditor
+                editor={ClassicEditor}
+                data={desc}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setDesc(data);
+                }}
+              />
+            </div>
           </div>
           <div className="detail-right">
             <div className="image-product">
@@ -267,6 +285,7 @@ const ProductDetail = () => {
                 disable={disabled}
                 fileList={fileList}
                 setFileList={setFileList}
+                length={5}
               />
             </div>
             <div className="formInput-product ">
@@ -290,7 +309,9 @@ const ProductDetail = () => {
               <Input
                 placeholder="Basic usage"
                 disabled
-                defaultValue={product.createdAt}
+                defaultValue={moment(product.createdAt)
+                  .zone("+07:00")
+                  .format("DD/MM/YYYY")}
               />
             </div>
             <div className="formInput-product ">
@@ -319,7 +340,7 @@ const ProductDetail = () => {
                 dataSource={[...dataTable]}
                 pagination={false}
                 scroll={{
-                  y: 100,
+                  y: 200,
                 }}
               />
             </div>

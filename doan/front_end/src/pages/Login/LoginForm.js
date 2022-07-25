@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { FaFacebookF } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import Auth from "../../services/authServices";
 import Toast from "../../components/Toast";
 import { LOCAL_STORAGE_USER_KEY } from "../../constant/constant";
+import { FaFacebookF } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginForm = () => {
   let navigate = useNavigate();
@@ -17,11 +17,14 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const onLogin = async (data) => {
     try {
       const res = await Auth.login(data);
       if (res) {
+        if (res.data.role == 1) {
+          Toast("error", "You are not admin");
+          return;
+        }
         localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(res));
         setAuth(res);
         navigate("/");
@@ -31,6 +34,7 @@ const LoginForm = () => {
       Toast("error", "email or password incorrect");
     }
   };
+
   return (
     <form className="sign-in-form" onSubmit={handleSubmit(onLogin)}>
       <h2 className="title">Sign in</h2>
@@ -59,12 +63,14 @@ const LoginForm = () => {
       <Link to="/forgot">Forgot password</Link>
       <p className="social-text">Or Sign in with social platforms</p>
       <div className="social-media">
-        <a href="#" className="social-icon">
-          <FaFacebookF style={{ color: "#039be5" }} />
-        </a>
-        <a href="#" className="social-icon">
-          <FcGoogle />
-        </a>
+        <div className="social-media">
+          <a href="#" className="social-icon">
+            <FaFacebookF style={{ color: "#039be5" }} />
+          </a>
+          <a href="#" className="social-icon">
+            <FcGoogle />
+          </a>
+        </div>
       </div>
     </form>
   );

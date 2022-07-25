@@ -152,6 +152,7 @@ const EditUser = ({ data, loading }) => {
                   placeholder="Email"
                   value={email}
                   onChange={onChangeEmail}
+                  disabled
                 />
               </div>
               <div className="formInput date-picker">

@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const FilterBySize = ({ sizeFilter, setSizeFilter }) => {
+const FilterBySize = ({
+  sizeFilter,
+  setSizeFilter,
+  expandedSize,
+  setExpandedSize,
+}) => {
   const [size, setSize] = useState([36, 37, 38, 39, 40, 41, 42, 43]);
   const [activeSize, setActiveSize] = useState(size.indexOf(sizeFilter));
   const handleActivSize = (index) => {
@@ -22,12 +27,13 @@ const FilterBySize = ({ sizeFilter, setSizeFilter }) => {
     }
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedSize}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
         id="panel1a-header"
+        onClick={() => setExpandedSize(!expandedSize)}
       >
         <Typography>Lọc Theo Size</Typography>
       </AccordionSummary>

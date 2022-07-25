@@ -6,6 +6,9 @@ import { GrFormClose } from "react-icons/gr";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import Toast from "./Toast";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper";
 
 const Product = ({ data }) => {
   const { addToCart } = useContext(CartContext);
@@ -33,7 +36,21 @@ const Product = ({ data }) => {
   return (
     <div className="product-container">
       <div className="product-img">
-        <img src={data.image} alt="Product" />
+        <Swiper
+          loop={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          // modules={[Autoplay]}
+        >
+          {data.image.map((item, index) => (
+            <SwiperSlide key={index}>
+              <img src={item.imageUrl} alt="Product" />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        {/* <img src={data.image[0].imageUrl} alt="Product" /> */}
         <Link to={`/product-details/${data.id}`}>
           <div className="product-cart-icon">
             <BsEye />
@@ -54,7 +71,7 @@ const Product = ({ data }) => {
         <div className="product-infor" style={{ minHeight: 150 }}>
           <h4 style={{ minHeight: 44 }}>{ellipseString(data.title)}</h4>
 
-          <h3>{data.category}</h3>
+          <h3>{data.brand}</h3>
           <div className="product-rate">
             <Rate disabled defaultValue={data.rate} />
           </div>

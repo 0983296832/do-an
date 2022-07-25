@@ -3,8 +3,6 @@ const productsDB = require("../../models/product/product");
 const usersDB = require("../../models/user/userModel");
 const Features = require("../../lib/feature");
 const moment = require("moment");
-const ObjectId = require("mongodb").ObjectId;
-
 const _ = require("lodash");
 const cartsDB = require("../../models/user/cartModel");
 const sendEmail = require("../../untils/sendEmail");
@@ -85,6 +83,7 @@ exports.order = async (req, res) => {
       shipping_fee: req.body.shipping_fee,
       note: req.body.note,
       user_id: req.body.details[0].user_id,
+      voucher: req.body.voucher,
     });
     const savedOrder = await order.save();
     // sau khi lưu xong sẽ kiểm tra nếu có người dùng sẽ tìm và thêm order cho ng dùng đó
@@ -102,8 +101,41 @@ exports.order = async (req, res) => {
 
     await sendEmail({
       to: req.body.email,
-      subject: "Password Reset Request",
-      text: message,
+      subject: "Order Success",
+      template: "email",
+      context: {
+        name: req.body.name,
+        email: req.body.email,
+        address: req.body.address,
+        phone: req.body.phone,
+        payment_type: req.body.payment_type,
+        shipping_unit: req.body.shipping_unit,
+        shipping_fee: req.body.shipping_fee.toLocaleString(),
+        note: req.body.note,
+        voucher: req.body.voucher,
+        details: req.body.details.map((item) => {
+          return {
+            ...item,
+            product_price: item.product_price.toLocaleString(),
+          };
+        }),
+        total: (
+          req.body.details.reduce(
+            (total, item) => total + item.product_quantity * item.product_price,
+            0
+          ) -
+          (req.body.details.reduce(
+            (total, item) => total + item.product_quantity * item.product_price,
+            0
+          ) *
+            req.body.voucher) /
+            100 +
+          25000
+        ).toLocaleString(),
+        id: savedOrder._id,
+        created: moment(new Date()).zone("+07:00").format("DD/MM/YYYY"),
+        link: `${process.env.WEB_URL}/order/${savedOrder._id}`,
+      },
     });
     if (req.params.id != "random") {
       usersDB.findById(req.params.id).then((result, err) => {
@@ -111,6 +143,15 @@ exports.order = async (req, res) => {
           return res.status(400).json({ status: "400", message: err.message });
         } else {
           result.orders.push(savedOrder);
+          function singleArrayRemove(array, value) {
+            var index = array.indexOf(value);
+            if (index > -1) array.splice(index, 1);
+            return array;
+          }
+          result.vouchers = singleArrayRemove(
+            result.vouchers,
+            req.body.voucher
+          );
           result.save();
           return res.status(200).json({
             status: "200",
@@ -155,7 +196,6 @@ exports.getAll = async (req, res) => {
       features.query,
       counting.query, //count number of user.
     ]);
-
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
     return res
@@ -174,9 +214,38 @@ exports.update = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
+
     const order = await ordersDB.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    if (req.body.state === "giao hàng thành công") {
+      if (order.user_id != "") {
+        usersDB
+          .findById(order.user_id)
+          .then((result, err) => {
+            if (err) {
+              return res
+                .status(400)
+                .json({ status: "400", message: err.message });
+            } else {
+              result.points =
+                result.points +
+                Math.round(
+                  order.details.reduce((total, item) => {
+                    return total + item.product_quantity * item.product_price;
+                  }, 0) / 100000
+                );
+              result.save();
+            }
+          })
+          .catch((err) => {
+            return res
+              .status(400)
+              .json({ status: "400", message: err.message });
+          });
+      }
+    }
+
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
         product_code: item.product_code,
@@ -254,9 +323,17 @@ exports.getRevenue = async (req, res) => {
     });
     const revenue = data
       .map((item) => {
-        return item.details.reduce((acc, item) => {
-          return acc + item.product_price * item.product_quantity;
-        }, 25000);
+        return (
+          item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) -
+          (item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) *
+            item.voucher) /
+            100 +
+          25000
+        );
       })
       .reduce((acc, item) => {
         return acc + item;
@@ -291,21 +368,27 @@ exports.getRevenueBy = async (req, res) => {
 
     const revenue = data
       .map((item) => {
-        return item.details.reduce((acc, item) => {
-          return acc + item.product_price * item.product_quantity;
-        }, 25000);
+        return (
+          item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) -
+          (item.details.reduce((acc, i) => {
+            return acc + i.product_price * i.product_quantity;
+          }, 0) *
+            item.voucher) /
+            100 +
+          25000
+        );
       })
       .reduce((acc, item) => {
         return acc + item;
       }, 0);
-    return res
-      .status(200)
-      .json({
-        status: "200",
-        message: "get revenue success",
-        data: revenue,
-        details: data,
-      });
+    return res.status(200).json({
+      status: "200",
+      message: "get revenue success",
+      data: revenue,
+      details: data,
+    });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
   }
@@ -345,9 +428,17 @@ exports.getRevenueByHaflYear = async (req, res) => {
         if (data.length == 0) return 0;
         const revenue = data
           .map((item) => {
-            return item.details.reduce((acc, item) => {
-              return acc + item.product_price * item.product_quantity;
-            }, 25000);
+            return (
+              item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) -
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                item.voucher) /
+                100 +
+              25000
+            );
           })
           .reduce((acc, item) => {
             return acc + item;

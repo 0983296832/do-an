@@ -48,7 +48,7 @@
     display: flex !important;
     align-items: center !important;
 }
-.ant-select-single .ant-select-selector{
+.header-search .ant-select-single .ant-select-selector{
     height:42px !important;
     width: 170px !important;
 }

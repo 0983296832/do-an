@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import {
   AiOutlineEyeInvisible,
@@ -24,6 +24,7 @@ const LoginForm = () => {
   } = useForm();
   const { setAuth } = useContext(AuthContext);
   const [showPass, setShowPass] = useState(true);
+
   const onLogin = async (data) => {
     try {
       const res = await Auth.login(data);
@@ -37,6 +38,7 @@ const LoginForm = () => {
       Toast("error", "email or password incorrect");
     }
   };
+
   return (
     <div>
       <h2>Bắt đầu mua sắm</h2>
@@ -85,9 +87,11 @@ const LoginForm = () => {
         <div className="social-icon">
           <FaFacebook />
         </div>
+
         <div className="social-icon">
           <FcGoogle />
         </div>
+
         <div className="social-icon">
           <AiFillApple />
         </div>

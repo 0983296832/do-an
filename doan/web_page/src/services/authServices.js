@@ -43,6 +43,14 @@ const Auth = {
     const url = "/auth/resetpassword";
     return axios.put(url, body);
   },
+  googleLogin: (body) => {
+    const url = "/auth/google_login";
+    return axios.post(url, body).then((response) => response.data);
+  },
+  facebookLogin: (body) => {
+    const url = "/auth/facebook_login";
+    return axios.post(url, body).then((response) => response.data);
+  },
 };
 
 export default Auth;

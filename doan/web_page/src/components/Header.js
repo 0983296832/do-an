@@ -164,7 +164,7 @@ const Header = () => {
             allowClear
             defaultValue=""
             onClear={() => setOptions([])}
-            autoComplete
+            // autoComplete
           />
 
           <Select
@@ -185,6 +185,7 @@ const Header = () => {
             icon={<SearchOutlined />}
             size="large"
             href={`http://localhost:3000/product-list-search?name=${searchValues}&brand=${searchBy}`}
+            style={{ marginTop: 1 }}
           />
         </div>
         <div className="header-infor">

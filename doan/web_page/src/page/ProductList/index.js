@@ -26,6 +26,9 @@ const ProductList = () => {
   const [sizeFilter, setSizeFilter] = useState("");
   const [colorFilter, setColorFilter] = useState("");
   const [genderFilter, setGenderFilter] = useState("");
+  const [expandedColor, setExpandedColor] = useState(false);
+  const [expandedSize, setExpandedSize] = useState(false);
+  const [expandedPrice, setExpandedPrice] = useState(false);
 
   const getData = async (pageNum) => {
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
@@ -67,7 +70,7 @@ const ProductList = () => {
               id: item._id,
               title: item.name,
               product_code: item.product_code,
-              image: item.image[0].imageUrl,
+              image: item.image,
               price: item.price,
               category: item.category,
               rate: item.rate || 0,
@@ -108,7 +111,7 @@ const ProductList = () => {
             id: item._id,
             title: item.name,
             product_code: item.product_code,
-            image: item.image[0].imageUrl,
+            image: item.image,
             price: item.price,
             category: item.category,
             rate: item.rate || 0,
@@ -144,17 +147,26 @@ const ProductList = () => {
           <FilterByPrice
             setPriceFilter={setPriceFilter}
             priceFilter={priceFilter}
+            expandedPrice={expandedPrice}
+            setExpandedPrice={setExpandedPrice}
           />
           <Divider orientation="left" plain>
             Bộ Lọc Theo Size
           </Divider>
-          <FilterBySize setSizeFilter={setSizeFilter} sizeFilter={sizeFilter} />
+          <FilterBySize
+            setSizeFilter={setSizeFilter}
+            sizeFilter={sizeFilter}
+            expandedSize={expandedSize}
+            setExpandedSize={setExpandedSize}
+          />
           <Divider orientation="left" plain>
             Bộ Lọc Theo Màu
           </Divider>
           <FilterByColor
             colorFilter={colorFilter}
             setColorFilter={setColorFilter}
+            expandedColor={expandedColor}
+            setExpandedColor={setExpandedColor}
           />
           {/* <Divider orientation="left" plain>
             Bộ Lọc Theo Giới Tính

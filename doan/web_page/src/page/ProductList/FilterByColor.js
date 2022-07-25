@@ -11,7 +11,12 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const FilterByColor = ({ colorFilter, setColorFilter }) => {
+const FilterByColor = ({
+  colorFilter,
+  setColorFilter,
+  setExpandedColor,
+  expandedColor,
+}) => {
   const [color, setColor] = useState([
     "black",
     "blue",
@@ -35,12 +40,13 @@ const FilterByColor = ({ colorFilter, setColorFilter }) => {
     }
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedColor}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
         id="panel1a-header"
+        onClick={() => setExpandedColor(!expandedColor)}
       >
         <Typography>Lọc Theo Màu</Typography>
       </AccordionSummary>

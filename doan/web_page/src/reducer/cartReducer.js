@@ -10,7 +10,6 @@ export const cartReducer = (state, action) => {
         cart: action.payload,
       };
     case "ADD_TO_CART_SUCCESS":
-      console.log(action.payload);
       if (
         state.cart.find(
           (item) =>

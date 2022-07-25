@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionSummary,
@@ -9,18 +9,24 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const FilterByPrice = ({ priceFilter, setPriceFilter }) => {
-  const [price, setPrice] = React.useState(priceFilter);
+const FilterByPrice = ({
+  priceFilter,
+  setPriceFilter,
+  expandedPrice,
+  setExpandedPrice,
+}) => {
+  const [price, setPrice] = useState(priceFilter);
   const handleChangePrice = (event, newValue) => {
     setPrice(newValue);
   };
   return (
-    <Accordion sx={{ minWidth: 250, marginBottom: 8 }}>
+    <Accordion sx={{ minWidth: 250, marginBottom: 4 }} expanded={expandedPrice}>
       <AccordionSummary
         sx={{ minWidth: 250 }}
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
         id="panel1a-header"
+        onClick={() => setExpandedPrice(!expandedPrice)}
       >
         <Typography>Lọc Theo Giá</Typography>
       </AccordionSummary>
