@@ -94,9 +94,42 @@ exports.order = async (req, res) => {
    `;
 
     await sendEmail({
-      to: req.body.email,
+      to: "thanhbinh191099@gmail.com",
       subject: "Order Success",
-      text: message,
+      template: "email",
+      context: {
+        name: req.body.name,
+        email: req.body.email,
+        address: req.body.address,
+        phone: req.body.phone,
+        payment_type: req.body.payment_type,
+        shipping_unit: req.body.shipping_unit,
+        shipping_fee: req.body.shipping_fee.toLocaleString(),
+        note: req.body.note,
+        voucher: req.body.voucher,
+        details: req.body.details.map((item) => {
+          return {
+            ...item,
+            product_price: item.product_price.toLocaleString(),
+          };
+        }),
+        total: (
+          req.body.details.reduce(
+            (total, item) => total + item.product_quantity * item.product_price,
+            0
+          ) -
+          (req.body.details.reduce(
+            (total, item) => total + item.product_quantity * item.product_price,
+            0
+          ) *
+            req.body.voucher) /
+            100 +
+          25000
+        ).toLocaleString(),
+        id: savedOrder._id,
+        created: moment(new Date()).zone("+07:00").format("DD/MM/YYYY"),
+        link: `${process.env.WEB_URL}/order/${savedOrder._id}`,
+      },
     });
     if (req.params.id != "random") {
       usersDB.findById(req.params.id).then((result, err) => {
@@ -158,6 +191,7 @@ exports.getAll = async (req, res) => {
     ]);
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
+
     return res
       .status(200)
       .json({ status: "200", message: "success", data: orders, count });
