@@ -68,6 +68,7 @@ const Order = () => {
       const { data: dataScv } = await Orders.getOrder({
         page: 1,
         limit: 100000,
+        ...params,
       });
       setDataScv(
         dataScv.map((item) => {

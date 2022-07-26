@@ -123,6 +123,7 @@ const Datatable = () => {
       const { result: dataScv } = await UserService.getUsers({
         page: 1,
         limit: 100000,
+        ...params,
       });
       setDataScv(dataScv);
       setPageCount(Math.ceil(result.count / 10));

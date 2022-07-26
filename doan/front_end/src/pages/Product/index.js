@@ -184,6 +184,7 @@ const ProductManagement = () => {
       const { data: dataScv } = await Products.getProducts({
         page: 1,
         limit: 100000,
+        ...params,
       });
       setDataScv(
         dataScv.map((item) => {
