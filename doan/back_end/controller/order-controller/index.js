@@ -96,7 +96,7 @@ exports.order = async (req, res) => {
     await sendEmail({
       to: req.body.email,
       subject: "Order Success",
-      text: message,
+      html: message,
     });
     if (req.params.id != "random") {
       usersDB.findById(req.params.id).then((result, err) => {
