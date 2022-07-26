@@ -12,9 +12,7 @@ import queryString from "query-string";
 import { Divider } from "antd";
 import Loading from "../../components/Loading";
 
-
 const ProductList = () => {
-  
   const sumQuery = queryString.parse(window.location.search);
   const { type } = useParams();
   const [data, setData] = useState([]);
@@ -46,6 +44,7 @@ const ProductList = () => {
             ["detailsSize[elemMatch]"]: sizeFilter,
             ["detailsColor[elemMatch]"]: colorFilter,
             sort: sumQuery.sort || "",
+            "name[options]": "i",
           };
         } else {
           params = {
@@ -131,8 +130,6 @@ const ProductList = () => {
   useEffect(() => {
     getData(page);
   }, [page, type, sort, priceFilter, sizeFilter, colorFilter]);
-
-  
 
   if (loading) {
     return <Loading />;

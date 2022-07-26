@@ -19,6 +19,7 @@ const Order = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [state, setState] = useState("");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [dataScv, setDataScv] = useState();
@@ -48,6 +49,8 @@ const Order = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "-created",
+          "state[regex]": state,
         };
       } else {
         const key = searchBy + "[regex]";
@@ -56,7 +59,9 @@ const Order = () => {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          "state[regex]": state,
           [options]: "i",
+          sort: "-created",
         };
       }
       const result = await Orders.getOrder(params);
@@ -106,6 +111,10 @@ const Order = () => {
             }),
           };
         })
+        // .sort(
+        //   (a, b) =>
+        //     new Date(b.created).getTime() - new Date(a.created).getTime()
+        // )
       );
     } catch (error) {
       Toast("error", error.message);
@@ -120,7 +129,7 @@ const Order = () => {
     return () => {
       isCancel = true;
     };
-  }, [page]);
+  }, [page, state]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -136,6 +145,7 @@ const Order = () => {
         page: 1,
         limit: 10,
         [key]: searchKey,
+        "state[regex]": state,
         [options]: "i",
       };
       const result = await Orders.getOrder(params);
@@ -184,45 +194,75 @@ const Order = () => {
       <div className="datatable">
         <div className="datatableTitle">Order Management</div>
         <div className="datatable-feature">
-          <div className="feature-input">
-            <h3>What are you looking for?</h3>
-            <Input
-              placeholder="Search something..."
-              prefix={<SearchOutlined />}
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-              allowClear
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+            }}
+          >
+            <div className="feature-input" style={{ width: 300 }}>
+              <h3>What are you looking for?</h3>
+              <Input
+                placeholder="Search something..."
+                prefix={<SearchOutlined />}
+                value={searchKey}
+                onChange={(e) => setSearchKey(e.target.value)}
+                allowClear
+              />
+            </div>
+            <div className="feature-select">
+              <h3>Search By:</h3>
+              <Select
+                defaultValue={searchBy}
+                style={{
+                  width: 200,
+                }}
+                onChange={(value) => setSearchBy(value)}
+              >
+                <Option value="all">All</Option>
+                <Option value="name">Name</Option>
+                <Option value="phone">Phone Number</Option>
+                <Option value="email">Email</Option>
+                <Option value="address">Address</Option>
+                <Option value="created">Created</Option>
+                <Option value="receive_date">Recive Date</Option>
+                <Option value="payment_type">Payment Type</Option>
+              </Select>
+            </div>
+            <div className="feature-btn">
+              <Button
+                type="primary"
+                icon={<SearchOutlined />}
+                size="middle"
+                onClick={getDataBySearch}
+              >
+                Search
+              </Button>
+            </div>
           </div>
+
           <div className="feature-select">
-            <h3>Search By:</h3>
+            <h3>Filter By State:</h3>
             <Select
-              defaultValue={searchBy}
+              defaultValue={state}
               style={{
                 width: 200,
               }}
-              onChange={(value) => setSearchBy(value)}
+              onChange={(value) => setState(value)}
             >
-              <Option value="all">All</Option>
-              <Option value="name">Name</Option>
-              <Option value="phone">Phone Number</Option>
-              <Option value="email">Email</Option>
-              <Option value="address">Address</Option>
-              <Option value="created">Created</Option>
-              <Option value="receive_date">Recive Date</Option>
-              <Option value="payment_type">Payment Type</Option>
-              <Option value="state">Status</Option>
+              <Option value="">All</Option>
+              <Option value="đang chờ xác nhận">đang chờ xác nhận</Option>
+              <Option value="đã xác nhận">đã xác nhận</Option>
+              <Option value="đang đợi gói hàng">đang đợi gói hàng</Option>
+              <Option value="đang giao hàng">đang giao hàng</Option>
+              <Option value="giao hàng thành công">giao hàng thành công</Option>
+              <Option value="đã hủy">đã hủy</Option>
+              <Option value="giao hàng không thành công">
+                giao hàng không thành công
+              </Option>
             </Select>
-          </div>
-          <div className="feature-btn">
-            <Button
-              type="primary"
-              icon={<SearchOutlined />}
-              size="middle"
-              onClick={getDataBySearch}
-            >
-              Search
-            </Button>
           </div>
         </div>
         {!loading && (

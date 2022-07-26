@@ -94,6 +94,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           <h4>Tên người nhận: {data.name}</h4>
           <h4>Số điện thoại: {data.phone}</h4>
           <h4>Địa chỉ: {data.address}</h4>
+          <h4>Email: {data.email}</h4>
           <p>Ghi Chú: {data.note}</p>
         </div>
 
@@ -187,7 +188,6 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           </div>
           <div>
             <h4 style={{ color: "#f00", fontSize: 20 }}>
-              {" "}
               {(
                 data.details.reduce(
                   (total, item) =>
