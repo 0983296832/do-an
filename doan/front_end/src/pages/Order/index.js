@@ -43,53 +43,50 @@ const Order = () => {
   const onChange = (date, dateString) => {
     setDateString(dateString);
   };
+
   const fetchData = async (pageNum) => {
     setLoading(true);
     try {
       let params;
-      if (searchBy === "all") {
+      if (searchBy == "all") {
         setSearchKey("");
         params = {
           page: pageNum,
           limit: 10,
           sort: "-created",
           "state[regex]": state,
-          // "created[lt]": new Date("07-26-2022"),
-          // "created[gt]": new Date(
-          //   new Date("07-26-2022").getTime() - 24 * 60 * 60 * 1000
-          // ),
         };
       } else {
-        if (dateString === "") {
-          const key = searchBy + "[regex]";
-          const options = searchBy + "[options]";
-          params = {
-            page: pageNum,
-            limit: 10,
-            [key]: searchKey,
-            "state[regex]": state,
-            [options]: "i",
-            sort: "-created",
-          };
-        } else {
-          const key = searchBy + "[regex]";
-          const options = searchBy + "[options]";
-          params = {
-            page: pageNum,
-            limit: 10,
-            [key]: searchKey,
-            "state[regex]": state,
-            [options]: "i",
-            sort: "-created",
-            "created[lt]": new Date(
-              new Date(dateString).getTime() + 10 * 60 * 60 * 1000
-            ),
-            "created[gt]": new Date(
-              new Date(dateString).getTime() - 12 * 60 * 60 * 1000
-            ),
-          };
-        }
+        const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
+          "state[regex]": state,
+          [options]: "i",
+          sort: "-created",
+        };
       }
+      if (dateString !== "") {
+        const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
+          "state[regex]": state,
+          [options]: "i",
+          sort: "-created",
+          "created[lt]": new Date(
+            new Date(dateString).getTime() + 14 * 60 * 60 * 1000
+          ),
+          "created[gt]": new Date(
+            new Date(dateString).getTime() - 10 * 60 * 60 * 1000
+          ),
+        };
+      }
+
       const result = await Orders.getOrder(params);
       const { data: dataScv } = await Orders.getOrder({
         page: 1,
@@ -214,9 +211,7 @@ const Order = () => {
     }
     setLoading(false);
   };
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <div className="main-wrapper">
       <div className="datatable">
@@ -271,12 +266,12 @@ const Order = () => {
             </div>
           </div>
 
-          <div className="feature-select">
+          <div className="feature-select" style={{ marginLeft: 15 }}>
             <h3>Filter By State:</h3>
             <Select
               defaultValue={state}
               style={{
-                width: 200,
+                width: 170,
               }}
               onChange={(value) => setState(value)}
             >
@@ -292,10 +287,10 @@ const Order = () => {
               </Option>
             </Select>
           </div>
-          {/* <div className="feature-select">
+          <div className="feature-select" style={{ marginLeft: 15 }}>
             <h3>Filter By Date:</h3>
             <DatePicker onChange={onChange} />
-          </div> */}
+          </div>
         </div>
         {!loading && (
           <Button type="primary">
@@ -308,8 +303,15 @@ const Order = () => {
             </CSVLink>
           </Button>
         )}
-        <ListTable data={data} XAxis={2000} noSup setData={setData} />
-        <BasicPagination page={page} setPage={setPage} count={pageCount} />
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
+            {" "}
+            <ListTable data={data} XAxis={2000} noSup setData={setData} />
+            <BasicPagination page={page} setPage={setPage} count={pageCount} />
+          </>
+        )}
       </div>
     </div>
   );
