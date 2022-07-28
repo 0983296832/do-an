@@ -1,7 +1,7 @@
 import "../../assets/css/datatable.css";
 import { useState, useEffect } from "react";
 import Toast from "../../components/Toast";
-import { Input, Select, Button } from "antd";
+import { Input, Select, Button, DatePicker } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import ListTable from "../../components/ListOrder";
 import Orders from "../../services/orderServices";
@@ -39,7 +39,10 @@ const Order = () => {
     { label: "Shipping Fee", key: "shipping_fee" },
     { label: "Receive Date", key: "receive_date" },
   ]);
-
+  const [dateString, setDateString] = useState("");
+  const onChange = (date, dateString) => {
+    setDateString(dateString);
+  };
   const fetchData = async (pageNum) => {
     setLoading(true);
     try {
@@ -51,18 +54,41 @@ const Order = () => {
           limit: 10,
           sort: "-created",
           "state[regex]": state,
+          // "created[lt]": new Date("07-26-2022"),
+          // "created[gt]": new Date(
+          //   new Date("07-26-2022").getTime() - 24 * 60 * 60 * 1000
+          // ),
         };
       } else {
-        const key = searchBy + "[regex]";
-        const options = searchBy + "[options]";
-        params = {
-          page: pageNum,
-          limit: 10,
-          [key]: searchKey,
-          "state[regex]": state,
-          [options]: "i",
-          sort: "-created",
-        };
+        if (dateString === "") {
+          const key = searchBy + "[regex]";
+          const options = searchBy + "[options]";
+          params = {
+            page: pageNum,
+            limit: 10,
+            [key]: searchKey,
+            "state[regex]": state,
+            [options]: "i",
+            sort: "-created",
+          };
+        } else {
+          const key = searchBy + "[regex]";
+          const options = searchBy + "[options]";
+          params = {
+            page: pageNum,
+            limit: 10,
+            [key]: searchKey,
+            "state[regex]": state,
+            [options]: "i",
+            sort: "-created",
+            "created[lt]": new Date(
+              new Date(dateString).getTime() + 10 * 60 * 60 * 1000
+            ),
+            "created[gt]": new Date(
+              new Date(dateString).getTime() - 12 * 60 * 60 * 1000
+            ),
+          };
+        }
       }
       const result = await Orders.getOrder(params);
       const { data: dataScv } = await Orders.getOrder({
@@ -130,7 +156,7 @@ const Order = () => {
     return () => {
       isCancel = true;
     };
-  }, [page, state]);
+  }, [page, state, dateString]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -149,6 +175,7 @@ const Order = () => {
         "state[regex]": state,
         [options]: "i",
       };
+
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
@@ -265,6 +292,10 @@ const Order = () => {
               </Option>
             </Select>
           </div>
+          {/* <div className="feature-select">
+            <h3>Filter By Date:</h3>
+            <DatePicker onChange={onChange} />
+          </div> */}
         </div>
         {!loading && (
           <Button type="primary">

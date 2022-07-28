@@ -80,6 +80,7 @@ exports.order = async (req, res) => {
       note: req.body.note,
       user_id: req.body.details[0].user_id,
       voucher: req.body.voucher,
+      created: new Date(),
     });
     const savedOrder = await order.save();
     // HTML Message
@@ -191,7 +192,13 @@ exports.getAll = async (req, res) => {
     ]);
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
-
+    // const dataOrder = await ordersDB.find({
+    //   created: {
+    //     $lt: new Date("07-26-2022"),
+    //     $gt: new Date(new Date("07-26-2022").getTime() - 24 * 60 * 60 * 1000),
+    //   },
+    // });
+    // console.log(dataOrder);
     return res
       .status(200)
       .json({ status: "200", message: "success", data: orders, count });
