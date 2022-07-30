@@ -12,6 +12,7 @@
     "@mui/lab": "^5.0.0-alpha.84",
     "@mui/material": "^5.8.0",
     "@mui/x-data-grid": "^5.11.1",
+    "@tawk.to/tawk-messenger-react": "^2.0.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
@@ -42,6 +43,7 @@
     "react-toastify": "^9.0.1",
     "sha256": "^0.2.0",
     "swiper": "^8.2.2",
+    "talkjs": "^0.15.5",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
