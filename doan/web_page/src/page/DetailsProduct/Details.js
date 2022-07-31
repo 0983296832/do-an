@@ -97,7 +97,7 @@ const Details = ({ data, loading, id }) => {
       <div className="details-rate">
         <Rate
           disabled
-          defaultValue={data?.rate}
+          value={data?.rate}
           style={{ fontSize: 15, marginRight: 10 }}
         />
         <span>({data?.comments?.length} đánh giá của khách hàng)</span>
@@ -147,9 +147,8 @@ const Details = ({ data, loading, id }) => {
             data?.size.map((size, index) => {
               return (
                 <div
-                  className={`sizeNumber ${
-                    index === activeSize && "activeSize"
-                  }`}
+                  className={`sizeNumber ${index === activeSize && "activeSize"
+                    }`}
                   key={index}
                   onClick={() => setActiveSize(index)}
                 >
@@ -168,9 +167,8 @@ const Details = ({ data, loading, id }) => {
               return (
                 <div
                   key={index}
-                  className={`color-btn ${
-                    index === activeColor && "activeColor"
-                  }`}
+                  className={`color-btn ${index === activeColor && "activeColor"
+                    }`}
                   style={{ backgroundColor: item }}
                   onClick={() => setActiveColor(index)}
                 ></div>

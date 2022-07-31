@@ -121,15 +121,14 @@ const CommentInput = ({ id, setDetail, detail }) => {
       } else {
         rates = Math.round((detail.rate + rate) / 2 / 0.5) * 0.5;
       }
+
       setDetail({
         ...detail,
         comments: [...detail.comments, { ...newComment, datetime: Date.now() }],
         rate: rates,
       });
-      setSubmitting(false);
-      setComment("");
-      setAuthor("");
-      setRate(0);
+
+
       setComments([
         {
           author: author,
@@ -140,13 +139,17 @@ const CommentInput = ({ id, setDetail, detail }) => {
         },
         ...comments,
       ]);
+      setComment("");
+      setAuthor("");
+      setRate(0);
+      setSubmitting(false);
       Toast("success", "Bình luận thành công");
     } catch (error) {
       setSubmitting(false);
       Toast("error", error.message);
     }
   };
-
+  // console.log(detail)
   const handleChangeComment = (e) => {
     setComment(e.target.value);
   };
