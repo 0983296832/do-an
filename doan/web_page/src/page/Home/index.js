@@ -52,122 +52,122 @@ const Home = () => {
       const nike =
         result[0].status === "fulfilled"
           ? result[0].value.data.data.map((item) => {
-              return {
-                id: item._id,
-                title: item.name,
-                product_code: item.product_code,
-                image: item.image,
-                price: item.price,
-                category: item.category,
-                rate: item.votes || 0,
-                sale: item.discount > 0,
-                discount: item.discount,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                size: [...new Set(item.details.map((i) => i.size))],
-                color: [...new Set(item.details.map((i) => i.color))],
-                brand: item.brand,
-                category: item.category,
-                stocks: item.details.reduce((acc, item) => {
-                  return acc + item.quantity;
-                }, 0),
-              };
-            })
+            return {
+              id: item._id,
+              title: item.name,
+              product_code: item.product_code,
+              image: item.image,
+              price: item.price,
+              category: item.category,
+              rate: item.votes || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+            };
+          })
           : {};
       const adidas =
         result[1].status === "fulfilled"
           ? result[1].value.data.data.map((item) => {
-              return {
-                id: item._id,
-                product_code: item.product_code,
-                title: item.name,
-                image: item.image,
-                price: item.price,
-                category: item.category,
-                rate: item.votes || 0,
-                sale: item.discount > 0,
-                discount: item.discount,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                size: [...new Set(item.details.map((i) => i.size))],
-                color: [...new Set(item.details.map((i) => i.color))],
-                brand: item.brand,
-                category: item.category,
-                stocks: item.details.reduce((acc, item) => {
-                  return acc + item.quantity;
-                }, 0),
-              };
-            })
+            return {
+              id: item._id,
+              product_code: item.product_code,
+              title: item.name,
+              image: item.image,
+              price: item.price,
+              category: item.category,
+              rate: item.votes || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+            };
+          })
           : {};
       const vans =
         result[2].status === "fulfilled"
           ? result[2].value.data.data.map((item) => {
-              return {
-                id: item._id,
-                product_code: item.product_code,
-                title: item.name,
-                image: item.image,
-                price: item.price,
-                category: item.category,
-                rate: item.votes || 0,
-                sale: item.discount > 0,
-                discount: item.discount,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                size: [...new Set(item.details.map((i) => i.size))],
-                color: [...new Set(item.details.map((i) => i.color))],
-                brand: item.brand,
-                category: item.category,
-                stocks: item.details.reduce((acc, item) => {
-                  return acc + item.quantity;
-                }, 0),
-              };
-            })
+            return {
+              id: item._id,
+              product_code: item.product_code,
+              title: item.name,
+              image: item.image,
+              price: item.price,
+              category: item.category,
+              rate: item.votes || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+            };
+          })
           : [];
       const hot =
         result[3].status === "fulfilled"
           ? result[3].value.data.data.map((item) => {
-              return {
-                id: item._id,
-                product_code: item.product_code,
-                title: item.name,
-                image: item.image,
-                price: item.price,
-                category: item.category,
-                rate: item.votes || 0,
-                sale: item.discount > 0,
-                discount: item.discount,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                size: [...new Set(item.details.map((i) => i.size))],
-                color: [...new Set(item.details.map((i) => i.color))],
-                brand: item.brand,
-                category: item.category,
-                stocks: item.details.reduce((acc, item) => {
-                  return acc + item.quantity;
-                }, 0),
-              };
-            })
+            return {
+              id: item._id,
+              product_code: item.product_code,
+              title: item.name,
+              image: item.image,
+              price: item.price,
+              category: item.category,
+              rate: item.votes || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+            };
+          })
           : [];
       const sale =
         result[4].status === "fulfilled"
           ? result[4].value.data.data.map((item) => {
-              return {
-                id: item._id,
-                product_code: item.product_code,
-                title: item.name,
-                image: item.image,
-                price: item.price,
-                category: item.category,
-                rate: item.votes || 0,
-                sale: item.discount > 0,
-                discount: item.discount,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                size: [...new Set(item.details.map((i) => i.size))],
-                color: [...new Set(item.details.map((i) => i.color))],
-                brand: item.brand,
-                category: item.category,
-                stocks: item.details.reduce((acc, item) => {
-                  return acc + item.quantity;
-                }, 0),
-              };
-            })
+            return {
+              id: item._id,
+              product_code: item.product_code,
+              title: item.name,
+              image: item.image,
+              price: item.price,
+              category: item.category,
+              rate: item.votes || 0,
+              sale: item.discount > 0,
+              discount: item.discount,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              size: [...new Set(item.details.map((i) => i.size))],
+              color: [...new Set(item.details.map((i) => i.color))],
+              brand: item.brand,
+              category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+            };
+          })
           : [];
       setData([...nike, ...adidas, ...vans, ...hot, ...sale]);
     } catch (error) {
