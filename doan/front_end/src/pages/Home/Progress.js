@@ -13,7 +13,7 @@ const Progress = ({ data }) => {
       <div className="progress">
         <CircularProgressbar
           value={percentage}
-          text={`${percentage}%`}
+          text={`${percentage.toFixed(2)}%`}
           strokeWidth={5}
         />
       </div>

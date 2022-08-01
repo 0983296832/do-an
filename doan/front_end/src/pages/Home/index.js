@@ -20,6 +20,8 @@ import moment from "moment";
 import TopProductSales from "./TopProductSales";
 import TableProductSale from "./TableProductSale";
 import { PrinterOutlined } from "@ant-design/icons";
+import Stats from "../Stats";
+import Loading from "../../components/Loading";
 
 const { TabPane } = Tabs;
 
@@ -105,6 +107,7 @@ const Home = () => {
   });
   const [chartData, setChartData] = useState([]);
   const [topData, setTopData] = useState([]);
+  const [topUser, setTopUser] = useState([]);
   const [indexTop, setIndexTop] = useState(0);
   const [dataProducts, setDataProducts] = useState([]);
   const [productsOutOfStock, setProductsOutOfStock] = useState([]);
@@ -135,6 +138,7 @@ const Home = () => {
         const ordersParams = {
           page: 1,
           limit: 5,
+          sort: "-created",
         };
         const topProductsParams = {
           page: 1,
@@ -183,8 +187,9 @@ const Home = () => {
           result[11].status === "fulfilled" ? result[11].value.data : [];
         if (productsOutOfStock.length > 0)
           Toast("warn", "Có sản phẩm hết hàng");
-        setTopData([
-          ...TopProductSales.map((product) => product.details)
+
+        setTopData(
+          TopProductSales.map((product) => product.details)
             .flat(Infinity)
             .reduce((acc, cur) => {
               if (acc.find((i) => i.product_id === cur.product_id)) {
@@ -219,16 +224,18 @@ const Home = () => {
               };
             })
             .sort((a, b) => b.number - a.number)
-            .filter((_, index) => index < 5),
-          ...TopUser.map((item) => {
+            .filter((_, index) => index < 5)
+        );
+        setTopUser(
+          TopUser.map((item) => {
             return {
               name: item.name,
               number: item.orders.length,
               image:
                 item.image.imageUrl || "https://joeschmoe.io/api/v1/random",
             };
-          }),
-        ]);
+          })
+        );
 
         const numberArr = [user, product, orderRevenue, productEarning];
         setData(
@@ -321,7 +328,7 @@ const Home = () => {
     };
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     return (
       <div className="home__wrapper" ref={componentRef}>
@@ -348,9 +355,7 @@ const Home = () => {
             title={`${
               indexTop === 0
                 ? "Tổng doanh thu"
-                : indexTop === 1
-                ? "Top Sold Products In This Month"
-                : "Top Users With Orders"
+                : "Top Sản Phẩm bán chạy trong tháng"
             }`}
             extra={
               <Dropdown overlay={menu}>
@@ -368,14 +373,17 @@ const Home = () => {
             {indexTop === 0 ? (
               <Progress data={progressData} />
             ) : (
-              <TopProductSales data={topData.slice(0, 5)} />
+              <TopProductSales data={indexTop === 1 ? topData : topUser} />
             )}
           </Card>
           <div className="revenue__chart">
             <ChartComponent
               title="6 Tháng qua(Doanh Thu)"
               aspect={2 / 1}
-              data={chartData.slice(0, 6)}
+              data={chartData.slice(
+                new Date().getMonth() - 6,
+                new Date().getMonth() + 1
+              )}
             />
           </div>
         </div>

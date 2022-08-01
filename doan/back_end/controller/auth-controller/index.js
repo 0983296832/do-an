@@ -245,9 +245,6 @@ exports.checkOtp = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "Content can not be empty" });
     }
-    console.log(req.body.code);
-    console.log(code);
-    console.log(req.body.code != code);
     if (req.body.code != code) {
       return res
         .status(500)

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Divider, Steps, Tag, Tooltip, Button } from "antd";
+import { Divider, Steps, Tag, Tooltip, Button, Popconfirm } from "antd";
 import moment from "moment";
 import Loading from "../../components/Loading";
 import Orders from "../../services/orderServices";
@@ -11,19 +11,6 @@ import { useReactToPrint } from "react-to-print";
 const { Step } = Steps;
 
 const DetailOrder = ({ data, loading, orders, setOrder }) => {
-  console.log(
-    data.details.reduce(
-      (total, item) => total + item.product_quantity * item.product_price,
-      0
-    ) -
-      (data.details.reduce(
-        (total, item) => total + item.product_quantity * item.product_price,
-        0
-      ) *
-        data.voucher) /
-        100 +
-      25000
-  );
   const stepData = [
     "đặt hàng",
     "đang chờ xác nhận",
@@ -37,7 +24,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     content: () => componentRef.current,
   });
 
-  const handleCancel = async () => {
+  const confirm = async (e) => {
     try {
       await Orders.cancelOrder(data._id, { state: "đã hủy" });
       setOrder(
@@ -51,6 +38,10 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
     } catch (error) {
       Toast("error", error.message);
     }
+  };
+
+  const cancel = (e) => {
+    return;
   };
   if (loading) {
     return <Loading />;
@@ -103,6 +94,7 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           <h4>Tên người nhận: {data.name}</h4>
           <h4>Số điện thoại: {data.phone}</h4>
           <h4>Địa chỉ: {data.address}</h4>
+          <h4>Email: {data.email}</h4>
           <p>Ghi Chú: {data.note}</p>
         </div>
 
@@ -196,7 +188,6 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
           </div>
           <div>
             <h4 style={{ color: "#f00", fontSize: 20 }}>
-              {" "}
               {(
                 data.details.reduce(
                   (total, item) =>
@@ -222,9 +213,16 @@ const DetailOrder = ({ data, loading, orders, setOrder }) => {
               Print PDF
             </Button>
             {data?.state === "đang chờ xác nhận" ? (
-              <button className="btn-cancel" onClick={handleCancel}>
-                Hủy
-              </button>
+              <Popconfirm
+                title="Bạn chắc chắn muốn hủy đơn?"
+                onConfirm={confirm}
+                onCancel={cancel}
+                okText="Có"
+                cancelText="Không"
+                placement="topRight"
+              >
+                <button className="btn-cancel">Hủy</button>
+              </Popconfirm>
             ) : (
               <div style={{ margin: "5px 0" }}>
                 <Link to="/" className="btn-cancel">

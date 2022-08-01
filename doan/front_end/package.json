@@ -1,7 +1,7 @@
 {
   "name": "front_end",
   "version": "0.1.0",
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:3001/",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -13,6 +13,8 @@
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.0",
     "@mui/x-data-grid": "^5.11.1",
+    "@nivo/core": "^0.79.0",
+    "@nivo/pie": "^0.79.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
@@ -36,6 +38,7 @@
     "react-icons": "^4.3.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-spring": "^9.4.5",
     "react-to-print": "^2.14.7",
     "react-toastify": "^9.0.1",
     "recharts": "^2.1.10",

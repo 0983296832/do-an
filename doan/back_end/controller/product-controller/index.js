@@ -45,7 +45,6 @@ exports.getAll = async (req, res) => {
 
     const product = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
-    console.log(Number(moment(Date.now()).format("MM")) - 1);
 
     return res.status(200).json({
       status: "200",
@@ -546,12 +545,7 @@ const saveStockByMonth = async (req, res) => {
       month: Number(moment(Date.now()).format("MM")) - 1,
       year: Number(moment(Date.now()).format("YYYY")),
     });
-    if (exitsData)
-      return res.status(200).json({
-        status: "200",
-        message: "save stock successfully",
-        data: exitsData,
-      });
+    if (exitsData) return;
     const data = await productsDB.find().populate("image");
     const lastMonth = Number(moment(Date.now()).format("MM")) - 1;
     const thisYears = Number(moment(Date.now()).format("YYYY"));
@@ -560,30 +554,167 @@ const saveStockByMonth = async (req, res) => {
       year: thisYears,
       data: data,
     });
-    const saveStock = await stocks.save();
+    await stocks.save();
 
-    return res.status(200).json({
-      status: "200",
-      message: "save stock successfully",
-      data: saveStock,
-    });
+    return;
   } catch (error) {
-    return res.status(400).json({ status: "400", message: error.message });
+    return;
   }
 };
 schedule.scheduleJob("* * 1 */1 *", saveStockByMonth);
 
 exports.getStocks = async (req, res) => {
   try {
-    const product = await stockDB.findOne({
-      month: req.body.month,
-      year: req.body.year,
+    let product = { data: [] };
+    if (req.body.month == moment(new Date()).format("M")) {
+      product.data = await productsDB.find().populate("image");
+    } else {
+      product = await stockDB.findOne({
+        month: { $eq: req.body.month },
+        year: { $eq: req.body.year },
+      });
+      const tempProduct = await productsDB.find().populate("image");
+      if (product)
+        product.data = product.data.map((item) => {
+          return {
+            ...item,
+            image: tempProduct.find((i) => i.product_code == item.product_code)
+              .image,
+          };
+        });
+    }
+
+    const order = await ordersDB.find({
+      state: "giao hàng thành công",
+      receive_date: {
+        $gte: new Date(
+          moment()
+            .month(Number(req.body.month) - 1)
+            .startOf("month")
+            .format("MM/DD/YYYY")
+        ),
+        $lte: new Date(
+          moment()
+            .month(Number(req.body.month) - 1)
+            .endOf("month")
+            .format("MM/DD/YYYY")
+        ),
+      },
     });
+    const supplier = await suppliersDB.find({
+      created: {
+        $gte: new Date(
+          moment().month(req.body.month).startOf("month").format("MM/DD/YYYY")
+        ),
+        $lte: new Date(
+          moment().month(req.body.month).endOf("month").format("MM/DD/YYYY")
+        ),
+      },
+    });
+
+    const dataTable =
+      product?.data.map(
+        ({
+          _id,
+          product_code,
+          name,
+          image,
+          price,
+          details,
+          brand,
+          category,
+        }) => {
+          return {
+            _id,
+            product_code,
+            name,
+            image,
+            brand,
+            category,
+            price,
+            quantity: details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0),
+            order:
+              order
+                .filter((i) =>
+                  i.details.find((vl) => vl.product_code == product_code)
+                )
+                .reduce((acc, item) => {
+                  return (
+                    acc +
+                    item.details.reduce((ac, it) => {
+                      if (it.product_code == product_code)
+                        return ac + it.product_quantity;
+                    }, 0)
+                  );
+                }, 0) || 0,
+            supplier: supplier
+              .filter((item) => item.product_code == product_code)
+              .reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
+          };
+        }
+      ) || [];
 
     return res.status(200).json({
       status: "200",
       message: "get stock by month successfully",
-      data: { product },
+      dataTable,
+      product: {
+        money:
+          product?.data.reduce((acc, item) => {
+            return (
+              acc +
+              item.details.reduce((a, i) => {
+                return a + i.quantity;
+              }, 0) *
+                item.price
+            );
+          }, 0) || 0,
+        quantity:
+          product?.data.reduce((acc, item) => {
+            return (
+              acc +
+              item.details.reduce((a, i) => {
+                return a + i.quantity;
+              }, 0)
+            );
+          }, 0) || 0,
+      },
+      order: {
+        money: order
+          .map((item) => {
+            return (
+              (item.details.reduce((acc, i) => {
+                return acc + i.product_price * i.product_quantity;
+              }, 0) *
+                (100 - item.voucher)) /
+                100 +
+              25000
+            );
+          })
+          .reduce((acc, item) => {
+            return acc + item;
+          }, 0),
+        quantity: order.reduce((acc, cur) => {
+          return (
+            acc +
+            cur.details.reduce((a, c) => {
+              return a + c.product_quantity;
+            }, 0)
+          );
+        }, 0),
+      },
+      supplier: {
+        money: supplier.reduce((acc, cur) => {
+          return acc + cur.price * cur.quantity;
+        }, 0),
+        quantity: supplier.reduce((acc, cur) => {
+          return acc + cur.quantity;
+        }, 0),
+      },
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });

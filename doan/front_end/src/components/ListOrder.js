@@ -63,9 +63,9 @@ const ListTable = ({
             giao hàng không thành công
           </Select.Option>
           <Select.Option value="đã hủy">đã hủy</Select.Option>
-          <Select.Option value="giao hàng không thành công">
+          {/* <Select.Option value="giao hàng không thành công">
             giao hàng không thành công
-          </Select.Option>
+          </Select.Option> */}
         </Select>
       ) : (
         <Input />
@@ -374,6 +374,15 @@ const ListTable = ({
       key: "x",
       render: (_, record) => {
         const editable = isEditing(record);
+        if (
+          record.state === "giao hàng thành công" ||
+          record.state === "đã hủy"
+        )
+          return (
+            <div style={{ display: "flex", gap: 10 }}>
+              <Typography.Link disabled>Edit</Typography.Link>
+            </div>
+          );
         return editable ? (
           <span>
             <Typography.Link

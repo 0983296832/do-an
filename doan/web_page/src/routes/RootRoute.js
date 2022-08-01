@@ -27,7 +27,7 @@ const RootRoute = () => {
         <Route path="/product-details/:id" element={<DetailsProduct />} />
         <Route path="/cart" element={<Cart />} forceRefresh={true} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-success/:id" element={<PaymentSuccess />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPassword />} />

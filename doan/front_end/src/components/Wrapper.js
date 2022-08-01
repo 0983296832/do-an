@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "../assets/css/wrapper.css";
 import SearchInput from "./SearchInput";
 import {
@@ -15,7 +15,11 @@ import {
   BiNews,
 } from "react-icons/bi";
 import { Avatar } from "antd";
-import { MdDashboard, MdLocalShipping } from "react-icons/md";
+import {
+  MdDashboard,
+  MdLocalShipping,
+  MdOutlineInventory2,
+} from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { ImStatsDots, ImProfile } from "react-icons/im";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,6 +32,8 @@ import { IoSettingsSharp } from "react-icons/io5";
 //Menu
 const Wrapper = ({ children }) => {
   const { auth } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState({ title: "Main", activeId: 0 });
+
   let location = useLocation();
 
   const data = [
@@ -50,6 +56,7 @@ const Wrapper = ({ children }) => {
           link: "Các Nhà Cung Cấp",
           path: "/supplier",
         },
+        { icon: <MdOutlineInventory2 />, link: "Kho hàng", path: "/stock" },
       ],
     },
     {
@@ -94,7 +101,11 @@ const Wrapper = ({ children }) => {
               {data.map((item, index) => {
                 return (
                   <div key={index}>
-                    <Sidebar data={item} />
+                    <Sidebar
+                      data={item}
+                      setActiveTab={setActiveTab}
+                      activeTab={activeTab}
+                    />
                   </div>
                 );
               })}
@@ -145,7 +156,7 @@ const Wrapper = ({ children }) => {
 
 export default Wrapper;
 
-const Sidebar = ({ data }) => {
+const Sidebar = ({ data, setActiveTab, activeTab }) => {
   let navigate = useNavigate();
   const logout = async () => {
     try {
@@ -162,7 +173,12 @@ const Sidebar = ({ data }) => {
       {data.children.map((item, index) => {
         if (item.path === "/login") {
           return (
-            <Link to={""} className="part__nav" key={index} onClick={logout}>
+            <Link
+              to={""}
+              className={`part__nav ${activeTab == index && "active"}`}
+              key={index}
+              onClick={logout}
+            >
               {item.icon}
               <span>
                 {item.link}
@@ -174,11 +190,15 @@ const Sidebar = ({ data }) => {
           return (
             <Link
               to={item.path}
-              className="part__nav"
+              className={`part__nav ${
+                activeTab.title == data.title && activeTab.activeId == index
+                  ? "active"
+                  : ""
+              }`}
               key={index}
-              // style={{
-              //   marginBottom: item.link === "User" && 30,
-              // }}
+              onClick={() =>
+                setActiveTab({ title: data.title, activeId: index })
+              }
             >
               {item.icon}
               <span>{item.link}</span>

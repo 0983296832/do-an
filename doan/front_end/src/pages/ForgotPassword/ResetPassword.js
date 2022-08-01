@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const { email } = useParams();
-  console.log(email);
   return (
     <div className={`container-login sign-in-mode`}>
       <div className="forms-container-login">

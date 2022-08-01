@@ -8,6 +8,7 @@ import Orders from "../../services/orderServices";
 import { v4 as uuidv4 } from "uuid";
 import BasicPagination from "../../components/Pagination";
 import { CSVLink } from "react-csv";
+import Loading from "../../components/Loading";
 
 const { Option } = Select;
 
@@ -47,13 +48,17 @@ const Order = () => {
         params = {
           page: pageNum,
           limit: 10,
+          sort: "-created",
         };
       } else {
         const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
         params = {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          [options]: "i",
+          sort: "-created",
         };
       }
       const result = await Orders.getOrder(params);
@@ -103,6 +108,10 @@ const Order = () => {
             }),
           };
         })
+        // .sort(
+        //   (a, b) =>
+        //     new Date(b.created).getTime() - new Date(a.created).getTime()
+        // )
       );
     } catch (error) {
       Toast("error", error.message);
@@ -127,11 +136,13 @@ const Order = () => {
 
     setLoading(true);
     const key = searchBy + "[regex]";
+    const options = searchBy + "[options]";
     try {
       const params = {
         page: 1,
         limit: 10,
         [key]: searchKey,
+        [options]: "i",
       };
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));
@@ -172,7 +183,7 @@ const Order = () => {
     setLoading(false);
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="main-wrapper">
@@ -204,7 +215,7 @@ const Order = () => {
               <Option value="email">Email</Option>
               <Option value="address">Address</Option>
               <Option value="created">Created</Option>
-              <Option value="receive_date">Recive Date</Option>
+
               <Option value="payment_type">Payment Type</Option>
               <Option value="state">Status</Option>
             </Select>
@@ -231,7 +242,7 @@ const Order = () => {
             </CSVLink>
           </Button>
         )}
-        <ListTable data={data} XAxis={1950} noSup setData={setData} />
+        <ListTable data={data} XAxis={2000} noSup setData={setData} />
         <BasicPagination page={page} setPage={setPage} count={pageCount} />
       </div>
     </div>

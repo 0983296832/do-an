@@ -8,6 +8,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import Modal from "../User/Modal/Modal";
 import ChangePasswordForm from "./ChangePasswordForm";
+import Loading from "../../components/Loading";
 
 const Profile = () => {
   const { id } = useParams();
@@ -102,7 +103,7 @@ const Profile = () => {
     setAddress(e.target.value);
   };
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return (
     <div className="new" style={{ height: "500px" }}>

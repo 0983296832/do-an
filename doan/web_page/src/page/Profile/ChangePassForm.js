@@ -35,7 +35,7 @@ const ChangePasswordForm = ({ id }) => {
       autoComplete={+false}
     >
       <Form.Item
-        label="Old Password"
+        label=" Mật khẩu cũ"
         name="old_password"
         rules={[
           {
@@ -49,7 +49,7 @@ const ChangePasswordForm = ({ id }) => {
 
       <Form.Item
         name="password"
-        label="Password"
+        label="Mật khẩu Mới"
         rules={[
           {
             required: true,
@@ -63,7 +63,7 @@ const ChangePasswordForm = ({ id }) => {
 
       <Form.Item
         name="confirm_password"
-        label="Confirm Password"
+        label="Nhập lại mật khẩu mới"
         dependencies={["password"]}
         hasFeedback
         rules={[

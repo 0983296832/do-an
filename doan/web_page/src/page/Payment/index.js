@@ -68,6 +68,7 @@ const Payment = () => {
     setValue(e.target.value);
   };
   const payment = async () => {
+    let orderId;
     const sumQuery = queryString.parse(window.location.search);
     if (JSON.stringify(sumQuery) !== JSON.stringify({})) {
       const { cart, ...body } = JSON.parse(
@@ -75,10 +76,10 @@ const Payment = () => {
       );
       if (body?.details.length > 0) {
         if (auth.token) {
-          await Product.createOrder(auth.data._id, body);
-        } else await Product.createOrder("random", body);
+          orderId = await Product.createOrder(auth.data._id, body);
+        } else orderId = await Product.createOrder("random", body);
         cart.map((item) => removeFromCart(item, "noToast"));
-        navigate("/payment-success");
+        navigate(`/payment-success/${orderId.data.data._id}`);
         Toast("success", "Đặt hàng thành công");
         return;
       } else {
@@ -113,12 +114,12 @@ const Payment = () => {
         };
         if (body?.details.length > 0) {
           if (auth.token) {
-            await Product.createOrder(auth.data._id, body);
-          } else await Product.createOrder("random", body);
+            orderId = await Product.createOrder(auth.data._id, body);
+          } else orderId = await Product.createOrder("random", body);
           cartState?.cartIdChecked.map((item) =>
             removeFromCart(item, "noToast")
           );
-          navigate("/payment-success");
+          navigate(`/payment-success/${orderId.data.data._id}`);
           Toast("success", "Đặt hàng thành công");
         } else {
           navigate("/payment");

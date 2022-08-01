@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 const path = require("path");
 const hbs = require("nodemailer-express-handlebars");
-
 const sendEmail = (options) => {
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE,
@@ -39,7 +38,7 @@ const sendEmail = (options) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(info);
+      console.log(info.response);
     }
   });
 };

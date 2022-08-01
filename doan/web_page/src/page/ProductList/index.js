@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../../assets/css/product-list.css";
 import ProductView from "../../components/ProductView";
 import Sort from "./Sort";
@@ -47,6 +47,7 @@ const ProductList = () => {
             ["detailsSize[elemMatch]"]: sizeFilter,
             ["detailsColor[elemMatch]"]: colorFilter,
             sort: sumQuery.sort || "",
+            "name[options]": "i",
           };
         } else {
           params = {

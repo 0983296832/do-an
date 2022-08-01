@@ -12,6 +12,7 @@ import Orders from "../../../services/orderServices";
 import moment from "moment";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import Loading from "../../../components/Loading";
 
 const { TextArea } = Input;
 const ProductDetail = () => {
@@ -140,9 +141,8 @@ const ProductDetail = () => {
     }
   };
 
-
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     return (
       <div className="detail-container">

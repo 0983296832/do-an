@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosClient from "./axiosClient";
 const Users = {
   getUserById: (id) => {
@@ -23,7 +22,6 @@ const Users = {
   },
   removeFromCart: (id, body) => {
     const url = `user/delete-cart/${id}`;
-    console.log(body);
     return axiosClient.put(url, body);
   },
   updateCart: (id, body) => {
@@ -33,6 +31,22 @@ const Users = {
   changeRewards: (id, body) => {
     const url = `user/change-rewards/${id}`;
     return axiosClient.post(url, body);
+  },
+  addToHistory: (id, body) => {
+    const url = `user/add-to-history/${id}`;
+    return axiosClient.post(url, body);
+  },
+  getHistory: (id) => {
+    const url = `user/get-history/${id}`;
+    return axiosClient.get(url);
+  },
+  addToFavorite: (id, body) => {
+    const url = `user/add-to-favorite/${id}`;
+    return axiosClient.post(url, body);
+  },
+  getFavorite: (id) => {
+    const url = `user/get-favorite/${id}`;
+    return axiosClient.get(url);
   },
 };
 

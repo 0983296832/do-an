@@ -198,6 +198,7 @@ exports.getAll = async (req, res) => {
     ]);
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
+
     return res
       .status(200)
       .json({ status: "200", message: "success", data: orders, count });
@@ -356,6 +357,7 @@ exports.getRevenueBy = async (req, res) => {
       day = moment(new Date()).startOf("week").format("MM/DD/YYYY");
     } else if (date == "month") {
       day = moment(new Date()).startOf("month").format("MM/DD/YYYY");
+      // day = moment(new Date("04-01-2022")).startOf("month").format("MM/DD/YYYY");
     } else if (date == "year") {
       day = moment(new Date()).startOf("year").format("MM/DD/YYYY");
     }

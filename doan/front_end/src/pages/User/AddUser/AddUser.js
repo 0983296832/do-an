@@ -24,7 +24,6 @@ const AddUser = () => {
     e.preventDefault();
     try {
       const data = await Auth.register({ name, role, email, password });
-      console.log(data);
       if (file !== "") {
         const formData = new FormData();
         formData.append("image", file);

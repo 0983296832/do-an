@@ -32,6 +32,10 @@ const Products = {
     const url = "/product/get-products-out-of-stock";
     return axiosClient.get(url);
   },
+  getStockByMonth: (body) => {
+    const url = "/product/get-stock-by-month";
+    return axiosClient.post(url, body);
+  },
 };
 
 export default Products;

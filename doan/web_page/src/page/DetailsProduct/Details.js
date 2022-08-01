@@ -1,13 +1,21 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../assets/css/details.css";
 import { Divider, Rate } from "antd";
-import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import {
+  AiOutlineHeart,
+  AiOutlineMinusCircle,
+  AiOutlinePlusCircle,
+  AiOutlineShareAlt,
+  AiFillHeart,
+} from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/Loading";
 import Toast from "../../components/Toast";
 import { v4 as uuidv4 } from "uuid";
+import { BsMessenger } from "react-icons/bs";
+import Users from "../../services/userServices";
 
 const Details = ({ data, loading, id }) => {
   let navigate = useNavigate();
@@ -16,6 +24,20 @@ const Details = ({ data, loading, id }) => {
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
   const [number, setNumber] = useState(1);
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    const getLiked = async () => {
+      try {
+        if (!auth.data) return;
+        const data = await Users.getFavorite(auth.data._id);
+        if (data.data.find((i) => i._id == id)) setLiked(true);
+      } catch (error) {
+        Toast("error", error.message);
+      }
+    };
+    getLiked();
+  }, []);
 
   const handleAddToCart = (data) => {
     if (data?.stocks == 0) {
@@ -51,6 +73,21 @@ const Details = ({ data, loading, id }) => {
     }
     return number;
   };
+  const handleLiked = async () => {
+    try {
+      if (!auth.data) {
+        Toast("warn", "Bạn cần phải đăng nhập để thêm vào mục ưa thích");
+        return;
+      }
+      await Users.addToFavorite(auth.data._id, { id: id });
+      setLiked(!liked);
+      !liked
+        ? Toast("success", "Đã thêm sản phẩm vào mục ưa thích")
+        : Toast("success", "Đã xóa khỏi mục ưa thích");
+    } catch (error) {
+      Toast("error", error.message);
+    }
+  };
   if (loading) {
     return <Loading />;
   }
@@ -74,7 +111,22 @@ const Details = ({ data, loading, id }) => {
         <span style={{ fontSize: 15, marginRight: 10 }}>
           ({data?.sales} sản phẩm đã bán)
         </span>
+        <div className="icon-details">
+          {liked ? (
+            <AiFillHeart
+              className="icon-detail"
+              style={{ color: "red" }}
+              onClick={handleLiked}
+            />
+          ) : (
+            <AiOutlineHeart className="icon-detail" onClick={handleLiked} />
+          )}
+
+          <AiOutlineShareAlt className="icon-detail" />
+          <BsMessenger className="icon-detail mess" />
+        </div>
       </div>
+
       <Divider />
       <div className="details-info">
         <li>

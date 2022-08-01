@@ -15,8 +15,8 @@ const FilterByGender = ({ genderFilter, setGenderFilter }) => {
         }}
         onChange={handleChange}
       >
-        <Option value="male">Nam</Option>
-        <Option value="female">Nữ</Option>
+        <Option value="da">da</Option>
+        <Option value="vải">vải</Option>
       </Select>
     </div>
   );

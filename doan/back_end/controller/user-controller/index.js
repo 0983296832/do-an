@@ -1,10 +1,12 @@
 const usersDB = require("../../models/user/userModel");
+const productsDB = require("../../models/product/product");
 const cartsDB = require("../../models/user/cartModel");
 const bcrypt = require("bcryptjs");
 const { passwordValidation } = require("../../validate/validate");
 const cloudinary = require("../../helper/cloudinaryConfig");
 const ImageModel = require("../../models/user/imageModel");
 const Features = require("../../lib/feature");
+const ObjectId = require("mongodb").ObjectID;
 
 // tìm tất cả user
 exports.findAll = async (req, res) => {
@@ -400,7 +402,7 @@ exports.deleteCart = async (req, res) => {
 exports.changeRewards = async (req, res) => {
   try {
     const user = await usersDB.findById(req.params.id);
-    if(user.points - req.body.points<0){
+    if (user.points - req.body.points < 0) {
       return res.status(400).json({
         status: "400",
         message: "not enough points",
@@ -424,6 +426,121 @@ exports.changeRewards = async (req, res) => {
           message: "can not find user",
         });
       }
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.AddToFavorite = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const existFavor = user.favorite_product.find(
+      (item) => item == req.body.id
+    );
+    if (existFavor) {
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $pull: { favorite_product: req.body.id },
+      });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Remove to favorite successfully" });
+    } else {
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $push: { favorite_product: req.body.id },
+      });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Add to favorite successfully" });
+    }
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.getFavorite = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const favorite_product = user.favorite_product;
+    var oids = [];
+    favorite_product.forEach(function (item) {
+      oids.push(new ObjectId(item));
+    });
+
+    const product = await productsDB
+      .find({ _id: { $in: oids } })
+      .populate("image");
+    function mapOrder(a, order, key) {
+      const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
+      return a.sort((a, b) => map[a[key]] - map[b[key]]);
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "get favorite product successfully",
+      data: mapOrder(product, favorite_product, `_id`),
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "400", message: error.message });
+  }
+};
+
+exports.AddToHistory = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const existHis = user.history.find((i) => i == req.body.id);
+    if (existHis) {
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $pull: { history: req.body.id },
+      });
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $push: {
+          history: {
+            $each: [req.body.id],
+            $position: 0,
+          },
+        },
+      });
+    } else {
+      await usersDB.findByIdAndUpdate(req.params.id, {
+        $push: {
+          history: {
+            $each: [req.body.id],
+            $position: 0,
+          },
+        },
+      });
+    }
+    return res
+      .status(200)
+      .json({ status: 200, message: "Add to history successfully" });
+  } catch (error) {
+    return res.status(400).json({ status: 400, message: error.message });
+  }
+};
+
+exports.getHistory = async (req, res) => {
+  try {
+    const user = await usersDB.findById(req.params.id);
+    const history = user.history;
+    var oids = [];
+    history.forEach(function (item) {
+      oids.push(new ObjectId(item));
+    });
+
+    const product = await productsDB
+      .find({ _id: { $in: oids } })
+      .populate("image");
+
+    function mapOrder(a, order, key) {
+      const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
+      return a.sort((a, b) => map[a[key]] - map[b[key]]);
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "get history product successfully",
+      data: mapOrder(product, history, `_id`),
     });
   } catch (error) {
     return res.status(400).json({ status: "400", message: error.message });
