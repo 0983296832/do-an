@@ -578,6 +578,7 @@ exports.getStocks = async (req, res) => {
         ),
       },
     });
+
     const supplier = await suppliersDB.find({
       created: {
         $gte: new Date(
@@ -647,7 +648,7 @@ exports.getStocks = async (req, res) => {
               item.details.reduce((a, i) => {
                 return a + i.quantity;
               }, 0) *
-                item.price
+              item.price
             );
           }, 0) || 0,
         quantity:
@@ -668,21 +669,14 @@ exports.getStocks = async (req, res) => {
                 return acc + i.product_price * i.product_quantity;
               }, 0) *
                 (100 - item.voucher)) /
-                100 +
+              100 +
               25000
             );
           })
           .reduce((acc, item) => {
             return acc + item;
           }, 0),
-        quantity: order.reduce((acc, cur) => {
-          return (
-            acc +
-            cur.details.reduce((a, c) => {
-              return a + c.product_quantity;
-            }, 0)
-          );
-        }, 0),
+        quantity: order.length,
       },
       supplier: {
         money: supplier.reduce((acc, cur) => {
