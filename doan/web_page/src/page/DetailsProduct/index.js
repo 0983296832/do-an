@@ -117,6 +117,7 @@ const DetailsProduct = () => {
             return acc + item.quantity;
           }, 0),
           desc: data.data.data.product.desc,
+          details: data.data.data.product.details
         });
       } catch (error) {
         Toast("error", error.message);
