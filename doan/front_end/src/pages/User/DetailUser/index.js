@@ -49,7 +49,7 @@ const DetailUser = () => {
                     return acc + i.product_price * i.product_quantity;
                   }, 0) *
                     item.voucher) /
-                    100 +
+                  100 +
                   25000
                 ).toLocaleString("en-US", {
                   style: "currency",
@@ -148,7 +148,11 @@ const DetailUser = () => {
             <ChartComponent
               title="Last 6 Months (Revenue)"
               aspect={3 / 1}
-              data={chartData.slice(0, 6)}
+              data={
+                chartData.slice(
+                  new Date().getMonth() + 1 - 6,
+                  new Date().getMonth() + 1
+                )}
             />
           </div>
         </div>

@@ -6,7 +6,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 const Progress = ({ data }) => {
   const target = 10000000;
-  const percentage = (data.day * 100) / 10000000;
+  const percentage = ((data.day * 100) / 10000000).toFixed(2);
 
   return (
     <div className="revenue__progress">
@@ -31,9 +31,8 @@ const Progress = ({ data }) => {
         <div className="summary__item">
           <div className="item__title">Target</div>
           <div
-            className={`item__result ${
-              data.day > target ? "positive" : "negative"
-            }`}
+            className={`item__result ${data.day > target ? "positive" : "negative"
+              }`}
           >
             {data.day > target ? (
               <MdKeyboardArrowUp fontSize="small" />

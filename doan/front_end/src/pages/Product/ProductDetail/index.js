@@ -153,7 +153,11 @@ const ProductDetail = () => {
           <ChartComponent
             title="Last 6 Months (Revenue)"
             aspect={3 / 1}
-            data={chartData.slice(0, 6)}
+            data={
+              chartData.slice(
+                new Date().getMonth() + 1 - 6,
+                new Date().getMonth() + 1
+              )}
           />
         </div>
         <div className="top">
