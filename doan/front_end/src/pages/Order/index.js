@@ -43,6 +43,7 @@ const Order = () => {
   const onChange = (date, dateString) => {
     setDateString(dateString);
   };
+  console.log(dateString)
 
   const fetchData = async (pageNum) => {
     setLoading(true);
@@ -78,11 +79,9 @@ const Order = () => {
           "state[regex]": state,
           [options]: "i",
           sort: "-created",
+          "created[gt]": new Date(dateString),
           "created[lt]": new Date(
-            new Date(dateString).getTime() + 14 * 60 * 60 * 1000
-          ),
-          "created[gt]": new Date(
-            new Date(dateString).getTime() - 10 * 60 * 60 * 1000
+            new Date(dateString).getTime() + 24 * 60 * 60 * 1000
           ),
         };
       }
@@ -127,7 +126,7 @@ const Order = () => {
                 return acc + i.product_price * i.product_quantity;
               }, 0) *
                 item.voucher) /
-                100 +
+              100 +
               25000
             ).toLocaleString("en-US", {
               style: "currency",
@@ -197,7 +196,7 @@ const Order = () => {
                 return acc + i.product_price * i.product_quantity;
               }, 0) *
                 item.voucher) /
-                100 +
+              100 +
               25000
             ).toLocaleString("en-US", {
               style: "currency",
