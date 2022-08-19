@@ -18,16 +18,25 @@ const Product = ({ data, like }) => {
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
 
-  const handleAddToCart = (data) => {
-    if (!data.product_size || !data.product_color) {
+  const handleAddToCart = (item) => {
+    if (!item.product_size || !item.product_color) {
       Toast("error", "Chưa có màu sắc hoặc size");
       return;
-    } else {
-      addToCart(data);
-      setDisabled(false);
-      setActiveSize(null);
-      setActiveColor(null);
     }
+    if (data?.stocks == 0) {
+      Toast("error", "Sản phẩm đã hết hàng");
+      return
+    }
+
+    if (data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity < 1 || data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity == undefined) {
+      Toast("error", "Số lượng trong kho không đủ");
+      return
+    }
+    addToCart(item);
+    setDisabled(false);
+    setActiveSize(null);
+    setActiveColor(null);
+
   };
   const ellipseString = (text) => {
     if (text.length > 50) return text.substring(0, 50) + "...";
@@ -42,7 +51,7 @@ const Product = ({ data, like }) => {
             delay: 2500,
             disableOnInteraction: false,
           }}
-          // modules={[Autoplay]}
+        // modules={[Autoplay]}
         >
           {data.image.map((item, index) => (
             <SwiperSlide key={index}>
@@ -100,9 +109,8 @@ const Product = ({ data, like }) => {
                     return (
                       <div
                         key={index}
-                        className={`color-btn ${
-                          index === activeColor && "activeColor"
-                        }`}
+                        className={`color-btn ${index === activeColor && "activeColor"
+                          }`}
                         style={{ backgroundColor: item, width: 15, height: 15 }}
                         onClick={() => setActiveColor(index)}
                       ></div>
