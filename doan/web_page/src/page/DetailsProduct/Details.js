@@ -46,7 +46,7 @@ const Details = ({ data, loading, id }) => {
       return
     }
 
-    if (data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity < number) {
+    if (data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity < number || data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity == undefined) {
       Toast("error", "Số lượng trong kho không đủ");
       return
     }
@@ -57,12 +57,13 @@ const Details = ({ data, loading, id }) => {
       addToCart(item);
     }
   };
+
   const handleBuyNow = async (item) => {
     if (data?.stocks == 0) {
       Toast("error", "Sản phẩm đã hết hàng");
       return
     }
-    if (data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity < number) {
+    if (data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity < number || data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity == undefined) {
       Toast("error", "Số lượng trong kho không đủ");
       return
     }
@@ -103,7 +104,7 @@ const Details = ({ data, loading, id }) => {
 
   const showStock = () => {
     if (activeColor != undefined && activeSize !== undefined) {
-      return <p style={{ marginLeft: "-137px", fontSize: 13 }}>{data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity} sp còn lại</p>
+      return <p style={{ marginLeft: "-137px", fontSize: 13 }}>{data?.details?.find(i => i.color == data?.color[activeColor] && i.size == data?.size[activeSize])?.quantity || 0} sp còn lại</p>
     } else return null
   }
 
