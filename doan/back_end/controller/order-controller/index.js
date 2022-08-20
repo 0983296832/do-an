@@ -27,7 +27,7 @@ exports.order = async (req, res) => {
         });
         await cartsDB.findByIdAndDelete(item._id);
       }
-      // tìm sản phẩm và giảm số lượng sản phẩm đó đồng thời tăng số lương đã bán
+
       product.details.map(async (i) => {
         if (i.color == item.color && i.size == item.size) {
           const newItem = { ...i, quantity: i.quantity - item.quantity };
@@ -87,8 +87,52 @@ exports.order = async (req, res) => {
       created: new Date(),
     });
     const savedOrder = await order.save();
-    // sau khi lưu xong sẽ kiểm tra nếu có người dùng sẽ tìm và thêm order cho ng dùng đó
-    // ngược lại thì chỉ tạo order trong dtb và không lưu cho ai cả
+    const addToPreOrder = async (product) => {
+      const productExists = await productsDB.findById(product.product_id);
+
+      if (!productExists) {
+        return;
+      }
+
+      const exist = productExists.pre_order.find(
+        (item) =>
+          item.color == product.product_color &&
+          item.size == product.product_size
+      );
+      if (exist) {
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $pull: {
+            pre_order: {
+              color: product.product_color,
+              size: product.product_size,
+            },
+          },
+        });
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $push: {
+            pre_order: {
+              color: product.product_color,
+              quantity: product.product_quantity + exist.quantity,
+              size: product.product_size,
+            },
+          },
+        });
+      } else {
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $push: {
+            pre_order: {
+              color: product.product_color,
+              quantity: product.product_quantity,
+              size: product.product_size,
+            },
+          },
+        });
+      }
+    };
+
+    Promise.all(
+      req.body.details.map(async (item) => await addToPreOrder(item))
+    );
     // HTML Message
     const message = `
      <h1>Thank you for your purchase from us.</h1>
@@ -134,7 +178,7 @@ exports.order = async (req, res) => {
           25000
         ).toLocaleString(),
         id: savedOrder._id,
-        created: moment(new Date()).zone("+07:00").format("DD/MM/YYYY"),
+        created: moment(new Date()).utcOffset("+07:00").format("DD/MM/YYYY"),
         link: `${process.env.WEB_URL}/order/${savedOrder._id}`,
       },
     });
@@ -199,13 +243,7 @@ exports.getAll = async (req, res) => {
     ]);
     const orders = result[0].status === "fulfilled" ? result[0].value : [];
     const count = result[1].status === "fulfilled" ? result[1].value : 0;
-    // const dataOrder = await ordersDB.find({
-    //   created: {
-    //     $lt: new Date("07-26-2022"),
-    //     $gt: new Date(new Date("07-26-2022").getTime() - 24 * 60 * 60 * 1000),
-    //   },
-    // });
-    // console.log(dataOrder);
+
     return res
       .status(200)
       .json({ status: "200", message: "success", data: orders, count });
@@ -252,6 +290,60 @@ exports.update = async (req, res) => {
               .json({ status: "400", message: err.message });
           });
       }
+      const orderPro = await ordersDB.findById(req.params.id);
+      const findByIdAndUpdateProduct2 = async (product) => {
+        const productExists = await productsDB.findById(product.product_id);
+
+        if (!productExists) {
+          return;
+        }
+
+        const exist = productExists.pre_order.find(
+          (item) =>
+            item.color == product.product_color &&
+            item.size == product.product_size
+        );
+        if (exist.quantity - product.product_quantity == 0) {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: {
+                color: product.product_color,
+                size: product.product_size,
+              },
+            },
+          });
+        } else {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color },
+            },
+          });
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $push: {
+              pre_order: {
+                color: product.product_color,
+                quantity: exist.quantity - product.product_quantity,
+              },
+            },
+          });
+        }
+      };
+
+      Promise.all(
+        orderPro.details
+          .map((item) => {
+            return {
+              ...item,
+              image: item.product_image,
+              price: item.product_price,
+              quantity: item.product_quantity,
+              size: item.product_size,
+              color: item.product_color,
+              name: item.product_name,
+            };
+          })
+          .map((item) => findByIdAndUpdateProduct2(item))
+      );
     }
 
     const findByIdAndUpdateProduct = async (item) => {
@@ -262,6 +354,7 @@ exports.update = async (req, res) => {
       product.details.map(async (i) => {
         if (i.color == item.color && i.size == item.size) {
           const newItem = { ...i, quantity: i.quantity + item.quantity };
+
           await productsDB.updateOne(
             { product_code: item.product_code },
             {
@@ -289,6 +382,59 @@ exports.update = async (req, res) => {
       req.body.state === "giao hàng không thành công"
     ) {
       const order = await ordersDB.findById(req.params.id);
+      const findByIdAndUpdateProduct2 = async (product) => {
+        const productExists = await productsDB.findById(product.product_id);
+
+        if (!productExists) {
+          return;
+        }
+
+        const exist = productExists.pre_order.find(
+          (item) =>
+            item.color == product.product_color &&
+            item.size == product.product_size
+        );
+        if (exist.quantity - product.product_quantity == 0) {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: {
+                color: product.product_color,
+                size: product.product_size,
+              },
+            },
+          });
+        } else {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color },
+            },
+          });
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $push: {
+              pre_order: {
+                color: product.product_color,
+                quantity: exist.quantity - product.product_quantity,
+              },
+            },
+          });
+        }
+      };
+
+      Promise.all(
+        order.details
+          .map((item) => {
+            return {
+              ...item,
+              image: item.product_image,
+              price: item.product_price,
+              quantity: item.product_quantity,
+              size: item.product_size,
+              color: item.product_color,
+              name: item.product_name,
+            };
+          })
+          .map((item) => findByIdAndUpdateProduct2(item))
+      );
       Promise.all(
         order.details
           .map((item) => {

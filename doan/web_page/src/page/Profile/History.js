@@ -25,6 +25,7 @@ const History = () => {
               price: item.price,
               category: item.category,
               rate: item.votes || 0,
+              details: item.details,
               sale: item.discount > 0,
               discount: item.discount,
               priceSale: item.price * ((100 - item.discount) / 100),

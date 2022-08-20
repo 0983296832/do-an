@@ -43,6 +43,7 @@ const Order = () => {
   const onChange = (date, dateString) => {
     setDateString(dateString);
   };
+  console.log(dateString);
 
   const fetchData = async (pageNum) => {
     setLoading(true);
@@ -78,12 +79,10 @@ const Order = () => {
           "state[regex]": state,
           [options]: "i",
           sort: "-created",
-          // "created[lt]": new Date(
-          //   new Date(dateString).getTime() + 14 * 60 * 60 * 1000
-          // ),
-          // "created[gt]": new Date(
-          //   new Date(dateString).getTime() - 10 * 60 * 60 * 1000
-          // ),
+          "created[gt]": new Date(dateString),
+          "created[lt]": new Date(
+            new Date(dateString).getTime() + 24 * 60 * 60 * 1000
+          ),
         };
       }
 
@@ -287,10 +286,10 @@ const Order = () => {
               </Option>
             </Select>
           </div>
-          {/* <div className="feature-select" style={{ marginLeft: 15 }}>
+          <div className="feature-select" style={{ marginLeft: 15 }}>
             <h3>Filter By Date:</h3>
             <DatePicker onChange={onChange} />
-          </div> */}
+          </div>
         </div>
         {!loading && (
           <Button type="primary">

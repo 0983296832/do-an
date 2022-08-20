@@ -79,8 +79,8 @@ const Header = () => {
             </div>
 
             <div className="product-price">
-              {item.sale && <h4 className="sale">{item.price}đ</h4>}
-              <h4>{item.priceSale}đ</h4>
+              {item.sale && <h4 className="sale">{item.price.toLocaleString()}đ</h4>}
+              <h4>{item.priceSale.toLocaleString()}đ</h4>
             </div>
           </div>
           <img src={item.image} alt="" />
@@ -119,15 +119,15 @@ const Header = () => {
         !searchText
           ? []
           : data.map((item) =>
-              renderTitle({
-                id: item._id,
-                name: item.name,
-                price: item.price,
-                priceSale: item.price * ((100 - item.discount) / 100),
-                image: item.image[0].imageUrl,
-                sale: item.discount > 0,
-              })
-            )
+            renderTitle({
+              id: item._id,
+              name: item.name,
+              price: item.price,
+              priceSale: item.price * ((100 - item.discount) / 100),
+              image: item.image[0].imageUrl,
+              sale: item.discount > 0,
+            })
+          )
       );
       setSearchValues(searchText);
       return;
@@ -167,7 +167,7 @@ const Header = () => {
             allowClear
             defaultValue=""
             onClear={() => setOptions([])}
-            // autoComplete
+          // autoComplete
           />
 
           <Select

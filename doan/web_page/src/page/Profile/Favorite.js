@@ -26,6 +26,7 @@ const Favorite = () => {
               category: item.category,
               rate: item.votes || 0,
               sale: item.discount > 0,
+              details: item.details,
               discount: item.discount,
               priceSale: item.price * ((100 - item.discount) / 100),
               size: [...new Set(item.details.map((i) => i.size))],

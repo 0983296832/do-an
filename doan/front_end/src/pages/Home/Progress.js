@@ -6,14 +6,14 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 const Progress = ({ data }) => {
   const target = 10000000;
-  const percentage = (data.day * 100) / 10000000;
+  const percentage = ((data.day * 100) / 10000000).toFixed(2);
 
   return (
     <div className="revenue__progress">
       <div className="progress">
         <CircularProgressbar
           value={percentage}
-          text={`${percentage.toFixed(2)}%`}
+          text={`${percentage}%`}
           strokeWidth={5}
         />
       </div>

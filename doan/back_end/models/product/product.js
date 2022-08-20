@@ -44,6 +44,8 @@ const productSchema = new mongoose.Schema({
   },
   supplier: [{ type: mongoose.Schema.Types.ObjectId, ref: "suppliers" }],
   createdAt: { type: Date },
+  pre_order: { type: Array },
+
 });
 
 productSchema.index({ product_code: "text" });

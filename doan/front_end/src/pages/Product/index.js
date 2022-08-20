@@ -98,6 +98,11 @@ const productColumns = [
     width: 100,
   },
   {
+    field: "pre_order",
+    headerName: "Order",
+    width: 100,
+  },
+  {
     field: "stocks",
     headerName: "Stocks",
     width: 100,
@@ -218,6 +223,15 @@ const ProductManagement = () => {
             stocks: item.details.reduce((acc, item) => {
               return acc + item.quantity;
             }, 0),
+            pre_order: item.pre_order.reduce((acc, cur) => {
+              return acc + cur.quantity;
+            }, 0) > 0 ? (item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0) + item.pre_order.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0)) : (item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0))
           };
         })
       );
@@ -227,6 +241,7 @@ const ProductManagement = () => {
     setLoading(false);
     return;
   };
+  console.log(data)
   useEffect(() => {
     setLoading(true);
     let isCancel = false;
@@ -287,6 +302,15 @@ const ProductManagement = () => {
             stocks: item.details.reduce((acc, item) => {
               return acc + item.quantity;
             }, 0),
+            pre_order: item.pre_order.reduce((acc, cur) => {
+              return acc + cur.quantity;
+            }, 0) > 0 ? (item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0) + item.pre_order.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0)) : (item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0))
           };
         })
       );
