@@ -9,6 +9,7 @@ const sendEmail = require("../../untils/sendEmail");
 
 // tạo mới order
 exports.order = async (req, res) => {
+  console.log()
   try {
     if (_.isEmpty(req.body)) {
       return res
