@@ -8,12 +8,12 @@ const cartsDB = require("../../models/user/cartModel");
 const sendEmail = require("../../untils/sendEmail");
 
 exports.order = async (req, res) => {
-  console.log()
+  console.log("hello")
   try {
     if (_.isEmpty(req.body)) {
       return res
         .status(400)
-        .json({ status: 400, message: "body can not be empty" });
+        .json({ status: 500, message: "body can not be empty!!!" });
     }
 
     const findByIdAndUpdateProduct = async (item) => {
