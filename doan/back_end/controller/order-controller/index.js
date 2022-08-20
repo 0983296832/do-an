@@ -15,66 +15,17 @@ exports.order = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
-    // hàm để tìm sản phẩm và update số lượng sp
-    const findByIdAndUpdateProduct = async (item) => {
-      const product = await productsDB.findOne({
-        product_code: item.product_code,
-      });
-      //  kiểm tra nếu có người dùng thì sẽ xóa nhưng sp vừa order ra khỏi giỏ hàng
-      if (req.params.id != "random") {
-        await usersDB.findByIdAndUpdate(req.params.id, {
-          $pull: { carts: item._id },
-        });
-        await cartsDB.findByIdAndDelete(item._id);
-      }
+    const hello = () => {
+      return "hello world!"
+    }
 
-      product.details.map(async (i) => {
-        if (i.color == item.color && i.size == item.size) {
-          const newItem = { ...i, quantity: i.quantity - item.quantity };
-          await productsDB.updateOne(
-            { product_code: item.product_code },
-            {
-              $pull: {
-                details: {
-                  color: i.color,
-                  quantity: i.quantity,
-                  size: i.size,
-                },
-              },
-            }
-          );
-          await productsDB.updateOne(
-            { product_code: item.product_code },
-            {
-              $push: { details: newItem },
-              $inc: { sales: item.quantity },
-            }
-          );
-        }
-      });
-    };
-    // gọi hàm trên
-    Promise.all(
-      req.body.details
-        .map((item) => {
-          return {
-            ...item,
-            image: item.product_image,
-            price: item.product_price,
-            quantity: item.product_quantity,
-            size: item.product_size,
-            color: item.product_color,
-            name: item.product_name,
-          };
-        })
-        .map((item) => findByIdAndUpdateProduct(item))
-    );
+    hello()
     // hàm để tìm sản phẩm và update số lượng sp
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
         product_code: item.product_code,
       });
-      //  kiểm tra nếu có người dùng thì sẽ xóa nhưng sp vừa order ra khỏi giỏ hàng
+      //  kiểm tra nếu có người dùng thì sẽ xóa những spham
       if (req.params.id != "random") {
         await usersDB.findByIdAndUpdate(req.params.id, {
           $pull: { carts: item._id },
@@ -191,11 +142,9 @@ exports.order = async (req, res) => {
     const message = `
      <h1>Thank you for your purchase from us.</h1>
      <h1>Your order code: ${savedOrder._id}</h1> 
-     <a href=${
-       process.env.WEB_URL + "/order/" + savedOrder._id
-     }>Click to see your order: ${
-      process.env.WEB_URL + "/order/" + savedOrder._id
-    }</a> 
+     <a href=${process.env.WEB_URL + "/order/" + savedOrder._id
+      }>Click to see your order: ${process.env.WEB_URL + "/order/" + savedOrder._id
+      }</a> 
    `;
 
     await sendEmail({
@@ -228,7 +177,7 @@ exports.order = async (req, res) => {
             0
           ) *
             req.body.voucher) /
-            100 +
+          100 +
           25000
         ).toLocaleString(),
         id: savedOrder._id,
@@ -539,7 +488,7 @@ exports.getRevenue = async (req, res) => {
             return acc + i.product_price * i.product_quantity;
           }, 0) *
             item.voucher) /
-            100 +
+          100 +
           25000
         );
       })
@@ -585,7 +534,7 @@ exports.getRevenueBy = async (req, res) => {
             return acc + i.product_price * i.product_quantity;
           }, 0) *
             item.voucher) /
-            100 +
+          100 +
           25000
         );
       })
@@ -645,7 +594,7 @@ exports.getRevenueByHaflYear = async (req, res) => {
                 return acc + i.product_price * i.product_quantity;
               }, 0) *
                 item.voucher) /
-                100 +
+              100 +
               25000
             );
           })
