@@ -93,29 +93,25 @@ exports.order = async (req, res) => {
         return
       }
 
-      productsDB.findByIdAndUpdate(product.product_id).then((result, err) => {
-        if (err) {
-          console.log(err)
-        } else {
-          const exist = result.pre_order.find(item => item.color == product.product_color && item.size == product.product_size)
-          let newPre = []
-          if (exist) {
-            newPre = result.pre_order.map(i => {
-              if (i.color == product.product_color && i.size == product.product_size) {
-                return { color: i.color, quantity: i.quantity + product.product_quantity, size: product.product_size }
-              }
-              else {
-                return i
-              }
-            }
-            )
-          } else {
-            newPre = [...result.pre_order, { color: product.product_color, quantity: product.product_quantity, size: product.product_size }]
+      const exist = productExists.pre_order.find(item => item.color == product.product_color && item.size == product.product_size)
+      if (exist) {
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $pull: {
+            pre_order: { color: product.product_color, size: product.product_size }
           }
-          result.pre_order = newPre
-          result.save();
-        }
-      }).catch(err => console.log(err));
+        });
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $push: {
+            pre_order: { color: product.product_color, quantity: product.product_quantity + exist.quantity, size: product.product_size }
+          },
+        });
+      } else {
+        await productsDB.findByIdAndUpdate(product.product_id, {
+          $push: {
+            pre_order: { color: product.product_color, quantity: product.product_quantity, size: product.product_size }
+          },
+        });
+      }
     }
 
     Promise.all(req.body.details.map(async (item) => await addToPreOrder(item)))
@@ -283,19 +279,25 @@ exports.update = async (req, res) => {
           return
         }
 
-        productsDB.findByIdAndUpdate(product.product_id).then((result, err) => {
-          if (err) {
-            console.log(err)
-          } else {
-            const newPre = result.pre_order.map(item => {
-              if (item.color == product.product_color && item.size == product.product_size) {
-                return { ...item, quantity: item.quantity - product.product_quantity }
-              } else return item
-            }).filter(i => i.quantity > 0)
-            result.pre_order = newPre
-            result.save();
-          }
-        }).catch(err => console.log(err));
+        const exist = productExists.pre_order.find(item => item.color == product.product_color && item.size == product.product_size);
+        if (exist.quantity - product.product_quantity == 0) {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color, size: product.product_size }
+            }
+          });
+        } else {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color }
+            }
+          });
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $push: {
+              pre_order: { color: product.product_color, quantity: exist.quantity - product.product_quantity }
+            },
+          });
+        }
       };
 
       Promise.all(
@@ -359,19 +361,25 @@ exports.update = async (req, res) => {
           return
         }
 
-        productsDB.findByIdAndUpdate(product.product_id).then((result, err) => {
-          if (err) {
-            console.log(err)
-          } else {
-            const newPre = result.pre_order.map(item => {
-              if (item.color == product.product_color && item.size == product.product_size) {
-                return { ...item, quantity: item.quantity - product.product_quantity }
-              } else return item
-            }).filter(i => i.quantity > 0)
-            result.pre_order = newPre
-            result.save();
-          }
-        }).catch(err => console.log(err));
+        const exist = productExists.pre_order.find(item => item.color == product.product_color && item.size == product.product_size);
+        if (exist.quantity - product.product_quantity == 0) {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color, size: product.product_size }
+            }
+          });
+        } else {
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $pull: {
+              pre_order: { color: product.product_color }
+            }
+          });
+          await productsDB.findByIdAndUpdate(product.product_id, {
+            $push: {
+              pre_order: { color: product.product_color, quantity: exist.quantity - product.product_quantity }
+            },
+          });
+        }
       };
 
       Promise.all(
