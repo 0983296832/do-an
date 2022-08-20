@@ -8,6 +8,7 @@ const cartsDB = require("../../models/user/cartModel");
 const sendEmail = require("../../untils/sendEmail");
 
 exports.order = async (req, res) => {
+  console.log()
   try {
     if (_.isEmpty(req.body)) {
       return res
