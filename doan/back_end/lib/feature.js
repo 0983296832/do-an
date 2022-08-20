@@ -89,6 +89,7 @@ module.exports = function (query, queryString) {
       (match) => "$" + match
     );
     this.query = this.query.find(JSON.parse(queryStr));
+
     return this;
   };
   //localhost:3000/product/get-all?price[gte]=300&price[lte]=10000

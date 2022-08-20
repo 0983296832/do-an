@@ -1,7 +1,7 @@
 import "../../assets/css/datatable.css";
 import { useState, useEffect } from "react";
 import Toast from "../../components/Toast";
-import { Input, Select, Button } from "antd";
+import { Input, Select, Button, DatePicker } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import ListTable from "../../components/ListOrder";
 import Orders from "../../services/orderServices";
@@ -19,6 +19,7 @@ const Order = () => {
   const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [searchBy, setSearchBy] = useState("all");
+  const [state, setState] = useState("");
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [dataScv, setDataScv] = useState();
@@ -38,17 +39,22 @@ const Order = () => {
     { label: "Shipping Fee", key: "shipping_fee" },
     { label: "Receive Date", key: "receive_date" },
   ]);
+  const [dateString, setDateString] = useState("");
+  const onChange = (date, dateString) => {
+    setDateString(dateString);
+  };
 
   const fetchData = async (pageNum) => {
     setLoading(true);
     try {
       let params;
-      if (searchBy === "all") {
+      if (searchBy == "all") {
         setSearchKey("");
         params = {
           page: pageNum,
           limit: 10,
           sort: "-created",
+          "state[regex]": state,
         };
       } else {
         const key = searchBy + "[regex]";
@@ -57,14 +63,35 @@ const Order = () => {
           page: pageNum,
           limit: 10,
           [key]: searchKey,
+          "state[regex]": state,
           [options]: "i",
           sort: "-created",
         };
       }
+      if (dateString !== "") {
+        const key = searchBy + "[regex]";
+        const options = searchBy + "[options]";
+        params = {
+          page: pageNum,
+          limit: 10,
+          [key]: searchKey,
+          "state[regex]": state,
+          [options]: "i",
+          sort: "-created",
+          // "created[lt]": new Date(
+          //   new Date(dateString).getTime() + 14 * 60 * 60 * 1000
+          // ),
+          // "created[gt]": new Date(
+          //   new Date(dateString).getTime() - 10 * 60 * 60 * 1000
+          // ),
+        };
+      }
+
       const result = await Orders.getOrder(params);
       const { data: dataScv } = await Orders.getOrder({
         page: 1,
         limit: 100000,
+        ...params,
       });
       setDataScv(
         dataScv.map((item) => {
@@ -126,7 +153,7 @@ const Order = () => {
     return () => {
       isCancel = true;
     };
-  }, [page]);
+  }, [page, state, dateString]);
 
   const getDataBySearch = async () => {
     if (searchBy === "all") {
@@ -142,8 +169,10 @@ const Order = () => {
         page: 1,
         limit: 10,
         [key]: searchKey,
+        "state[regex]": state,
         [options]: "i",
       };
+
       const result = await Orders.getOrder(params);
       setPageCount(Math.ceil(result.count / 10));
       setData(
@@ -182,54 +211,86 @@ const Order = () => {
     }
     setLoading(false);
   };
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <div className="main-wrapper">
       <div className="datatable">
         <div className="datatableTitle">Quản lý đơn hàng</div>
         <div className="datatable-feature">
-          <div className="feature-input">
-            <h3>Bạn đang tìm kiếm cái gì?</h3>
-            <Input
-              placeholder="Tìm kiếm thứ gì đó..."
-              prefix={<SearchOutlined />}
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-              allowClear
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+            }}
+          >
+            <div className="feature-input" style={{ width: 300 }}>
+              <h3>What are you looking for?</h3>
+              <Input
+                placeholder="Search something..."
+                prefix={<SearchOutlined />}
+                value={searchKey}
+                onChange={(e) => setSearchKey(e.target.value)}
+                allowClear
+              />
+            </div>
+            <div className="feature-select">
+              <h3>Search By:</h3>
+              <Select
+                defaultValue={searchBy}
+                style={{
+                  width: 200,
+                }}
+                onChange={(value) => setSearchBy(value)}
+              >
+                <Option value="all">All</Option>
+                <Option value="name">Name</Option>
+                <Option value="phone">Phone Number</Option>
+                <Option value="email">Email</Option>
+                <Option value="address">Address</Option>
+                <Option value="created">Created</Option>
+                <Option value="receive_date">Recive Date</Option>
+                <Option value="payment_type">Payment Type</Option>
+              </Select>
+            </div>
+            <div className="feature-btn">
+              <Button
+                type="primary"
+                icon={<SearchOutlined />}
+                size="middle"
+                onClick={getDataBySearch}
+              >
+                Search
+              </Button>
+            </div>
           </div>
-          <div className="feature-select">
-            <h3>Tìm kiếm bởi:</h3>
-            <Select
-              defaultValue={searchBy}
-              style={{
-                width: 200,
-              }}
-              onChange={(value) => setSearchBy(value)}
-            >
-              <Option value="all">Tất cả</Option>
-              <Option value="name">Name</Option>
-              <Option value="phone">Phone Number</Option>
-              <Option value="email">Email</Option>
-              <Option value="address">Address</Option>
-              <Option value="created">Created</Option>
 
-              <Option value="payment_type">Payment Type</Option>
-              <Option value="state">Status</Option>
+          <div className="feature-select" style={{ marginLeft: 15 }}>
+            <h3>Filter By State:</h3>
+            <Select
+              defaultValue={state}
+              style={{
+                width: 170,
+              }}
+              onChange={(value) => setState(value)}
+            >
+              <Option value="">All</Option>
+              <Option value="đang chờ xác nhận">đang chờ xác nhận</Option>
+              <Option value="đã xác nhận">đã xác nhận</Option>
+              <Option value="đang đợi gói hàng">đang đợi gói hàng</Option>
+              <Option value="đang giao hàng">đang giao hàng</Option>
+              <Option value="giao hàng thành công">giao hàng thành công</Option>
+              <Option value="đã hủy">đã hủy</Option>
+              <Option value="giao hàng không thành công">
+                giao hàng không thành công
+              </Option>
             </Select>
           </div>
-          <div className="feature-btn">
-            <Button
-              type="primary"
-              icon={<SearchOutlined />}
-              size="middle"
-              onClick={getDataBySearch}
-            >
-              Tìm kiếm
-            </Button>
-          </div>
+          {/* <div className="feature-select" style={{ marginLeft: 15 }}>
+            <h3>Filter By Date:</h3>
+            <DatePicker onChange={onChange} />
+          </div> */}
         </div>
         {!loading && (
           <Button type="primary">
@@ -242,8 +303,15 @@ const Order = () => {
             </CSVLink>
           </Button>
         )}
-        <ListTable data={data} XAxis={2000} noSup setData={setData} />
-        <BasicPagination page={page} setPage={setPage} count={pageCount} />
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
+            {" "}
+            <ListTable data={data} XAxis={2000} noSup setData={setData} />
+            <BasicPagination page={page} setPage={setPage} count={pageCount} />
+          </>
+        )}
       </div>
     </div>
   );

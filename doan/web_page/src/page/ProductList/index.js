@@ -82,6 +82,9 @@ const ProductList = () => {
               color: [...new Set(item.details.map((i) => i.color))],
               brand: item.brand,
               category: item.category,
+              stocks: item.details.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0),
             };
           })
         );
@@ -123,6 +126,9 @@ const ProductList = () => {
             color: [...new Set(item.details.map((i) => i.color))],
             brand: item.brand,
             category: item.category,
+            stocks: item.details.reduce((acc, item) => {
+              return acc + item.quantity;
+            }, 0),
           };
         })
       );

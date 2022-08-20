@@ -17,7 +17,7 @@ const Product = ({ data, like }) => {
   const [disabled, setDisabled] = useState(false);
   const [activeSize, setActiveSize] = useState();
   const [activeColor, setActiveColor] = useState();
-
+  console.log(data);
   const handleAddToCart = (data) => {
     if (!data.product_size || !data.product_color) {
       Toast("error", "Chưa có màu sắc hoặc size");
@@ -57,6 +57,7 @@ const Product = ({ data, like }) => {
           </div>
         </Link>
         {data.sale && <div className="product-sale">SALE</div>}
+        {/* {data.sale && <div className="product-sale">SALE{data.discount}%</div>} */}
         {data.stocks == 0 && <div className="product-soldOut">Cháy Hàng</div>}
         <div
           className="product-addToCart"
@@ -71,7 +72,10 @@ const Product = ({ data, like }) => {
         <div className="product-infor" style={{ minHeight: 150 }}>
           <h4 style={{ minHeight: 44 }}>{ellipseString(data.title)}</h4>
 
-          <h3>{data.brand}</h3>
+          <h3>
+            {data.brand}
+            {/* {data?.gender} */}
+          </h3>
           <div className="product-rate">
             <Rate disabled defaultValue={data.rate} />
           </div>

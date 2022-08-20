@@ -51,7 +51,7 @@ const TopProduct = ({ data }) => {
         >
           <Link
             to={`/product-list-search?name=&brand=tất cả&sort=${
-              tabIndex === 0 ? "-sale" : "-discount"
+              tabIndex === 0 ? "-sales" : "-discount"
             }`}
             className="view-btn"
           >

@@ -40,7 +40,7 @@ const Home = () => {
       const paramsSales = {
         page: 1,
         limit: 10,
-        sort: "-discount",
+        "discount[gt]": 0,
       };
       let result = await Promise.allSettled([
         Products.getProducts(paramsNike),
@@ -62,6 +62,7 @@ const Home = () => {
                 rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,
+                gender: item.gender,
                 priceSale: item.price * ((100 - item.discount) / 100),
                 size: [...new Set(item.details.map((i) => i.size))],
                 color: [...new Set(item.details.map((i) => i.color))],
@@ -86,6 +87,7 @@ const Home = () => {
                 rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,
+                gender: item.gender,
                 priceSale: item.price * ((100 - item.discount) / 100),
                 size: [...new Set(item.details.map((i) => i.size))],
                 color: [...new Set(item.details.map((i) => i.color))],
@@ -106,6 +108,7 @@ const Home = () => {
                 title: item.name,
                 image: item.image,
                 price: item.price,
+                gender: item.gender,
                 category: item.category,
                 rate: item.votes || 0,
                 sale: item.discount > 0,
@@ -133,6 +136,7 @@ const Home = () => {
                 category: item.category,
                 rate: item.votes || 0,
                 sale: item.discount > 0,
+                gender: item.gender,
                 discount: item.discount,
                 priceSale: item.price * ((100 - item.discount) / 100),
                 size: [...new Set(item.details.map((i) => i.size))],
@@ -155,6 +159,7 @@ const Home = () => {
                 image: item.image,
                 price: item.price,
                 category: item.category,
+                gender: item.gender,
                 rate: item.votes || 0,
                 sale: item.discount > 0,
                 discount: item.discount,

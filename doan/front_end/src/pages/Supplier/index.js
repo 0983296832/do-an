@@ -63,6 +63,7 @@ const Supplier = () => {
       const { data: dataScv } = await Suppliers.getSupplier({
         page: 1,
         limit: 100000,
+        ...params,
       });
       setDataScv(dataScv);
       setPageCount(Math.ceil(result.count / 10));
