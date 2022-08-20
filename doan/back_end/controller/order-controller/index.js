@@ -15,11 +15,7 @@ exports.order = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "body can not be empty" });
     }
-    const hello = () => {
-      return "hello world!"
-    }
 
-    hello()
     // hàm để tìm sản phẩm và update số lượng sp
     const findByIdAndUpdateProduct = async (item) => {
       const product = await productsDB.findOne({
@@ -142,9 +138,11 @@ exports.order = async (req, res) => {
     const message = `
      <h1>Thank you for your purchase from us.</h1>
      <h1>Your order code: ${savedOrder._id}</h1> 
-     <a href=${process.env.WEB_URL + "/order/" + savedOrder._id
-      }>Click to see your order: ${process.env.WEB_URL + "/order/" + savedOrder._id
-      }</a> 
+     <a href=${
+       process.env.WEB_URL + "/order/" + savedOrder._id
+     }>Click to see your order: ${
+      process.env.WEB_URL + "/order/" + savedOrder._id
+    }</a> 
    `;
 
     await sendEmail({
@@ -177,7 +175,7 @@ exports.order = async (req, res) => {
             0
           ) *
             req.body.voucher) /
-          100 +
+            100 +
           25000
         ).toLocaleString(),
         id: savedOrder._id,
@@ -488,7 +486,7 @@ exports.getRevenue = async (req, res) => {
             return acc + i.product_price * i.product_quantity;
           }, 0) *
             item.voucher) /
-          100 +
+            100 +
           25000
         );
       })
@@ -534,7 +532,7 @@ exports.getRevenueBy = async (req, res) => {
             return acc + i.product_price * i.product_quantity;
           }, 0) *
             item.voucher) /
-          100 +
+            100 +
           25000
         );
       })
@@ -594,7 +592,7 @@ exports.getRevenueByHaflYear = async (req, res) => {
                 return acc + i.product_price * i.product_quantity;
               }, 0) *
                 item.voucher) /
-              100 +
+                100 +
               25000
             );
           })
