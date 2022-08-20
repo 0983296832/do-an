@@ -69,6 +69,60 @@ exports.order = async (req, res) => {
         })
         .map((item) => findByIdAndUpdateProduct(item))
     );
+    // hàm để tìm sản phẩm và update số lượng sp
+    const findByIdAndUpdateProduct = async (item) => {
+      const product = await productsDB.findOne({
+        product_code: item.product_code,
+      });
+      //  kiểm tra nếu có người dùng thì sẽ xóa nhưng sp vừa order ra khỏi giỏ hàng
+      if (req.params.id != "random") {
+        await usersDB.findByIdAndUpdate(req.params.id, {
+          $pull: { carts: item._id },
+        });
+        await cartsDB.findByIdAndDelete(item._id);
+      }
+
+      product.details.map(async (i) => {
+        if (i.color == item.color && i.size == item.size) {
+          const newItem = { ...i, quantity: i.quantity - item.quantity };
+          await productsDB.updateOne(
+            { product_code: item.product_code },
+            {
+              $pull: {
+                details: {
+                  color: i.color,
+                  quantity: i.quantity,
+                  size: i.size,
+                },
+              },
+            }
+          );
+          await productsDB.updateOne(
+            { product_code: item.product_code },
+            {
+              $push: { details: newItem },
+              $inc: { sales: item.quantity },
+            }
+          );
+        }
+      });
+    };
+    // gọi hàm trên
+    Promise.all(
+      req.body.details
+        .map((item) => {
+          return {
+            ...item,
+            image: item.product_image,
+            price: item.product_price,
+            quantity: item.product_quantity,
+            size: item.product_size,
+            color: item.product_color,
+            name: item.product_name,
+          };
+        })
+        .map((item) => findByIdAndUpdateProduct(item))
+    );
     // tạo order trong dtb order
     const order = new ordersDB({
       details: req.body.details,
